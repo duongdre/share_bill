@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="whiteColor">#fefefd</color>
+    <color name="blueColor">#2c74fe</color>
+    <color name="blackColor">#000000</color>
+
+    <color name="loginIconColorGray">#636268</color>
+    <color name="loginAvatarBackGround">#6C7098</color>
+    <color name="loginTextColorBlue">#192E87</color>
+    <color name="loginTextColorGray">#787882</color>
+    <color name="loginIconColor">#145FDB</color>
+    <color name="loginButtonDisable">#EEF0FF</color>
+    <color name="loginButtonDisable">#EEF0FF</color>
+
+    <color name="homeGrayBalance">#A2A2A2</color>
+    <color name="homeGrayHold">#E2E2E2</color>
+    <color name="homeWhiteAdd">#F2F2F2</color>
+    <color name="homeWhiteButtonBg">#F9F9F9</color>
+    <color name="homeBlackText">#2A2A2A</color>
+    <color name="homeRedText">#923631</color>
+    <color name="homeCyanText">#D1DE91</color>
+</resources>

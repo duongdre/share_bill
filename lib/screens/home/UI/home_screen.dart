@@ -1,8 +1,10 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:go_router/go_router.dart';
 import 'package:share_bill/gen/assets.gen.dart';
 import 'package:share_bill/models/data_models/person.dart';
+import 'package:share_bill/screens/group_management/UI/group_management.dart';
 import 'package:share_bill/screens/home/controller/home_screen_provider.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -12,6 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:share_bill/screens/spent/UI/spent_management.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../gen/colors.gen.dart';
@@ -52,7 +55,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     children: [
                       balance(homeProvider, context),
                       sendReceiveAndAds(),
-                      teamList(),
+                      groupList(),
                       historyTransaction(),
                     ],
                   ),
@@ -159,7 +162,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           children: [
             InkWell(
               onTap: () {
-                ref.read(homeScreenTotalNotifierProvider.notifier).addTotalDept(100.0);
+                context.goNamed(SpentScreen.routeNameFromHome);
               },
               child: Container(
                 height: 60,
@@ -288,7 +291,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Widget teamList() {
+  Widget groupList() {
     return Container(
       height: 200,
       width: double.infinity,
@@ -317,86 +320,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               Spacer(),
               InkWell(
                 onTap: () async {
-                  print("=========== STARTTTTT ===========");
-
-                  final databaseReference = FirebaseDatabase.instance.ref("users");
-
-                  // final huongptm = Person.fromFulfill(
-                  //   uid: const Uuid().v4(),
-                  //   name: "HuongPTM",
-                  //   yearOfBirth: 1997,
-                  //   avtUrl: "",
-                  //   groupId: [const Uuid().v4(), const Uuid().v4()],
-                  // );
-                  // await databaseReference.child(huongptm.uid).set(huongptm.toJsonWithoutUid());
-
-                  // final snapshot = await databaseReference.get();
-                  // if (snapshot.exists) {
-                  //   print(snapshot.value);
-                  // } else {
-                  //   print('No data available.');
-                  // }
-
-                  ///////////////////////////////////
-
-                  FirebaseStorage _storage = FirebaseStorage.instance;
-
-                  final _image = await ImagePicker().pickImage(source: ImageSource.gallery);
-
-                  final storageRef = _storage.ref().child("images/");
-                  final xab = storageRef.child("/user/${Uuid().v4()}");
-                  final uploadTask = xab.putFile(File(_image!.path));
-                  // Listen for state changes, errors, and completion of the upload.
-                  uploadTask.snapshotEvents.listen((TaskSnapshot taskSnapshot) async {
-                    switch (taskSnapshot.state) {
-                      case TaskState.running:
-                        final progress = 100.0 * (taskSnapshot.bytesTransferred / taskSnapshot.totalBytes);
-                        print("Upload is $progress% complete.");
-                        break;
-                      case TaskState.paused:
-                        print("Upload is paused.");
-                        break;
-                      case TaskState.canceled:
-                        print("Upload was canceled");
-                        break;
-                      case TaskState.error:
-                        print("Upload was error");
-                        break;
-                      case TaskState.success:
-                        print("Upload was success");
-                        break;
-                    }
-                  });
-
-                  final islandRef = _storage.ref("images").child("/user/fc0d1417-f36e-4659-b8e7-2e95113852fe");
-
-                  Directory appDocDir = await getApplicationDocumentsDirectory();
-                  File file = File('${appDocDir.path}/myPath/milktea.jpg');
-                  print("AAA ${file.path}");
-                  await file.create(recursive: true);
-
-                  final downloadTask = islandRef.writeToFile(file);
-                  downloadTask.snapshotEvents.listen((taskSnapshot) {
-                    switch (taskSnapshot.state) {
-                      case TaskState.running:
-                        // TODO: Handle this case.
-                        break;
-                      case TaskState.paused:
-                        // TODO: Handle this case.
-                        break;
-                      case TaskState.success:
-                        // TODO: Handle this case.
-                        break;
-                      case TaskState.canceled:
-                        // TODO: Handle this case.
-                        break;
-                      case TaskState.error:
-                        // TODO: Handle this case.
-                        break;
-                    }
-                  });
-
-                  print("=========== ENDDDDDD ===========");
+                  context.goNamed(GroupManagementScreen.routeName);
                 },
                 child: Container(
                   padding: EdgeInsets.only(top: 4, bottom: 4, left: 12, right: 12),
@@ -408,7 +332,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ],
                   ),
                   child: Text(
-                    "+ Add",
+                    "More",
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       color: ColorName.homeBlackText,
@@ -549,7 +473,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             width: 100,
             margin: EdgeInsets.only(top: 96),
             child: Text(
-              "Dương Hùng Hương",
+              "Hương Dương",
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
                 color: ColorName.loginTextColorGray,

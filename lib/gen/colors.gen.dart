@@ -13,11 +13,23 @@ import 'package:flutter/material.dart';
 class ColorName {
   ColorName._();
 
+  /// Color: #EEF0F2
+  static const Color spentBackGround = Color(0xFFEEF0F2);
+
+  /// Color: #EFF1F3
+  static const Color spentBackGroundButton = Color(0xFFEFF1F3);
+
   /// Color: #000000
   static const Color blackColor = Color(0xFF000000);
 
   /// Color: #2c74fe
   static const Color blueColor = Color(0xFF2C74FE);
+
+  /// Color: #111111
+  static const Color groupManagementBackGroundButton = Color(0xFF111111);
+
+  /// Color: #ECEEF0
+  static const Color groupManagementBackground = Color(0xFFECEEF0);
 
   /// Color: #2A2A2A
   static const Color homeBlackText = Color(0xFF2A2A2A);

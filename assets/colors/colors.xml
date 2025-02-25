@@ -19,4 +19,10 @@
     <color name="homeBlackText">#2A2A2A</color>
     <color name="homeRedText">#923631</color>
     <color name="homeCyanText">#D1DE91</color>
+
+    <color name="groupManagementBackground">#ECEEF0</color>
+    <color name="groupManagementBackGroundButton">#111111</color>
+
+    <color name="SpentBackGround">#EEF0F2</color>
+    <color name="SpentBackGroundButton">#EFF1F3</color>
 </resources>

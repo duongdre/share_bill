@@ -1,0 +1,1 @@
+enum ExpanseCollection { EXPANSE, COLLECTION }

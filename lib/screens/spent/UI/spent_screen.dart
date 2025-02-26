@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_bill/gen/fonts.gen.dart';
 import 'package:share_bill/screens/home/UI/home_screen.dart';
+import 'package:share_bill/utilities/utils/confirmExpanseCollection.dart';
+import 'package:share_bill/utilities/utils/enum.dart';
 
 import '../../../gen/colors.gen.dart';
 
@@ -24,7 +26,7 @@ class SpentScreen extends ConsumerStatefulWidget {
 class _SpentScreenState extends ConsumerState<SpentScreen> {
   @override
   void initState() {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
+    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
     super.initState();
   }
 
@@ -43,6 +45,7 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
               Expanded(
                 child: amout(),
               ),
+              keyboard(),
               spentButton()
             ],
           ),
@@ -58,7 +61,9 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
       child: Row(
         children: [
           InkWell(
-            onTap: () {},
+            onTap: () {
+              context.pop();
+            },
             child: Container(
               height: 50,
               width: 50,
@@ -305,31 +310,100 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
 
   // amount
   Widget amout() {
-    return Text(
-      "<",
-      overflow: TextOverflow.ellipsis,
-      style: const TextStyle(
-        color: ColorName.homeBlackText,
-        fontSize: 20,
-        fontWeight: FontWeight.w500,
-        shadows: <Shadow>[
-          Shadow(
-            offset: Offset(2.0, 2.0),
-            blurRadius: 4.0,
-            color: ColorName.homeGrayBalance,
-          ),
-        ],
+    return Container(
+      alignment: Alignment.center,
+      padding: EdgeInsets.only(top: 16),
+      child: Text(
+        "\$12.900.000",
+        overflow: TextOverflow.ellipsis,
+        style: const TextStyle(
+          color: ColorName.homeBlackText,
+          fontSize: 60,
+          fontWeight: FontWeight.w500,
+          shadows: <Shadow>[
+            Shadow(
+              offset: Offset(2.0, 2.0),
+              blurRadius: 4.0,
+              color: ColorName.homeGrayBalance,
+            ),
+          ],
+        ),
       ),
     );
   }
 
   // keyboard
+  Widget keyboard() {
+    final numpadData = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "000", "0", "x"];
+
+    return Container(
+      height: 308,
+      alignment: Alignment.center,
+      margin: EdgeInsets.only(top: 16, bottom: 8, left: 16, right: 16),
+      decoration: BoxDecoration(
+        color: ColorName.homeWhiteButtonBg,
+        borderRadius: const BorderRadius.all(Radius.circular(20)),
+        boxShadow: [
+          BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
+        ],
+      ),
+      padding: EdgeInsets.only(top: 16, bottom: 16, left: 16, right: 16),
+      child: Column(
+        children: [
+          for (int item1 in [0, 1, 2, 3])
+            Row(
+              children: [
+                for (int item2 in [1, 2, 3])
+                  Expanded(
+                    child: InkWell(
+                      onTap: () {
+                        print(item2);
+                      },
+                      child: Container(
+                        height: 60,
+                        margin: EdgeInsets.all(4),
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: ColorName.spentBackGroundButton,
+                          borderRadius: const BorderRadius.all(Radius.circular(100)),
+                          boxShadow: [
+                            BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
+                          ],
+                        ),
+                        child: Text(
+                          numpadData[item2 + item1 * 3 - 1],
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: ColorName.homeBlackText,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                            shadows: <Shadow>[
+                              Shadow(
+                                offset: Offset(2.0, 2.0),
+                                blurRadius: 4.0,
+                                color: ColorName.homeGrayBalance,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+              ],
+            )
+        ],
+      ),
+    );
+  }
 
   // spent button
   Widget spentButton() {
     return InkWell(
       onTap: () {
-        context.goNamed(HomeScreen.routeName);
+        showDialog(
+          context: context,
+          builder: (_) => DialogExpanseCollection(ExpanseCollection.EXPANSE),
+        );
       },
       child: Container(
         height: 60,

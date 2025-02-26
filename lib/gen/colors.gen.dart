@@ -13,12 +13,6 @@ import 'package:flutter/material.dart';
 class ColorName {
   ColorName._();
 
-  /// Color: #EEF0F2
-  static const Color spentBackGround = Color(0xFFEEF0F2);
-
-  /// Color: #EFF1F3
-  static const Color spentBackGroundButton = Color(0xFFEFF1F3);
-
   /// Color: #000000
   static const Color blackColor = Color(0xFF000000);
 
@@ -69,6 +63,18 @@ class ColorName {
 
   /// Color: #787882
   static const Color loginTextColorGray = Color(0xFF787882);
+
+  /// Color: #EEF0F2
+  static const Color spentBackGround = Color(0xFFEEF0F2);
+
+  /// Color: #EFF1F3
+  static const Color spentBackGroundButton = Color(0xFFEFF1F3);
+
+  /// Color: #B3DE00
+  static const Color spentBackGroundReceiveDialog = Color(0xFFB3DE00);
+
+  /// Color: #F76766
+  static const Color spentBackGroundSpentDialog = Color(0xFFF76766);
 
   /// Color: #fefefd
   static const Color whiteColor = Color(0xFFFEFEFD);

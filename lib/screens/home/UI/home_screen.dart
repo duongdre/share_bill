@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:go_router/go_router.dart';
 import 'package:share_bill/gen/assets.gen.dart';
 import 'package:share_bill/models/data_models/person.dart';
-import 'package:share_bill/screens/group_management/UI/group_management.dart';
+import 'package:share_bill/screens/group_management/UI/group_management_screen.dart';
 import 'package:share_bill/screens/home/controller/home_screen_provider.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -14,7 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:share_bill/screens/spent/UI/spent_management.dart';
+import 'package:share_bill/screens/spent/UI/spent_screen.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../gen/colors.gen.dart';
@@ -32,7 +32,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
+    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
     super.initState();
   }
 
@@ -230,7 +230,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
           ],
         ),
-        Container(
+        // Ads
+        /*Container(
           height: 120,
           width: double.infinity,
           padding: EdgeInsets.only(top: 16, bottom: 16, left: 16, right: 16),
@@ -286,6 +287,76 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               )
             ],
           ),
+        )*/
+        Container(
+          height: 200,
+          width: double.infinity,
+          padding: EdgeInsets.only(top: 16, bottom: 16, left: 16, right: 16),
+          margin: EdgeInsets.only(top: 16, bottom: 16, left: 16, right: 16),
+          decoration: BoxDecoration(
+            color: ColorName.homeWhiteButtonBg,
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+            boxShadow: [
+              BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
+            ],
+          ),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Text(
+                    "Bạn thân",
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: ColorName.homeBlackText,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  Spacer(),
+                  InkWell(
+                    onTap: () async {
+                      context.goNamed(GroupManagementScreen.routeName);
+                    },
+                    child: Text(
+                      "xem thêm",
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        decoration: TextDecoration.underline,
+                        decorationStyle: TextDecorationStyle.double,
+                        color: ColorName.homeBlackText,
+                        fontSize: 18,
+                        // fontWeight: FontWeight.w500,
+                        shadows: <Shadow>[
+                          Shadow(
+                            offset: Offset(1.0, 1.0),
+                            blurRadius: 4.0,
+                            color: ColorName.homeGrayBalance,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 12),
+              Expanded(
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      eachGroup(),
+                      eachGroup(),
+                      eachGroup(),
+                      eachGroup(),
+                      eachGroup(),
+                      eachGroup(),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
         )
       ],
     );
@@ -309,7 +380,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           Row(
             children: [
               Text(
-                "Chi thêm cho nhóm",
+                "Nhóm bạn",
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   color: ColorName.homeBlackText,
@@ -322,23 +393,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 onTap: () async {
                   context.goNamed(GroupManagementScreen.routeName);
                 },
-                child: Container(
-                  padding: EdgeInsets.only(top: 4, bottom: 4, left: 12, right: 12),
-                  decoration: BoxDecoration(
-                    color: ColorName.homeWhiteAdd,
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                    boxShadow: [
-                      BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
+                child: Text(
+                  "xem thêm",
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    decoration: TextDecoration.underline,
+                    decorationStyle: TextDecorationStyle.double,
+                    color: ColorName.homeBlackText,
+                    fontSize: 18,
+                    // fontWeight: FontWeight.w500,
+                    shadows: <Shadow>[
+                      Shadow(
+                        offset: Offset(1.0, 1.0),
+                        blurRadius: 4.0,
+                        color: ColorName.homeGrayBalance,
+                      ),
                     ],
-                  ),
-                  child: Text(
-                    "More",
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: ColorName.homeBlackText,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
-                    ),
                   ),
                 ),
               ),
@@ -396,9 +466,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 "xem thêm",
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
-                  color: ColorName.homeGrayBalance,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
+                  decoration: TextDecoration.underline,
+                  decorationStyle: TextDecorationStyle.double,
+                  color: ColorName.homeBlackText,
+                  fontSize: 18,
+                  // fontWeight: FontWeight.w500,
+                  shadows: <Shadow>[
+                    Shadow(
+                      offset: Offset(1.0, 1.0),
+                      blurRadius: 4.0,
+                      color: ColorName.homeGrayBalance,
+                    ),
+                  ],
                 ),
               ),
             ],

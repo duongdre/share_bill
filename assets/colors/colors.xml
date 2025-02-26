@@ -23,6 +23,8 @@
     <color name="groupManagementBackground">#ECEEF0</color>
     <color name="groupManagementBackGroundButton">#111111</color>
 
-    <color name="SpentBackGround">#EEF0F2</color>
-    <color name="SpentBackGroundButton">#EFF1F3</color>
+    <color name="spentBackGround">#EEF0F2</color>
+    <color name="spentBackGroundButton">#EFF1F3</color>
+    <color name="spentBackGroundSpentDialog">#F76766</color>
+    <color name="spentBackGroundReceiveDialog">#B3DE00</color>
 </resources>

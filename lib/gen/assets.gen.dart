@@ -62,6 +62,12 @@ class $AssetsImagesGen {
   /// File path: assets/images/acbOneWhite.png
   AssetGenImage get acbOneWhite => const AssetGenImage('assets/images/acbOneWhite.png');
 
+  /// File path: assets/images/avtFemale.png
+  AssetGenImage get avtFemale => const AssetGenImage('assets/images/avtFemale.png');
+
+  /// File path: assets/images/avtMale.png
+  AssetGenImage get avtMale => const AssetGenImage('assets/images/avtMale.png');
+
   /// File path: assets/images/bgLogin.png
   AssetGenImage get bgLogin => const AssetGenImage('assets/images/bgLogin.png');
 
@@ -90,7 +96,8 @@ class $AssetsImagesGen {
   AssetGenImage get splashAcb => const AssetGenImage('assets/images/splashAcb.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [acbOneColors, acbOneWhite, bgLogin, faceId, gridBg, homeFake, loginCard1, loginCard2, loginCard3, logo, splashAcb];
+  List<AssetGenImage> get values =>
+      [acbOneColors, acbOneWhite, avtFemale, avtMale, bgLogin, faceId, gridBg, homeFake, loginCard1, loginCard2, loginCard3, logo, splashAcb];
 }
 
 class Assets {

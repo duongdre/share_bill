@@ -2,8 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:share_bill/screens/group_management/UI/group_management.dart';
-import 'package:share_bill/screens/spent/UI/spent_management.dart';
+import 'package:share_bill/screens/group_management/UI/group_detail_screen.dart';
+import 'package:share_bill/screens/group_management/UI/group_management_screen.dart';
+import 'package:share_bill/screens/person_profile/UI/person_profile_screen.dart';
+import 'package:share_bill/screens/spent/UI/spent_screen.dart';
 import '../../screens/home/UI/home_screen.dart';
 import '../../screens/splash/UI/splash_screen.dart';
 
@@ -53,6 +55,18 @@ final routerProvider = Provider<GoRouter>(
                 path: SpentScreen.routePath,
                 name: SpentScreen.routeName,
                 builder: (context, state) => const SpentScreen(),
+                routes: [],
+              ),
+              GoRoute(
+                path: GroupDetailScreen.routePath,
+                name: GroupDetailScreen.routeName,
+                builder: (context, state) => const GroupDetailScreen(),
+                routes: [],
+              ),
+              GoRoute(
+                path: PersonProfileScreen.routePath,
+                name: PersonProfileScreen.routeName,
+                builder: (context, state) => const PersonProfileScreen(),
                 routes: [],
               ),
             ],

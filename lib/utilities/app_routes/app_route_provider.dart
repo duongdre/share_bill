@@ -4,9 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:share_bill/screens/group_management/UI/group_detail_screen.dart';
 import 'package:share_bill/screens/group_management/UI/group_management_screen.dart';
-import 'package:share_bill/screens/person_profile/UI/person_profile_screen.dart';
+import 'package:share_bill/screens/person/UI/person_management_screen.dart';
 import 'package:share_bill/screens/spent/UI/spent_screen.dart';
 import '../../screens/home/UI/home_screen.dart';
+import '../../screens/person/UI/person_detail_screen.dart';
 import '../../screens/splash/UI/splash_screen.dart';
 
 part 'app_route_provider.g.dart';
@@ -63,14 +64,21 @@ final routerProvider = Provider<GoRouter>(
                 builder: (context, state) => const GroupDetailScreen(),
                 routes: [],
               ),
+            ],
+          ),
+          GoRoute(
+            path: PersonManagementScreen.routePath,
+            name: PersonManagementScreen.routeName,
+            builder: (context, state) => const PersonManagementScreen(),
+            routes: [
               GoRoute(
-                path: PersonProfileScreen.routePath,
-                name: PersonProfileScreen.routeName,
-                builder: (context, state) => const PersonProfileScreen(),
+                path: PersonDetailScreen.routePath,
+                name: PersonDetailScreen.routeName,
+                builder: (context, state) => PersonDetailScreen(),
                 routes: [],
               ),
             ],
-          )
+          ),
         ],
       ),
     ],

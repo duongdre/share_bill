@@ -43,7 +43,7 @@ class _DialogExpanseCollectionState extends ConsumerState<DialogExpanseCollectio
               // padding: EdgeInsets.all(16.0),
               height: 240.0,
               decoration: ShapeDecoration(
-                color: (widget.collection == ExpanseCollection.EXPANSE) ? ColorName.spentBackGroundSpentDialog : ColorName.spentBackGroundReceiveDialog,
+                color: (widget.collection == ExpanseCollection.expanse) ? ColorName.spentBackGroundSpentDialog : ColorName.spentBackGroundReceiveDialog,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
               ),
               child: Column(
@@ -190,7 +190,7 @@ class _DialogExpanseCollectionState extends ConsumerState<DialogExpanseCollectio
                         ],
                       ),
                       child: Text(
-                        (widget.collection == ExpanseCollection.EXPANSE) ? "Spent money" : "Receive money",
+                        (widget.collection == ExpanseCollection.expanse) ? "Spent money" : "Receive money",
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           color: ColorName.groupManagementBackGroundButton,

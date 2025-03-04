@@ -4,23 +4,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_bill/screens/home/UI/home_screen.dart';
+import 'package:share_bill/screens/person/UI/person_detail_screen.dart';
 import 'package:share_bill/screens/spent/UI/spent_screen.dart';
+import 'package:share_bill/utilities/utils/enum.dart';
 
 import '../../../gen/colors.gen.dart';
-import '../../person/UI/person_detail_screen.dart';
-import 'group_detail_screen.dart';
 
-class GroupManagementScreen extends ConsumerStatefulWidget {
-  const GroupManagementScreen({super.key});
-
-  static const routeName = 'group_management';
+class PersonManagementScreen extends ConsumerStatefulWidget {
+  static const routeName = 'person_management';
   static const routePath = '/$routeName';
 
+  const PersonManagementScreen({super.key});
+
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _GroupManagementScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _PersonManagementScreenState();
 }
 
-class _GroupManagementScreenState extends ConsumerState<GroupManagementScreen> {
+class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen> {
+  bool isShowingGroup = true;
+
   @override
   void initState() {
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
@@ -68,7 +70,7 @@ class _GroupManagementScreenState extends ConsumerState<GroupManagementScreen> {
         children: [
           SizedBox(width: 16),
           Text(
-            "Groups",
+            "Friends",
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               color: ColorName.homeBlackText,
@@ -86,7 +88,7 @@ class _GroupManagementScreenState extends ConsumerState<GroupManagementScreen> {
           const Spacer(),
           InkWell(
             onTap: () {
-              context.goNamed(GroupDetailScreen.routeName);
+              context.goNamed(PersonDetailScreen.routeName);
             },
             child: Container(
               height: 50,
@@ -125,9 +127,7 @@ class _GroupManagementScreenState extends ConsumerState<GroupManagementScreen> {
 
   Widget teamList() {
     return InkWell(
-      onTap: () {
-        context.goNamed(GroupDetailScreen.routeName);
-      },
+      onTap: () {},
       child: Container(
         width: double.infinity,
         padding: EdgeInsets.only(top: 16, bottom: 16),

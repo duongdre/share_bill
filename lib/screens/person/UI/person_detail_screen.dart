@@ -5,22 +5,23 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_bill/screens/home/UI/home_screen.dart';
 import 'package:share_bill/screens/spent/UI/spent_screen.dart';
+import 'package:share_bill/utilities/utils/enum.dart';
 
 import '../../../gen/colors.gen.dart';
-import '../../person/UI/person_detail_screen.dart';
-import 'group_detail_screen.dart';
 
-class GroupManagementScreen extends ConsumerStatefulWidget {
-  const GroupManagementScreen({super.key});
-
-  static const routeName = 'group_management';
+class PersonDetailScreen extends ConsumerStatefulWidget {
+  static const routeName = 'person_detail';
   static const routePath = '/$routeName';
 
+  const PersonDetailScreen({super.key});
+
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _GroupManagementScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _PersonDetailScreenState();
 }
 
-class _GroupManagementScreenState extends ConsumerState<GroupManagementScreen> {
+class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
+  bool isShowingGroup = true;
+
   @override
   void initState() {
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
@@ -43,13 +44,17 @@ class _GroupManagementScreenState extends ConsumerState<GroupManagementScreen> {
                   scrollDirection: Axis.vertical,
                   child: Column(
                     children: [
-                      teamList(),
-                      teamList(),
-                      teamList(),
-                      teamList(),
-                      teamList(),
-                      teamList(),
-                      closeButton(),
+                      avatar(),
+                      switchButton(),
+                      (isShowingGroup)
+                          ? Column(
+                              children: [
+                                teamList(),
+                                teamList(),
+                                teamList(),
+                              ],
+                            )
+                          : historyTransaction(),
                     ],
                   ),
                 ),
@@ -68,7 +73,7 @@ class _GroupManagementScreenState extends ConsumerState<GroupManagementScreen> {
         children: [
           SizedBox(width: 16),
           Text(
-            "Groups",
+            "Profile",
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               color: ColorName.homeBlackText,
@@ -85,12 +90,10 @@ class _GroupManagementScreenState extends ConsumerState<GroupManagementScreen> {
           ),
           const Spacer(),
           InkWell(
-            onTap: () {
-              context.goNamed(GroupDetailScreen.routeName);
-            },
+            onTap: () {},
             child: Container(
               height: 50,
-              width: 120,
+              width: 50,
               alignment: Alignment.center,
               margin: EdgeInsets.only(left: 8, right: 16),
               decoration: BoxDecoration(
@@ -100,21 +103,16 @@ class _GroupManagementScreenState extends ConsumerState<GroupManagementScreen> {
                   BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
                 ],
               ),
-              child: Text(
-                "New",
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: ColorName.homeBlackText,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
-                  shadows: <Shadow>[
-                    Shadow(
-                      offset: Offset(2.0, 2.0),
-                      blurRadius: 4.0,
-                      color: ColorName.homeGrayBalance,
-                    ),
-                  ],
-                ),
+              child: Icon(
+                Icons.settings,
+                size: 32,
+                shadows: <Shadow>[
+                  Shadow(
+                    offset: Offset(2.0, 2.0),
+                    blurRadius: 4.0,
+                    color: ColorName.homeGrayBalance,
+                  ),
+                ],
               ),
             ),
           )
@@ -123,11 +121,145 @@ class _GroupManagementScreenState extends ConsumerState<GroupManagementScreen> {
     );
   }
 
+  Widget avatar() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 16, right: 16),
+      child: Column(
+        children: [
+          Container(
+            width: 160,
+            height: 160,
+            decoration: BoxDecoration(
+              color: ColorName.homeRedText,
+              image: DecorationImage(
+                image: Assets.images.avtMale.provider(),
+                fit: BoxFit.cover,
+              ),
+              borderRadius: const BorderRadius.all(Radius.circular(100)),
+              boxShadow: [
+                BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
+              ],
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+            "Name",
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              color: ColorName.homeBlackText,
+              fontSize: 32,
+              fontWeight: FontWeight.w500,
+              shadows: <Shadow>[
+                Shadow(
+                  offset: Offset(2.0, 2.0),
+                  blurRadius: 4.0,
+                  color: ColorName.homeGrayBalance,
+                ),
+              ],
+            ),
+          ),
+          Text(
+            "Gợi nhớ hoặc mô tả về người dùng này",
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              color: ColorName.loginIconColorGray,
+              fontSize: 20,
+              fontWeight: FontWeight.w400,
+            ),
+            maxLines: 3,
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget switchButton() {
+    return Row(
+      children: [
+        Expanded(
+          child: InkWell(
+            onTap: () {
+              setState(() {
+                isShowingGroup = true;
+              });
+            },
+            child: Container(
+              height: 60,
+              width: 120,
+              alignment: Alignment.center,
+              margin: EdgeInsets.only(top: 16, bottom: 24, left: 16, right: 8),
+              decoration: BoxDecoration(
+                // color: ColorName.groupManagementBackGroundButton,
+                borderRadius: const BorderRadius.all(Radius.circular(100)),
+                border: Border.all(),
+                // boxShadow: [
+                //   BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
+                // ],
+              ),
+              child: Text(
+                "Groups",
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  color: ColorName.loginAvatarBackGround,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w400,
+                  shadows: <Shadow>[
+                    Shadow(
+                      offset: Offset(2.0, 2.0),
+                      blurRadius: 4.0,
+                      color: ColorName.homeWhiteButtonBg,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: InkWell(
+            onTap: () {
+              setState(() {
+                isShowingGroup = false;
+              });
+            },
+            child: Container(
+              height: 60,
+              width: 120,
+              alignment: Alignment.center,
+              margin: EdgeInsets.only(top: 16, bottom: 24, left: 8, right: 16),
+              decoration: BoxDecoration(
+                color: ColorName.groupManagementBackGroundButton,
+                borderRadius: const BorderRadius.all(Radius.circular(100)),
+                boxShadow: [
+                  BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
+                ],
+              ),
+              child: Text(
+                "Transactions",
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  color: ColorName.homeWhiteButtonBg,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w400,
+                  shadows: <Shadow>[
+                    Shadow(
+                      offset: Offset(2.0, 2.0),
+                      blurRadius: 4.0,
+                      color: ColorName.loginAvatarBackGround,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget teamList() {
     return InkWell(
-      onTap: () {
-        context.goNamed(GroupDetailScreen.routeName);
-      },
+      onTap: () {},
       child: Container(
         width: double.infinity,
         padding: EdgeInsets.only(top: 16, bottom: 16),
@@ -352,39 +484,151 @@ class _GroupManagementScreenState extends ConsumerState<GroupManagementScreen> {
     );
   }
 
-  Widget closeButton() {
-    return InkWell(
-      onTap: () {
-        context.pop();
-      },
-      child: Container(
-        height: 60,
-        width: 120,
-        alignment: Alignment.center,
-        margin: EdgeInsets.only(top: 16, bottom: 24),
-        decoration: BoxDecoration(
-          color: ColorName.groupManagementBackGroundButton,
-          borderRadius: const BorderRadius.all(Radius.circular(100)),
-          boxShadow: [
-            BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
-          ],
-        ),
-        child: Text(
-          "Close",
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
-            color: ColorName.homeWhiteButtonBg,
-            fontSize: 20,
-            fontWeight: FontWeight.w400,
-            shadows: <Shadow>[
-              Shadow(
-                offset: Offset(2.0, 2.0),
-                blurRadius: 4.0,
-                color: ColorName.loginAvatarBackGround,
+  Widget historyTransaction() {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.only(top: 16, bottom: 16, left: 16, right: 16),
+      margin: EdgeInsets.only(left: 16, right: 16),
+      decoration: BoxDecoration(
+        color: ColorName.homeWhiteButtonBg,
+        borderRadius: BorderRadius.all(Radius.circular(20)),
+        boxShadow: [
+          BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
+        ],
+      ),
+      child: Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                "Lịch sử chi tiêu",
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  color: ColorName.homeBlackText,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              Spacer(),
+              Text(
+                "xem thêm",
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  decoration: TextDecoration.underline,
+                  decorationStyle: TextDecorationStyle.double,
+                  color: ColorName.homeBlackText,
+                  fontSize: 18,
+                  // fontWeight: FontWeight.w500,
+                  shadows: <Shadow>[
+                    Shadow(
+                      offset: Offset(1.0, 1.0),
+                      blurRadius: 4.0,
+                      color: ColorName.homeGrayBalance,
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
-        ),
+          SizedBox(height: 12),
+          eachTransaction(),
+          eachTransaction(),
+          eachTransaction(),
+          eachTransaction(),
+          eachTransaction(),
+          eachTransaction(),
+          eachTransaction(),
+          eachTransaction()
+        ],
+      ),
+    );
+  }
+
+  Widget eachTransaction() {
+    return Container(
+      margin: EdgeInsets.only(bottom: 20, right: 16),
+      child: Row(
+        children: [
+          Stack(
+            children: [
+              Container(
+                height: 80,
+                width: 80,
+                decoration: BoxDecoration(
+                  color: ColorName.homeWhiteAdd,
+                  borderRadius: BorderRadius.all(Radius.circular(100)),
+                  boxShadow: [
+                    BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(2, 2)),
+                  ],
+                ),
+              ),
+              Container(
+                height: 80,
+                width: 80,
+                margin: EdgeInsets.only(top: 4, left: 4),
+                decoration: BoxDecoration(
+                  color: ColorName.homeWhiteAdd,
+                  borderRadius: BorderRadius.all(Radius.circular(100)),
+                  boxShadow: [
+                    BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(2, 2)),
+                  ],
+                ),
+              ),
+              Container(
+                height: 80,
+                width: 80,
+                margin: EdgeInsets.only(top: 8, left: 8),
+                decoration: BoxDecoration(
+                  color: ColorName.homeWhiteAdd,
+                  borderRadius: BorderRadius.all(Radius.circular(100)),
+                  boxShadow: [
+                    BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(2, 2)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Ăn tất niên",
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: ColorName.homeBlackText,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  maxLines: 1,
+                ),
+                Text(
+                  "28 tháng 1 * 00:01 AM",
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: ColorName.loginTextColorGray,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  maxLines: 1,
+                ),
+              ],
+            ),
+          ),
+          SizedBox(width: 16),
+          Text(
+            "-\$500k",
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              color: ColorName.homeRedText,
+              fontSize: 20,
+              fontWeight: FontWeight.w500,
+            ),
+            maxLines: 1,
+          ),
+        ],
       ),
     );
   }

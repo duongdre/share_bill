@@ -14,6 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:share_bill/screens/person/UI/person_management_screen.dart';
 import 'package:share_bill/screens/spent/UI/spent_screen.dart';
 import 'package:uuid/uuid.dart';
 
@@ -316,7 +317,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   Spacer(),
                   InkWell(
                     onTap: () async {
-                      context.goNamed(GroupManagementScreen.routeName);
+                      context.goNamed(PersonManagementScreen.routeName);
                     },
                     child: Text(
                       "xem thêm",

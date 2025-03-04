@@ -1,1 +1,2 @@
-enum ExpanseCollection { EXPANSE, COLLECTION }
+enum ExpanseCollection { expanse, colletion }
+enum PersonScreenType { none, groups, transactions }

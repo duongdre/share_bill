@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_bill/screens/home/UI/home_screen.dart';
-import 'package:share_bill/screens/person_profile/UI/person_profile_screen.dart';
 import 'package:share_bill/screens/spent/UI/spent_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

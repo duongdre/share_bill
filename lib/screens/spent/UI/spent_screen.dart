@@ -402,7 +402,7 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
       onTap: () {
         showDialog(
           context: context,
-          builder: (_) => DialogExpanseCollection(ExpanseCollection.EXPANSE),
+          builder: (_) => DialogExpanseCollection(ExpanseCollection.expanse),
         );
       },
       child: Container(

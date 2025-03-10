@@ -4,16 +4,16 @@ import 'package:go_router/go_router.dart';
 import 'package:share_bill/gen/colors.gen.dart';
 import 'package:share_bill/utilities/utils/enum.dart';
 
-class DialogExpanseCollection extends ConsumerStatefulWidget {
+class DialogConfirmExpanseCollection extends ConsumerStatefulWidget {
   final ExpanseCollection collection;
 
-  const DialogExpanseCollection(this.collection, {super.key});
+  const DialogConfirmExpanseCollection(this.collection, {super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _DialogExpanseCollectionState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _DialogConfirmExpanseCollectionState();
 }
 
-class _DialogExpanseCollectionState extends ConsumerState<DialogExpanseCollection> with SingleTickerProviderStateMixin {
+class _DialogConfirmExpanseCollectionState extends ConsumerState<DialogConfirmExpanseCollection> with SingleTickerProviderStateMixin {
   late AnimationController controller;
   late Animation<double> scaleAnimation;
 

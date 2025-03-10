@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:go_router/go_router.dart';
 import 'package:share_bill/gen/assets.gen.dart';
 import 'package:share_bill/models/data_models/person.dart';
-import 'package:share_bill/screens/group_management/UI/group_management_screen.dart';
+import 'package:share_bill/screens/group/UI/group_management_screen.dart';
 import 'package:share_bill/screens/home/controller/home_screen_provider.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -16,9 +16,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_bill/screens/person/UI/person_management_screen.dart';
 import 'package:share_bill/screens/spent/UI/spent_screen.dart';
+import 'package:share_bill/screens/transaction/UI/transaction_management_screen.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../gen/colors.gen.dart';
+import '../../../utilities/utils/person_avatar.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -31,73 +33,116 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  bool _isLoading = true;
+
   @override
   void initState() {
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
+
+    _loadInitialData();
+
     super.initState();
+  }
+
+  Future<void> _loadInitialData() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      // Get the notifier and fetch all person data
+      final homeScreenNotifier = ref.read(homeScreenTotalNotifierProvider.notifier);
+      await homeScreenNotifier.fetchAllPerson();
+    } catch (e) {
+      print('Error loading initial data: $e');
+      // You could show an error snackbar here
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final homeProvider = ref.watch(homeScreenTotalNotifierProvider);
+    final persons = ref.read(homeScreenTotalNotifierProvider.notifier).allPerson;
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
           color: ColorName.homeWhiteAdd,
           image: DecorationImage(opacity: 0.5, image: Assets.images.gridBg.provider(), fit: BoxFit.cover),
         ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              header(),
-              Expanded(
-                child: SingleChildScrollView(
+        child: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : SafeArea(
+                child: RefreshIndicator(
+                  onRefresh: _loadInitialData,
                   child: Column(
                     children: [
-                      balance(homeProvider, context),
-                      sendReceiveAndAds(),
-                      groupList(),
-                      historyTransaction(),
+                      header(),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              balance(homeProvider, context),
+                              sendReceiveAndFriends(persons),
+                              groupList(),
+                              historyTransaction(),
+                            ],
+                          ),
+                        ),
+                      )
                     ],
                   ),
                 ),
-              )
-            ],
-          ),
-        ),
+              ),
       ),
     );
   }
 
   Widget header() {
-    return Container(
-      height: 100,
-      child: Row(
-        children: [
-          //Logo
-          Image(
-            image: Assets.images.logo.provider(),
-            fit: BoxFit.fill,
-          ),
-          const Spacer(),
-          Container(
-            height: 50,
-            width: 50,
-            decoration: BoxDecoration(
-              color: ColorName.whiteColor,
-              borderRadius: const BorderRadius.all(Radius.circular(100)),
+    return InkWell(
+      onTap: () {
+        // ref.read(homeScreenTotalNotifierProvider.notifier).addNewPerson(Person(
+        //       uid: Uuid().v4(),
+        //       name: "HungIct",
+        //       yearOfBirth: 1997,
+        //       avtUrl: "",
+        //       groupId: [],
+        //     ));
+      },
+      child: SizedBox(
+        height: 100,
+        child: Row(
+          children: [
+            //Logo
+            Image(
+              image: Assets.images.logo.provider(),
+              fit: BoxFit.fill,
             ),
-          ),
-          Container(
-            height: 50,
-            width: 120,
-            margin: EdgeInsets.only(left: 8, right: 16),
-            decoration: BoxDecoration(
-              color: ColorName.blackColor,
-              borderRadius: const BorderRadius.all(Radius.circular(100)),
+            const Spacer(),
+            Container(
+              height: 50,
+              width: 50,
+              decoration: BoxDecoration(
+                color: ColorName.whiteColor,
+                borderRadius: const BorderRadius.all(Radius.circular(100)),
+              ),
             ),
-          )
-        ],
+            Container(
+              height: 50,
+              width: 120,
+              margin: EdgeInsets.only(left: 8, right: 16),
+              decoration: BoxDecoration(
+                color: ColorName.blackColor,
+                borderRadius: const BorderRadius.all(Radius.circular(100)),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -127,37 +172,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               letterSpacing: -2,
             ),
           ),
-          SizedBox(height: 8),
-          FittedBox(
-            child: Container(
-              padding: EdgeInsets.only(top: 8, bottom: 8, left: 16, right: 16),
-              decoration: BoxDecoration(
-                color: ColorName.homeGrayHold,
-                borderRadius: const BorderRadius.all(Radius.circular(100)),
-                boxShadow: [
-                  BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(2, 2)),
-                ],
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                "Tổng nợ: \$2,500",
-                style: const TextStyle(
-                  color: ColorName.homeGrayBalance,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          )
         ],
       ),
     );
   }
 
-  Widget sendReceiveAndAds() {
+  Widget sendReceiveAndFriends(List<Person> persons) {
     return Column(
       children: [
-        SizedBox(height: 30),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -231,64 +253,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
           ],
         ),
-        // Ads
-        /*Container(
-          height: 120,
-          width: double.infinity,
-          padding: EdgeInsets.only(top: 16, bottom: 16, left: 16, right: 16),
-          margin: EdgeInsets.only(top: 16, bottom: 16, left: 16, right: 16),
-          decoration: BoxDecoration(
-            color: ColorName.blackColor,
-            borderRadius: BorderRadius.all(Radius.circular(20)),
-            boxShadow: [
-              BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
-            ],
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Thông báo cho bạn bè về số nợ của họ",
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: ColorName.homeGrayHold,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      maxLines: 1,
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      "Giúp bạn bè không \"quên\" về số tiền mà họ đang nợ bạn sau mỗi dịp đáng nhớ",
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: ColorName.loginTextColorGray,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                      ),
-                      maxLines: 2,
-                    )
-                  ],
-                ),
-              ),
-              Transform.rotate(
-                angle: 30 * pi / 180,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Icon(
-                    Icons.notifications_active,
-                    color: ColorName.whiteColor,
-                    size: 60,
-                  ),
-                ),
-              )
-            ],
-          ),
-        )*/
         Container(
           height: 200,
           width: double.infinity,
@@ -342,19 +306,39 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               SizedBox(height: 12),
               Expanded(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      eachGroup(),
-                      eachGroup(),
-                      eachGroup(),
-                      eachGroup(),
-                      eachGroup(),
-                      eachGroup(),
-                    ],
-                  ),
-                ),
+                child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    shrinkWrap: true,
+                    itemCount: persons.length,
+                    itemBuilder: (context, index) {
+                      final person = persons[index];
+                      return Stack(
+                        children: [
+                          Container(
+                            child: PersonAvatar(
+                              person: person,
+                              size: 80,
+                              isEditable: true,
+                            ),
+                          ),
+                          Container(
+                            width: 100,
+                            margin: EdgeInsets.only(top: 96),
+                            alignment: Alignment.topCenter,
+                            child: Text(
+                              person.name,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                color: ColorName.loginTextColorGray,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              maxLines: 1,
+                            ),
+                          )
+                        ],
+                      );
+                    }),
               )
             ],
           ),
@@ -463,22 +447,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ),
               Spacer(),
-              Text(
-                "xem thêm",
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  decoration: TextDecoration.underline,
-                  decorationStyle: TextDecorationStyle.double,
-                  color: ColorName.homeBlackText,
-                  fontSize: 18,
-                  // fontWeight: FontWeight.w500,
-                  shadows: <Shadow>[
-                    Shadow(
-                      offset: Offset(1.0, 1.0),
-                      blurRadius: 4.0,
-                      color: ColorName.homeGrayBalance,
-                    ),
-                  ],
+              InkWell(
+                onTap: () async {
+                  context.goNamed(TransactionManagementScreen.routeName);
+                },
+                child: Text(
+                  "xem thêm",
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    decoration: TextDecoration.underline,
+                    decorationStyle: TextDecorationStyle.double,
+                    color: ColorName.homeBlackText,
+                    fontSize: 18,
+                    // fontWeight: FontWeight.w500,
+                    shadows: <Shadow>[
+                      Shadow(
+                        offset: Offset(1.0, 1.0),
+                        blurRadius: 4.0,
+                        color: ColorName.homeGrayBalance,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],

@@ -51,7 +51,7 @@ dependencies:
   firebase_storage: ^12.4.3
   image_picker: ^1.1.2
   path_provider: ^2.1.5
-
+  cached_network_image: ^3.4.1
 
 dev_dependencies:
   flutter_test:

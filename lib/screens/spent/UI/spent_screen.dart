@@ -5,7 +5,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_bill/gen/fonts.gen.dart';
 import 'package:share_bill/screens/home/UI/home_screen.dart';
-import 'package:share_bill/utilities/utils/confirmExpanseCollection.dart';
+import 'package:share_bill/screens/person/UI/person_management_screen.dart';
+import 'package:share_bill/screens/transaction/UI/transaction_management_screen.dart';
+import 'package:share_bill/utilities/utils/dialogConfirmExpanseCollection.dart';
 import 'package:share_bill/utilities/utils/enum.dart';
 
 import '../../../gen/colors.gen.dart';
@@ -15,6 +17,12 @@ class SpentScreen extends ConsumerStatefulWidget {
 
   static const routeNameFromHome = '${HomeScreen.routeName}/spent';
   static const routePathFromHome = '${HomeScreen.routePath}/$routeNameFromHome';
+
+  static const routeNameFromTransaction = '${TransactionManagementScreen.routeName}/spent';
+  static const routePathFromTransaction = '${TransactionManagementScreen.routePath}/$routeNameFromTransaction';
+
+  static const routeNameFromPerson = '${PersonManagementScreen.routeName}/spent';
+  static const routePathFromPerson = '${PersonManagementScreen.routePath}/$routeNameFromPerson';
 
   static const routeName = 'spent';
   static const routePath = '/$routeName';
@@ -402,7 +410,8 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
       onTap: () {
         showDialog(
           context: context,
-          builder: (_) => DialogExpanseCollection(ExpanseCollection.expanse),
+          builder: (_) => DialogConfirmExpanseCollection(ExpanseCollection.expanse),
+          barrierColor: ColorName.blackColor.withOpacity(0.15),
         );
       },
       child: Container(

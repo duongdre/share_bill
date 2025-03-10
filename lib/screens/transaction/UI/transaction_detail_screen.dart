@@ -406,7 +406,7 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
                   Spacer(),
                   InkWell(
                     onTap: () {
-                      context.goNamed(SpentScreen.routeNameFromPerson);
+                      context.goNamed(SpentScreen.routeName);
                     },
                     child: Container(
                       height: 40,

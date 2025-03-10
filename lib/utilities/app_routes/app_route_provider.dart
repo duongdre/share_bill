@@ -2,10 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:share_bill/screens/group_management/UI/group_detail_screen.dart';
-import 'package:share_bill/screens/group_management/UI/group_management_screen.dart';
+import 'package:share_bill/screens/group/UI/group_detail_screen.dart';
+import 'package:share_bill/screens/group/UI/group_management_screen.dart';
 import 'package:share_bill/screens/person/UI/person_management_screen.dart';
 import 'package:share_bill/screens/spent/UI/spent_screen.dart';
+import 'package:share_bill/screens/transaction/UI/transaction_management_screen.dart';
 import '../../screens/home/UI/home_screen.dart';
 import '../../screens/person/UI/person_detail_screen.dart';
 import '../../screens/splash/UI/splash_screen.dart';
@@ -75,6 +76,26 @@ final routerProvider = Provider<GoRouter>(
                 path: PersonDetailScreen.routePath,
                 name: PersonDetailScreen.routeName,
                 builder: (context, state) => PersonDetailScreen(),
+                routes: [
+                  GoRoute(
+                    path: SpentScreen.routePathFromPerson,
+                    name: SpentScreen.routeNameFromPerson,
+                    builder: (context, state) => const SpentScreen(),
+                    routes: [],
+                  ),
+                ],
+              ),
+            ],
+          ),
+          GoRoute(
+            path: TransactionManagementScreen.routePath,
+            name: TransactionManagementScreen.routeName,
+            builder: (context, state) => const TransactionManagementScreen(),
+            routes: [
+              GoRoute(
+                path: SpentScreen.routePathFromTransaction,
+                name: SpentScreen.routeNameFromTransaction,
+                builder: (context, state) => const SpentScreen(),
                 routes: [],
               ),
             ],

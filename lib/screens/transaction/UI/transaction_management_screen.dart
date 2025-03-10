@@ -10,17 +10,17 @@ import 'package:share_bill/utilities/utils/enum.dart';
 
 import '../../../gen/colors.gen.dart';
 
-class PersonManagementScreen extends ConsumerStatefulWidget {
-  static const routeName = 'person_management';
+class TransactionManagementScreen extends ConsumerStatefulWidget {
+  static const routeName = 'transaction_management';
   static const routePath = '/$routeName';
 
-  const PersonManagementScreen({super.key});
+  const TransactionManagementScreen({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _PersonManagementScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _TransactionManagementScreenState();
 }
 
-class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen> {
+class _TransactionManagementScreenState extends ConsumerState<TransactionManagementScreen> {
   bool isShowingGroup = true;
 
   @override
@@ -45,14 +45,16 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
                   scrollDirection: Axis.vertical,
                   child: Column(
                     children: [
-                      friend(),
-                      friend(),
-                      friend(),
-                      friend(),
-                      friend(),
-                      friend(),
-                      friend(),
-                      friend(),
+                      eachTransaction(),
+                      eachTransaction(),
+                      eachTransaction(),
+                      eachTransaction(),
+                      eachTransaction(),
+                      eachTransaction(),
+                      eachTransaction(),
+                      eachTransaction(),
+                      eachTransaction(),
+                      eachTransaction(),
                       closeButton(),
                     ],
                   ),
@@ -72,7 +74,7 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
         children: [
           SizedBox(width: 16),
           Text(
-            "Friends",
+            "Lịch sử chi tiêu",
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               color: ColorName.homeBlackText,
@@ -90,7 +92,7 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
           const Spacer(),
           InkWell(
             onTap: () {
-              context.goNamed(PersonDetailScreen.routeName);
+              context.goNamed(SpentScreen.routeNameFromTransaction);
             },
             child: Container(
               height: 50,
@@ -127,24 +129,16 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
     );
   }
 
-  Widget friend() {
-    return InkWell(
-      onTap: () {
-        context.goNamed(PersonDetailScreen.routeName);
-      },
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.only(top: 16, bottom: 16),
-        margin: EdgeInsets.only(bottom: 16, left: 16, right: 16),
-        child: Container(
-          // color: Colors.red,
-          padding: EdgeInsets.only(bottom: 0),
-          child: Row(
+  Widget eachTransaction() {
+    return Container(
+      margin: EdgeInsets.only(bottom: 20, left: 16, right: 16),
+      child: Row(
+        children: [
+          Stack(
             children: [
               Container(
                 height: 80,
                 width: 80,
-                margin: EdgeInsets.only(top: 4, bottom: 8, left: 8, right: 8),
                 decoration: BoxDecoration(
                   color: ColorName.homeWhiteAdd,
                   borderRadius: BorderRadius.all(Radius.circular(100)),
@@ -153,76 +147,72 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
                   ],
                 ),
               ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Tên bạn",
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: ColorName.homeBlackText,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                        shadows: <Shadow>[
-                          Shadow(
-                            offset: Offset(2.0, 2.0),
-                            blurRadius: 4.0,
-                            color: ColorName.homeGrayBalance,
-                          ),
-                        ],
-                      ),
-                    ),
-                    Text(
-                      "Ghi chú",
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: ColorName.homeGrayBalance,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    )
+              Container(
+                height: 80,
+                width: 80,
+                margin: EdgeInsets.only(top: 4, left: 4),
+                decoration: BoxDecoration(
+                  color: ColorName.homeWhiteAdd,
+                  borderRadius: BorderRadius.all(Radius.circular(100)),
+                  boxShadow: [
+                    BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(2, 2)),
                   ],
                 ),
               ),
-              InkWell(
-                onTap: () {},
-                child: Container(
-                  height: 40,
-                  padding: EdgeInsets.only(left: 16, right: 16),
-                  alignment: Alignment.center,
-                  margin: EdgeInsets.only(left: 16, right: 16),
-                  decoration: BoxDecoration(
-                    color: ColorName.groupManagementBackground,
-                    borderRadius: const BorderRadius.all(Radius.circular(10)),
-                    border: Border.all(
-                      color: ColorName.blackColor,
-                    ),
-                    boxShadow: [
-                      BoxShadow(color: ColorName.homeBlackText, blurRadius: 1, offset: Offset(2, 2)),
-                    ],
-                  ),
-                  child: Text(
-                    "Xóa",
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: ColorName.homeBlackText,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
-                      shadows: <Shadow>[
-                        Shadow(
-                          offset: Offset(2.0, 2.0),
-                          blurRadius: 4.0,
-                          color: ColorName.homeGrayBalance,
-                        ),
-                      ],
-                    ),
-                  ),
+              Container(
+                height: 80,
+                width: 80,
+                margin: EdgeInsets.only(top: 8, left: 8),
+                decoration: BoxDecoration(
+                  color: ColorName.homeWhiteAdd,
+                  borderRadius: BorderRadius.all(Radius.circular(100)),
+                  boxShadow: [
+                    BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(2, 2)),
+                  ],
                 ),
-              )
+              ),
             ],
           ),
-        ),
+          SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Ăn tất niên",
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: ColorName.homeBlackText,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  maxLines: 1,
+                ),
+                Text(
+                  "28 tháng 1 * 00:01 AM",
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: ColorName.loginTextColorGray,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  maxLines: 1,
+                ),
+              ],
+            ),
+          ),
+          SizedBox(width: 16),
+          Text(
+            "-\$500k",
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              color: ColorName.homeRedText,
+              fontSize: 20,
+              fontWeight: FontWeight.w500,
+            ),
+            maxLines: 1,
+          ),
+        ],
       ),
     );
   }

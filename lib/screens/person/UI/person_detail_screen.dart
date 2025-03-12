@@ -3,11 +3,12 @@ import 'package:share_bill/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:share_bill/screens/home/UI/home_screen.dart';
 import 'package:share_bill/screens/spent/UI/spent_screen.dart';
-import 'package:share_bill/utilities/utils/enum.dart';
 
 import '../../../gen/colors.gen.dart';
+import '../../../models/data_models/person.dart';
+import '../../../utilities/utils/person_avatar.dart';
+import '../../home/controller/home_screen_provider.dart';
 
 class PersonDetailScreen extends ConsumerStatefulWidget {
   static const routeName = 'person_detail';
@@ -21,11 +22,20 @@ class PersonDetailScreen extends ConsumerStatefulWidget {
 
 class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
   bool isShowingGroup = true;
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController describeController = TextEditingController();
 
   @override
   void initState() {
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    describeController.dispose();
+    super.dispose();
   }
 
   @override
@@ -39,26 +49,10 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
           child: Column(
             children: [
               header(),
-              Expanded(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Column(
-                    children: [
-                      avatar(),
-                      switchButton(),
-                      (isShowingGroup)
-                          ? Column(
-                              children: [
-                                teamList(),
-                                teamList(),
-                                teamList(),
-                              ],
-                            )
-                          : historyTransaction(),
-                    ],
-                  ),
-                ),
-              )
+              avatar(),
+              switchButton(),
+              Spacer(),
+              closeButton()
             ],
           ),
         ),
@@ -130,25 +124,26 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
             width: 160,
             height: 160,
             decoration: BoxDecoration(
-              color: ColorName.homeRedText,
-              image: DecorationImage(
-                image: Assets.images.avtMale.provider(),
-                fit: BoxFit.cover,
-              ),
               borderRadius: const BorderRadius.all(Radius.circular(100)),
               boxShadow: [
                 BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
               ],
             ),
+            child: PersonAvatar(
+              person: null,
+              size: 160,
+              isEditable: true,
+            ),
           ),
           SizedBox(height: 8),
-          Text(
-            "Name",
-            overflow: TextOverflow.ellipsis,
+          TextField(
+            controller: nameController,
+            textAlign: TextAlign.center,
+            cursorColor: ColorName.homeBlackText,
             style: const TextStyle(
               color: ColorName.homeBlackText,
               fontSize: 32,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w400,
               shadows: <Shadow>[
                 Shadow(
                   offset: Offset(2.0, 2.0),
@@ -157,17 +152,46 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
                 ),
               ],
             ),
+            decoration: const InputDecoration(
+                border: InputBorder.none,
+                hintText: 'Nhập tên',
+                hintStyle: TextStyle(
+                  color: ColorName.loginIconColorGray,
+                  fontSize: 32,
+                  fontStyle: FontStyle.italic,
+                  fontWeight: FontWeight.w400,
+                  shadows: <Shadow>[
+                    Shadow(
+                      offset: Offset(2.0, 2.0),
+                      blurRadius: 4.0,
+                      color: ColorName.homeGrayBalance,
+                    ),
+                  ],
+                )),
           ),
-          Text(
-            "Gợi nhớ hoặc mô tả về người dùng này",
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              color: ColorName.loginIconColorGray,
+          TextField(
+            controller: describeController,
+            keyboardType: TextInputType.multiline,
+            textAlign: TextAlign.center,
+            cursorColor: ColorName.homeBlackText,
+            style:  const TextStyle(
+              color: ColorName.homeBlackText,
               fontSize: 20,
               fontWeight: FontWeight.w400,
             ),
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              hintText: "Gợi nhớ hoặc mô tả về người dùng này ",
+              hintStyle: const TextStyle(
+                color: ColorName.loginIconColorGray,
+                fontSize: 20,
+                fontWeight: FontWeight.w400,
+              ),
+              hintMaxLines: 3,
+            ),
+            minLines: 1,
             maxLines: 3,
-          )
+          ),
         ],
       ),
     );
@@ -197,7 +221,7 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
                 // ],
               ),
               child: Text(
-                "Groups",
+                "Danh sách nhóm",
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   color: ColorName.loginAvatarBackGround,
@@ -235,7 +259,7 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
                 ],
               ),
               child: Text(
-                "Transactions",
+                "Lịch sử thu chi",
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   color: ColorName.homeWhiteButtonBg,
@@ -629,6 +653,48 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
             maxLines: 1,
           ),
         ],
+      ),
+    );
+  }
+
+  Widget closeButton() {
+    return InkWell(
+      onTap: () {
+      ref.read(homeScreenTotalNotifierProvider.notifier).addNewPerson(Person(
+              uid: ref.read(homeScreenTotalNotifierProvider.notifier).newPersonId,
+              name: nameController.text,
+              avtUrl: ref.read(homeScreenTotalNotifierProvider.notifier).newPersonAvtUploaded,
+              groupId: [],
+            ));
+      },
+      child: Container(
+        height: 60,
+        width: 120,
+        alignment: Alignment.center,
+        margin: EdgeInsets.only(top: 16, bottom: 24),
+        decoration: BoxDecoration(
+          color: ColorName.groupManagementBackGroundButton,
+          borderRadius: const BorderRadius.all(Radius.circular(100)),
+          boxShadow: [
+            BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
+          ],
+        ),
+        child: Text(
+          "Thêm",
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+            color: ColorName.homeWhiteButtonBg,
+            fontSize: 20,
+            fontWeight: FontWeight.w400,
+            shadows: <Shadow>[
+              Shadow(
+                offset: Offset(2.0, 2.0),
+                blurRadius: 4.0,
+                color: ColorName.loginAvatarBackGround,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

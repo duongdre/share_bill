@@ -3,12 +3,15 @@ import 'package:share_bill/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:share_bill/models/data_models/person.dart';
 import 'package:share_bill/screens/home/UI/home_screen.dart';
 import 'package:share_bill/screens/person/UI/person_detail_screen.dart';
 import 'package:share_bill/screens/spent/UI/spent_screen.dart';
 import 'package:share_bill/utilities/utils/enum.dart';
 
 import '../../../gen/colors.gen.dart';
+import '../../../utilities/utils/person_avatar.dart';
+import '../../home/controller/home_screen_provider.dart';
 
 class PersonManagementScreen extends ConsumerStatefulWidget {
   static const routeName = 'person_management';
@@ -31,6 +34,7 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
 
   @override
   Widget build(BuildContext context) {
+    final persons = ref.read(homeScreenTotalNotifierProvider.notifier).allPerson;
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -41,23 +45,23 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
             children: [
               header(),
               Expanded(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Column(
-                    children: [
-                      friend(),
-                      friend(),
-                      friend(),
-                      friend(),
-                      friend(),
-                      friend(),
-                      friend(),
-                      friend(),
-                      closeButton(),
-                    ],
-                  ),
-                ),
-              )
+                child: ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    itemCount: persons.length,
+                    itemBuilder: (context, index) {
+                      final person = persons[index];
+                      return Stack(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.only(left: 10, right: 10),
+                            child: friend(person),
+                          ),
+                        ],
+                      );
+                    }),
+              ),
+              closeButton(),
             ],
           ),
         ),
@@ -127,17 +131,15 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
     );
   }
 
-  Widget friend() {
+  Widget friend(Person person) {
     return InkWell(
       onTap: () {
         context.goNamed(PersonDetailScreen.routeName);
       },
       child: Container(
         width: double.infinity,
-        padding: EdgeInsets.only(top: 16, bottom: 16),
         margin: EdgeInsets.only(bottom: 16, left: 16, right: 16),
         child: Container(
-          // color: Colors.red,
           padding: EdgeInsets.only(bottom: 0),
           child: Row(
             children: [
@@ -145,12 +147,10 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
                 height: 80,
                 width: 80,
                 margin: EdgeInsets.only(top: 4, bottom: 8, left: 8, right: 8),
-                decoration: BoxDecoration(
-                  color: ColorName.homeWhiteAdd,
-                  borderRadius: BorderRadius.all(Radius.circular(100)),
-                  boxShadow: [
-                    BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(2, 2)),
-                  ],
+                child: PersonAvatar(
+                  person: person,
+                  size: 80,
+                  isEditable: true,
                 ),
               ),
               Expanded(
@@ -158,7 +158,7 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Tên bạn",
+                      person.name,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         color: ColorName.homeBlackText,
@@ -174,7 +174,7 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
                       ),
                     ),
                     Text(
-                      "Ghi chú",
+                      person.uid,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         color: ColorName.homeGrayBalance,

@@ -21,6 +21,10 @@ class HomeScreenTotalNotifier extends _$HomeScreenTotalNotifier {
   List<Person> allPerson = [];
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
+  // New person
+  String newPersonId = "";
+  String newPersonAvtUploaded = "";
+
   @override
   HomeScreenTotalState build() {
     state = HomeScreenTotalState(totalSpent: 0.0, totalDept: 0.0);
@@ -45,6 +49,36 @@ class HomeScreenTotalNotifier extends _$HomeScreenTotalNotifier {
       }
     } catch (error) {
       print('Error fetching data: $error');
+    }
+  }
+
+  Future<void> uploadUserAvatar() async {
+    try {
+      // Pick image from gallery
+      final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (pickedFile == null) {
+        newPersonId = "";
+        newPersonAvtUploaded = "";
+      }
+
+      final File imageFile = File(pickedFile!.path);
+
+      newPersonId = const Uuid().v4();
+
+      // Create a unique filename using UUID
+      final fileName = '${newPersonId}_${DateTime.now().millisecondsSinceEpoch}';
+      final storageRef = _storage.ref().child("avatars/$fileName");
+
+      // Upload the file
+      final uploadTask = storageRef.putFile(imageFile);
+
+      // Wait for the upload to complete and get the download URL
+      await uploadTask;
+      newPersonAvtUploaded = await storageRef.getDownloadURL();
+    } catch (e) {
+      newPersonId = "";
+      newPersonAvtUploaded = "";
+      print("Error uploading user avatar: $e");
     }
   }
 
@@ -110,21 +144,5 @@ class HomeScreenTotalNotifier extends _$HomeScreenTotalNotifier {
     } catch (e) {
       print("Error deleting person: $e");
     }
-  }
-
-  void addTotalSpent(double amount) {
-    state = HomeScreenTotalState(totalSpent: state.totalSpent + amount, totalDept: state.totalDept);
-  }
-
-  void minusTotalSpent(double amount) {
-    state = HomeScreenTotalState(totalSpent: state.totalSpent - amount, totalDept: state.totalDept);
-  }
-
-  void addTotalDept(double amount) {
-    state = HomeScreenTotalState(totalSpent: state.totalSpent, totalDept: state.totalDept + amount);
-  }
-
-  void minusTotalDept(double amount) {
-    state = HomeScreenTotalState(totalSpent: state.totalSpent, totalDept: state.totalDept - amount);
   }
 }

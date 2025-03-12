@@ -219,7 +219,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
             InkWell(
               onTap: () {
-                ref.read(homeScreenTotalNotifierProvider.notifier).minusTotalSpent(100.0);
+                context.goNamed(SpentScreen.routeNameFromHome);
               },
               child: Container(
                 height: 60,
@@ -315,6 +315,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       return Stack(
                         children: [
                           Container(
+                            padding: EdgeInsets.only(left: 10, right: 10),
                             child: PersonAvatar(
                               person: person,
                               size: 80,

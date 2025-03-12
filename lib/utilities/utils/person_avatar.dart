@@ -6,7 +6,7 @@ import 'package:share_bill/models/data_models/person.dart';
 import '../../screens/home/controller/home_screen_provider.dart';
 
 class PersonAvatar extends ConsumerWidget {
-  final Person person;
+  final Person? person;
   final double size;
   final bool isEditable;
 
@@ -23,12 +23,18 @@ class PersonAvatar extends ConsumerWidget {
 
     Widget avatarWidget;
 
-    if (person.avtUrl.isNotEmpty) {
+    if (person == null) {
+      // Show placeholder avatar
+      avatarWidget = _buildPlaceholderAvatar();
+    } else if (person!.avtUrl.isEmpty) {
+      // Show placeholder avatar
+      avatarWidget = _buildPlaceholderAvatar();
+    } else {
       // Use CachedNetworkImage to load and cache the avatar
       avatarWidget = ClipRRect(
         borderRadius: BorderRadius.circular(size / 2),
         child: CachedNetworkImage(
-          imageUrl: person.avtUrl,
+          imageUrl: person!.avtUrl,
           width: size,
           height: size,
           fit: BoxFit.cover,
@@ -36,9 +42,6 @@ class PersonAvatar extends ConsumerWidget {
           errorWidget: (context, url, error) => _buildPlaceholderAvatar(),
         ),
       );
-    } else {
-      // Show placeholder avatar
-      avatarWidget = _buildPlaceholderAvatar();
     }
 
     if (isEditable) {
@@ -49,7 +52,13 @@ class PersonAvatar extends ConsumerWidget {
             bottom: 0,
             right: 0,
             child: GestureDetector(
-              onTap: () => homeScreenNotifier.updateUserAvatar(person.uid),
+              onTap: () {
+                if (person == null) {
+                  homeScreenNotifier.uploadUserAvatar();
+                } else {
+                  homeScreenNotifier.updateUserAvatar(person!.uid);
+                }
+              },
               child: Container(
                 padding: EdgeInsets.all(4),
                 decoration: BoxDecoration(

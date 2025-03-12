@@ -2,21 +2,28 @@ class Person {
   Person({
     required this.uid,
     required this.name,
+    this.describe,
     required this.avtUrl,
-    required this.groupId,
+    required this.groups,
   });
 
   String uid;
   String name;
+  String? describe;
   String avtUrl;
-  List<String> groupId;
+  Map<String, bool> groups;
+
+  String getPersonDescribe() {
+    return describe ?? "";
+  }
 
   factory Person.fromJson(Map<String, dynamic> json) {
     return Person(
       uid: json['uid'],
       name: json['name'],
+      describe: json['describe'],
       avtUrl: json['avtUrl'],
-      groupId: json['groupId'],
+      groups: json['groups'],
     );
   }
 
@@ -24,8 +31,12 @@ class Person {
     return Person(
       uid: map['uid'] ?? '',
       name: map['name'] ?? '',
+      describe: map['describe'] ?? '',
       avtUrl: map['avtUrl'] ?? '',
-      groupId: (map['groupId'] != null) ? List<String>.from(map['groupId'] as List<Object?>) : [],
+      groups: (map['groups'] as Map<String, dynamic>?)?.map(
+            (key, value) => MapEntry(key, value as bool),
+      ) ??
+          {},
     );
   }
 
@@ -33,14 +44,16 @@ class Person {
   Person copyWith({
     String? uid,
     String? name,
+    String? describe,
     String? avtUrl,
-    List<String>? groupId,
+    Map<String, bool>? groups,
   }) {
     return Person(
       uid: uid ?? this.uid,
       name: name ?? this.name,
+      describe: describe ?? this.describe,
       avtUrl: avtUrl ?? this.avtUrl,
-      groupId: groupId ?? this.groupId,
+      groups: groups ?? this.groups,
     );
   }
 
@@ -48,8 +61,23 @@ class Person {
     return {
       'uid': uid,
       'name': name,
+      'describe': describe,
       'avtUrl': avtUrl,
-      'groupId': groupId,
+      'groups': groups,
     };
+  }
+
+  // Add a group to this person
+  Person addGroup(String groupId) {
+    final updatedGroups = Map<String, bool>.from(groups);
+    updatedGroups[groupId] = true;
+    return copyWith(groups: updatedGroups);
+  }
+
+  // Remove a group from this person
+  Person removeGroup(String groupId) {
+    final updatedGroups = Map<String, bool>.from(groups);
+    updatedGroups.remove(groupId);
+    return copyWith(groups: updatedGroups);
   }
 }

@@ -11,7 +11,7 @@ import 'package:share_bill/utilities/utils/enum.dart';
 
 import '../../../gen/colors.gen.dart';
 import '../../../utilities/utils/person_avatar.dart';
-import '../../home/controller/home_screen_provider.dart';
+import '../controller/person_provider.dart';
 
 class PersonManagementScreen extends ConsumerStatefulWidget {
   static const routeName = 'person_management';
@@ -34,7 +34,8 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
 
   @override
   Widget build(BuildContext context) {
-    final persons = ref.read(homeScreenTotalNotifierProvider.notifier).allPerson;
+    ref.watch(personNotifierProvider);
+    final persons = ref.read(personNotifierProvider.notifier).allPerson;
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -61,7 +62,6 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
                       );
                     }),
               ),
-              closeButton(),
             ],
           ),
         ),
@@ -75,20 +75,25 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
       child: Row(
         children: [
           SizedBox(width: 16),
-          Text(
-            "Friends",
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              color: ColorName.homeBlackText,
-              fontSize: 20,
-              fontWeight: FontWeight.w500,
-              shadows: <Shadow>[
-                Shadow(
-                  offset: Offset(2.0, 2.0),
-                  blurRadius: 4.0,
-                  color: ColorName.homeGrayBalance,
-                ),
-              ],
+          InkWell(
+            onTap: () {
+              context.pop();
+            },
+            child: Text(
+              "< Trang chủ",
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: ColorName.homeBlackText,
+                fontSize: 20,
+                fontWeight: FontWeight.w500,
+                shadows: <Shadow>[
+                  Shadow(
+                    offset: Offset(2.0, 2.0),
+                    blurRadius: 4.0,
+                    color: ColorName.homeGrayBalance,
+                  ),
+                ],
+              ),
             ),
           ),
           const Spacer(),
@@ -174,7 +179,7 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
                       ),
                     ),
                     Text(
-                      person.uid,
+                      person.getPersonDescribe(),
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         color: ColorName.homeGrayBalance,
@@ -220,43 +225,6 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
                   ),
                 ),
               )
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget closeButton() {
-    return InkWell(
-      onTap: () {
-        context.pop();
-      },
-      child: Container(
-        height: 60,
-        width: 120,
-        alignment: Alignment.center,
-        margin: EdgeInsets.only(top: 16, bottom: 24),
-        decoration: BoxDecoration(
-          color: ColorName.groupManagementBackGroundButton,
-          borderRadius: const BorderRadius.all(Radius.circular(100)),
-          boxShadow: [
-            BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
-          ],
-        ),
-        child: Text(
-          "Close",
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
-            color: ColorName.homeWhiteButtonBg,
-            fontSize: 20,
-            fontWeight: FontWeight.w400,
-            shadows: <Shadow>[
-              Shadow(
-                offset: Offset(2.0, 2.0),
-                blurRadius: 4.0,
-                color: ColorName.loginAvatarBackGround,
-              ),
             ],
           ),
         ),

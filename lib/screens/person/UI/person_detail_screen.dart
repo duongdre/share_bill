@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_bill/screens/spent/UI/spent_screen.dart';
+import 'package:toastification/toastification.dart';
 
 import '../../../gen/colors.gen.dart';
 import '../../../models/data_models/person.dart';
 import '../../../utilities/utils/person_avatar.dart';
-import '../../home/controller/home_screen_provider.dart';
+import '../controller/person_provider.dart';
 
 class PersonDetailScreen extends ConsumerStatefulWidget {
   static const routeName = 'person_detail';
@@ -66,25 +67,36 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
       child: Row(
         children: [
           SizedBox(width: 16),
-          Text(
-            "Profile",
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              color: ColorName.homeBlackText,
-              fontSize: 20,
-              fontWeight: FontWeight.w500,
-              shadows: <Shadow>[
-                Shadow(
-                  offset: Offset(2.0, 2.0),
-                  blurRadius: 4.0,
-                  color: ColorName.homeGrayBalance,
-                ),
-              ],
+          InkWell(
+            onTap: () {
+              context.pop();
+            },
+            child: Text(
+              "< Bạn bè",
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: ColorName.homeBlackText,
+                fontSize: 20,
+                fontWeight: FontWeight.w500,
+                shadows: <Shadow>[
+                  Shadow(
+                    offset: Offset(2.0, 2.0),
+                    blurRadius: 4.0,
+                    color: ColorName.homeGrayBalance,
+                  ),
+                ],
+              ),
             ),
           ),
           const Spacer(),
           InkWell(
-            onTap: () {},
+            onTap: () {
+              toastification.show(
+                title: Text('Tính năng sẽ sớm ra mắt'),
+                style: ToastificationStyle.fillColored,
+                autoCloseDuration: const Duration(seconds: 3),
+              );
+            },
             child: Container(
               height: 50,
               width: 50,
@@ -206,6 +218,11 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
               setState(() {
                 isShowingGroup = true;
               });
+              toastification.show(
+                title: Text('Tính năng sẽ sớm ra mắt'),
+                style: ToastificationStyle.fillColored,
+                autoCloseDuration: const Duration(seconds: 2),
+              );
             },
             child: Container(
               height: 60,
@@ -245,6 +262,11 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
               setState(() {
                 isShowingGroup = false;
               });
+              toastification.show(
+                title: Text('Tính năng sẽ sớm ra mắt'),
+                style: ToastificationStyle.fillColored,
+                autoCloseDuration: const Duration(seconds: 2),
+              );
             },
             child: Container(
               height: 60,
@@ -660,12 +682,13 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
   Widget closeButton() {
     return InkWell(
       onTap: () {
-        ref.read(homeScreenTotalNotifierProvider.notifier).addNewPerson(
+        ref.read(personNotifierProvider.notifier).addNewPerson(
               Person(
-                uid: ref.read(homeScreenTotalNotifierProvider.notifier).newPersonId,
+                uid: ref.read(personNotifierProvider.notifier).newPersonId,
                 name: nameController.text,
-                avtUrl: ref.read(homeScreenTotalNotifierProvider.notifier).newPersonAvtUploaded,
-                groupId: [],
+                describe: describeController.text,
+                avtUrl: ref.read(personNotifierProvider.notifier).newPersonAvtUploaded,
+                groups: {},
               ),
             );
       },

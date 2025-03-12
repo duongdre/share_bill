@@ -7,17 +7,10 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:share_bill/models/data_models/person.dart';
 import 'package:uuid/uuid.dart';
 
-part 'home_screen_provider.g.dart';
-
-class HomeScreenTotalState {
-  final double totalSpent;
-  final double totalDept;
-
-  HomeScreenTotalState({required this.totalSpent, required this.totalDept});
-}
+part 'person_provider.g.dart';
 
 @riverpod
-class HomeScreenTotalNotifier extends _$HomeScreenTotalNotifier {
+class PersonNotifier extends _$PersonNotifier {
   List<Person> allPerson = [];
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
@@ -121,8 +114,10 @@ class HomeScreenTotalNotifier extends _$HomeScreenTotalNotifier {
 
   Future<void> addNewPerson(Person newPerson) async {
     try {
+      if (newPersonId.isEmpty) return;
       final databaseReference = FirebaseDatabase.instance.ref("persons");
       await databaseReference.child(newPerson.uid).set(newPerson.toJson());
+      clearNewPersonData();
       // Refresh the list
       await fetchAllPerson();
       state = state + 1;

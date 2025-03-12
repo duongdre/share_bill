@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../screens/home/controller/home_screen_provider.dart';
+import '../../screens/person/controller/person_provider.dart';
 
 class AppRouteObserver extends NavigatorObserver {
   final ProviderRef ref;
@@ -16,7 +15,7 @@ class AppRouteObserver extends NavigatorObserver {
   void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
     print('AppRouteObserver didPop: $route');
     if (route.settings.name == 'person_detail') {
-      ref.read(homeScreenTotalNotifierProvider.notifier).clearNewPersonData();
+      ref.read(personNotifierProvider.notifier).clearNewPersonData();
     }
   }
 

@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:share_bill/gen/assets.gen.dart';
 import 'package:share_bill/models/data_models/person.dart';
 import 'package:share_bill/screens/group/UI/group_management_screen.dart';
-import 'package:share_bill/screens/home/controller/home_screen_provider.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +20,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../../gen/colors.gen.dart';
 import '../../../utilities/utils/person_avatar.dart';
+import '../../person/controller/person_provider.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -51,8 +51,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     try {
       // Get the notifier and fetch all person data
-      final homeScreenNotifier = ref.read(homeScreenTotalNotifierProvider.notifier);
-      await homeScreenNotifier.fetchAllPerson();
+      final personNotifier = ref.read(personNotifierProvider.notifier);
+      await personNotifier.fetchAllPerson();
     } catch (e) {
       print('Error loading initial data: $e');
       // You could show an error snackbar here
@@ -67,8 +67,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ref.watch(homeScreenTotalNotifierProvider);
-    final persons = ref.read(homeScreenTotalNotifierProvider.notifier).allPerson;
+    ref.watch(personNotifierProvider);
+    final persons = ref.read(personNotifierProvider.notifier).allPerson;
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -106,7 +106,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget header() {
     return InkWell(
       onTap: () {
-        // ref.read(homeScreenTotalNotifierProvider.notifier).addNewPerson(Person(
+        // ref.read(personNotifierProvider.notifier).addNewPerson(Person(
         //       uid: Uuid().v4(),
         //       name: "HungIct",
         //       yearOfBirth: 1997,
@@ -270,7 +270,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               Row(
                 children: [
                   Text(
-                    "Bạn thân",
+                    "Bạn bè",
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       color: ColorName.homeBlackText,

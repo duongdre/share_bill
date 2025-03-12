@@ -2,8 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_bill/models/data_models/person.dart';
-
-import '../../screens/home/controller/home_screen_provider.dart';
+import '../../screens/person/controller/person_provider.dart';
 
 class PersonAvatar extends ConsumerWidget {
   final Person? person;
@@ -19,8 +18,8 @@ class PersonAvatar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(homeScreenTotalNotifierProvider);
-    final homeScreenNotifier = ref.read(homeScreenTotalNotifierProvider.notifier);
+    ref.watch(personNotifierProvider);
+    final homeScreenNotifier = ref.read(personNotifierProvider.notifier);
 
     Widget avatarWidget;
 

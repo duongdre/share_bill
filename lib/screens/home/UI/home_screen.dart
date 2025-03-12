@@ -67,7 +67,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final homeProvider = ref.watch(homeScreenTotalNotifierProvider);
+    ref.watch(homeScreenTotalNotifierProvider);
     final persons = ref.read(homeScreenTotalNotifierProvider.notifier).allPerson;
     return Scaffold(
       body: Container(
@@ -87,7 +87,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         child: SingleChildScrollView(
                           child: Column(
                             children: [
-                              balance(homeProvider, context),
+                              balance(context),
                               sendReceiveAndFriends(persons),
                               groupList(),
                               historyTransaction(),
@@ -147,7 +147,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Widget balance(HomeScreenTotalState homeProvider, BuildContext context) {
+  Widget balance(BuildContext context) {
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -164,7 +164,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
           SizedBox(height: 8),
           Text(
-            "\$${homeProvider.totalSpent}",
+            "\$${0}",
             style: const TextStyle(
               color: ColorName.blackColor,
               fontSize: 48,

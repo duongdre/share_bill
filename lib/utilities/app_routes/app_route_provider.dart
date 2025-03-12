@@ -10,6 +10,7 @@ import 'package:share_bill/screens/transaction/UI/transaction_management_screen.
 import '../../screens/home/UI/home_screen.dart';
 import '../../screens/person/UI/person_detail_screen.dart';
 import '../../screens/splash/UI/splash_screen.dart';
+import 'app_route_observer.dart';
 
 part 'app_route_provider.g.dart';
 
@@ -28,6 +29,7 @@ final routeInformationProvider = ChangeNotifierProvider<GoRouteInformationProvid
 
 final routerProvider = Provider<GoRouter>(
   (ref) => GoRouter(
+    observers: [AppRouteObserver(ref)],
     navigatorKey: _rootNavigatorKey,
     initialLocation: SplashScreen.routeName,
     routes: [

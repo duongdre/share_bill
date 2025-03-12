@@ -7,12 +7,12 @@ part of 'home_screen_provider.dart';
 // **************************************************************************
 
 String _$homeScreenTotalNotifierHash() =>
-    r'c0ea69fd18daa098460160a634f48042d93919dd';
+    r'56ad26a15a84f2800e845ecce84629e841335a80';
 
 /// See also [HomeScreenTotalNotifier].
 @ProviderFor(HomeScreenTotalNotifier)
-final homeScreenTotalNotifierProvider = AutoDisposeNotifierProvider<
-    HomeScreenTotalNotifier, HomeScreenTotalState>.internal(
+final homeScreenTotalNotifierProvider =
+    AutoDisposeNotifierProvider<HomeScreenTotalNotifier, int>.internal(
   HomeScreenTotalNotifier.new,
   name: r'homeScreenTotalNotifierProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -22,6 +22,6 @@ final homeScreenTotalNotifierProvider = AutoDisposeNotifierProvider<
   allTransitiveDependencies: null,
 );
 
-typedef _$HomeScreenTotalNotifier = AutoDisposeNotifier<HomeScreenTotalState>;
+typedef _$HomeScreenTotalNotifier = AutoDisposeNotifier<int>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

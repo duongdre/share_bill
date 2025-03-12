@@ -42,7 +42,7 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: ColorName.groupManagementBackground,
         ),
         child: SafeArea(
@@ -52,7 +52,7 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
               avatar(),
               switchButton(),
               Spacer(),
-              closeButton()
+              closeButton(),
             ],
           ),
         ),
@@ -174,7 +174,7 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
             keyboardType: TextInputType.multiline,
             textAlign: TextAlign.center,
             cursorColor: ColorName.homeBlackText,
-            style:  const TextStyle(
+            style: const TextStyle(
               color: ColorName.homeBlackText,
               fontSize: 20,
               fontWeight: FontWeight.w400,
@@ -660,12 +660,14 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
   Widget closeButton() {
     return InkWell(
       onTap: () {
-      ref.read(homeScreenTotalNotifierProvider.notifier).addNewPerson(Person(
-              uid: ref.read(homeScreenTotalNotifierProvider.notifier).newPersonId,
-              name: nameController.text,
-              avtUrl: ref.read(homeScreenTotalNotifierProvider.notifier).newPersonAvtUploaded,
-              groupId: [],
-            ));
+        ref.read(homeScreenTotalNotifierProvider.notifier).addNewPerson(
+              Person(
+                uid: ref.read(homeScreenTotalNotifierProvider.notifier).newPersonId,
+                name: nameController.text,
+                avtUrl: ref.read(homeScreenTotalNotifierProvider.notifier).newPersonAvtUploaded,
+                groupId: [],
+              ),
+            );
       },
       child: Container(
         height: 60,

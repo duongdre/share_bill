@@ -19,13 +19,30 @@ class PersonAvatar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final homeScreenNotifier = ref.watch(homeScreenTotalNotifierProvider.notifier);
+    ref.watch(homeScreenTotalNotifierProvider);
+    final homeScreenNotifier = ref.read(homeScreenTotalNotifierProvider.notifier);
 
     Widget avatarWidget;
 
     if (person == null) {
-      // Show placeholder avatar
-      avatarWidget = _buildPlaceholderAvatar();
+      if (homeScreenNotifier.newPersonAvtUploaded.isNotEmpty && homeScreenNotifier.newPersonId.isNotEmpty) {
+        print(homeScreenNotifier.newPersonAvtUploaded);
+        // Use CachedNetworkImage to load and cache the avatar
+        avatarWidget = ClipRRect(
+          borderRadius: BorderRadius.circular(size / 2),
+          child: CachedNetworkImage(
+            imageUrl: homeScreenNotifier.newPersonAvtUploaded,
+            width: size,
+            height: size,
+            fit: BoxFit.cover,
+            placeholder: (context, url) => const CircularProgressIndicator(),
+            errorWidget: (context, url, error) => _buildPlaceholderAvatar(),
+          ),
+        );
+      } else {
+        // Show placeholder avatar
+        avatarWidget = _buildPlaceholderAvatar();
+      }
     } else if (person!.avtUrl.isEmpty) {
       // Show placeholder avatar
       avatarWidget = _buildPlaceholderAvatar();
@@ -38,7 +55,7 @@ class PersonAvatar extends ConsumerWidget {
           width: size,
           height: size,
           fit: BoxFit.cover,
-          placeholder: (context, url) => CircularProgressIndicator(),
+          placeholder: (context, url) => const CircularProgressIndicator(),
           errorWidget: (context, url, error) => _buildPlaceholderAvatar(),
         ),
       );

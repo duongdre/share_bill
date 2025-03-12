@@ -26,8 +26,8 @@ class HomeScreenTotalNotifier extends _$HomeScreenTotalNotifier {
   String newPersonAvtUploaded = "";
 
   @override
-  HomeScreenTotalState build() {
-    state = HomeScreenTotalState(totalSpent: 0.0, totalDept: 0.0);
+  int build() {
+    state = 0;
     return state;
   }
 
@@ -50,6 +50,12 @@ class HomeScreenTotalNotifier extends _$HomeScreenTotalNotifier {
     } catch (error) {
       print('Error fetching data: $error');
     }
+    state = state + 1;
+  }
+
+  void clearNewPersonData() {
+    newPersonId = "";
+    newPersonAvtUploaded = "";
   }
 
   Future<void> uploadUserAvatar() async {
@@ -57,8 +63,7 @@ class HomeScreenTotalNotifier extends _$HomeScreenTotalNotifier {
       // Pick image from gallery
       final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (pickedFile == null) {
-        newPersonId = "";
-        newPersonAvtUploaded = "";
+        clearNewPersonData();
       }
 
       final File imageFile = File(pickedFile!.path);
@@ -75,9 +80,9 @@ class HomeScreenTotalNotifier extends _$HomeScreenTotalNotifier {
       // Wait for the upload to complete and get the download URL
       await uploadTask;
       newPersonAvtUploaded = await storageRef.getDownloadURL();
+      state = state + 1;
     } catch (e) {
-      newPersonId = "";
-      newPersonAvtUploaded = "";
+      clearNewPersonData();
       print("Error uploading user avatar: $e");
     }
   }
@@ -108,6 +113,7 @@ class HomeScreenTotalNotifier extends _$HomeScreenTotalNotifier {
 
       // Refresh the person list to reflect the changes
       await fetchAllPerson();
+      state = state + 1;
     } catch (e) {
       print("Error updating user avatar: $e");
     }
@@ -119,6 +125,7 @@ class HomeScreenTotalNotifier extends _$HomeScreenTotalNotifier {
       await databaseReference.child(newPerson.uid).set(newPerson.toJson());
       // Refresh the list
       await fetchAllPerson();
+      state = state + 1;
     } catch (e) {
       print("Error adding new person: $e");
     }
@@ -130,6 +137,7 @@ class HomeScreenTotalNotifier extends _$HomeScreenTotalNotifier {
       await databaseReference.child(userId).update(updates);
       // Refresh the list
       await fetchAllPerson();
+      state = state + 1;
     } catch (e) {
       print("Error updating person details: $e");
     }
@@ -141,6 +149,7 @@ class HomeScreenTotalNotifier extends _$HomeScreenTotalNotifier {
       await databaseReference.child(userId).remove();
       // Refresh the list
       await fetchAllPerson();
+      state = state + 1;
     } catch (e) {
       print("Error deleting person: $e");
     }

@@ -105,7 +105,7 @@ class PersonAvatar extends ConsumerWidget {
   Widget _buildPlaceholderAvatar() {
     return CircleAvatar(
       radius: size / 2,
-      backgroundColor: Colors.grey[300],
+      backgroundColor: ColorName.homeGrayHold,
       child: Icon(
         Icons.person,
         size: size / 1.5,

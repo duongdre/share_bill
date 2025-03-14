@@ -56,7 +56,7 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
                         children: [
                           Container(
                             padding: EdgeInsets.only(left: 10, right: 10),
-                            child: friend(person),
+                            child: personWidget(person),
                           ),
                         ],
                       );
@@ -136,7 +136,7 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
     );
   }
 
-  Widget friend(Person person) {
+  Widget personWidget(Person person) {
     return InkWell(
       onTap: () {
         ref.read(personNotifierProvider.notifier).currentPersonDetail = person.copyWith();

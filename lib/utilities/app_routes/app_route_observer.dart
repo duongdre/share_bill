@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:share_bill/screens/group/controller/group_provider.dart';
 import '../../screens/person/controller/person_provider.dart';
 
 class AppRouteObserver extends NavigatorObserver {
@@ -16,6 +17,9 @@ class AppRouteObserver extends NavigatorObserver {
     print('AppRouteObserver didPop: $route');
     if (route.settings.name == 'person_detail') {
       ref.read(personNotifierProvider.notifier).clearNewPersonData();
+    }
+    if (route.settings.name == 'group_detail') {
+      ref.read(groupNotifierProvider.notifier).clearNewGroupData();
     }
   }
 

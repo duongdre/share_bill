@@ -15,10 +15,16 @@ class GroupNotifier extends _$GroupNotifier {
   List<Group> allGroup = [];
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
+  Group currentGroupDetail = Group(uid: "", name: "", members: {});
+
   @override
   int build() {
     state = 0;
     return state;
+  }
+
+  void clearNewGroupData() {
+    currentGroupDetail = Group(uid: "", name: "", members: {});
   }
 
   Future<void> fetchAllGroup() async {
@@ -31,7 +37,7 @@ class GroupNotifier extends _$GroupNotifier {
       if (snapshot.exists) {
         for (final data in snapshot.children) {
           final group = Group.fromMap(data.value as Map);
-          print('person data ${group.toJson()}');
+          print('group data ${group.toJson()}');
           allGroup.add(group);
         }
       } else {
@@ -43,27 +49,55 @@ class GroupNotifier extends _$GroupNotifier {
     state = state + 1;
   }
 
-  Future<void> addNewGroup(Group newGroup) async {
+  // Update group's member
+  Future<void> updateGroupMember(String groupId, Map<String, dynamic> updates) async {
     try {
       final databaseReference = FirebaseDatabase.instance.ref("groups");
-      await databaseReference.child(newGroup.uid).set(newGroup.toJson());
+      await databaseReference.child(groupId).child("members").update(updates);
       // Refresh the list
       await fetchAllGroup();
       state = state + 1;
     } catch (e) {
-      print("Error adding new person: $e");
+      print("Error updating group member: $e");
+    }
+  }
+
+  Future<void> updateGroupName(String groupId, String name) async {
+    try {
+      final databaseReference = FirebaseDatabase.instance.ref("groups");
+      await databaseReference.child(groupId).update({"name": name});
+      // Refresh the list
+      await fetchAllGroup();
+      state = state + 1;
+    } catch (e) {
+      print("Error updating group member: $e");
+    }
+  }
+  
+  Future<void> addNewGroup(Group newGroup) async {
+    try {
+      if (currentGroupDetail.uid.isEmpty) return;
+      final databaseReference = FirebaseDatabase.instance.ref("groups");
+      await databaseReference.child(newGroup.uid).set(newGroup.toJson());
+      clearNewGroupData();
+      // Refresh the list
+      await fetchAllGroup();
+      state = state + 1;
+    } catch (e) {
+      print("Error adding new group: $e");
     }
   }
 
   Future<void> updateGroupDetails(String groupId, Map<String, dynamic> updates) async {
     try {
+      if (currentGroupDetail.uid.isEmpty) return;
       final databaseReference = FirebaseDatabase.instance.ref("groups");
       await databaseReference.child(groupId).update(updates);
       // Refresh the list
       await fetchAllGroup();
       state = state + 1;
     } catch (e) {
-      print("Error updating person details: $e");
+      print("Error updating group details: $e");
     }
   }
 
@@ -75,7 +109,7 @@ class GroupNotifier extends _$GroupNotifier {
       await fetchAllGroup();
       state = state + 1;
     } catch (e) {
-      print("Error deleting person: $e");
+      print("Error deleting group: $e");
     }
   }
 }

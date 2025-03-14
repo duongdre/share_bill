@@ -1,8 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:share_bill/gen/fonts.gen.dart';
 import 'package:share_bill/models/data_models/person.dart';
 import 'package:share_bill/utilities/utils/person_avatar.dart';
+import '../../gen/colors.gen.dart';
 import '../../models/data_models/group.dart';
 import '../../screens/person/controller/person_provider.dart';
 
@@ -53,7 +55,7 @@ class GroupAvatar extends ConsumerWidget {
           )
         ],
       );
-    } else if (countMember >= 3) {
+    } else if (countMember == 3) {
       // Use CachedNetworkImage to load and cache the avatar
       avatarWidget = Stack(
         children: [
@@ -82,6 +84,52 @@ class GroupAvatar extends ConsumerWidget {
           )
         ],
       );
+    } else if (countMember > 3) {
+      // Use CachedNetworkImage to load and cache the avatar
+      avatarWidget = Stack(
+        children: [
+          Container(
+            child: PersonAvatar(
+              person: personNotifier.findPersonWithUid(group.members.keys.toList()[2]),
+              size: size,
+              isEditable: false,
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(left: 16),
+            child: PersonAvatar(
+              person: personNotifier.findPersonWithUid(group.members.keys.toList()[1]),
+              size: size,
+              isEditable: false,
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(left: 32),
+            child: PersonAvatar(
+              person: personNotifier.findPersonWithUid(group.members.keys.toList()[0]),
+              size: size,
+              isEditable: false,
+            ),
+          ),
+          Container(
+            alignment: Alignment.centerRight,
+            margin: EdgeInsets.only(left: 32),
+            child: CircleAvatar(
+              radius: size / 4,
+              backgroundColor: ColorName.homeGrayHold,
+              child: Text(
+                "+ ${countMember - 3} ",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontFamily: FontFamily.raleway,
+                  fontStyle: FontStyle.italic,
+                  fontWeight: FontWeight.bold
+                ),
+              ),
+            ),
+          )
+        ],
+      );
     } else {
       avatarWidget = _buildPlaceholderAvatar();
     }
@@ -92,7 +140,7 @@ class GroupAvatar extends ConsumerWidget {
   Widget _buildPlaceholderAvatar() {
     return CircleAvatar(
       radius: size / 2,
-      backgroundColor: Colors.grey[300],
+      backgroundColor: ColorName.homeGrayHold,
       child: Icon(
         Icons.person,
         size: size / 1.5,

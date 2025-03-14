@@ -16,7 +16,7 @@ class PersonNotifier extends _$PersonNotifier {
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
   // Person detail
-  Person? currentPersonDetail;
+  late Person currentPersonDetail;
   bool isLoadingImage = false;
 
   @override
@@ -50,7 +50,7 @@ class PersonNotifier extends _$PersonNotifier {
   }
 
   void clearNewPersonData() {
-    currentPersonDetail = null;
+    currentPersonDetail = Person(uid: "", name: "", avtUrl: "", groups: {});
   }
 
   Person? findPersonWithUid(String userId) {
@@ -70,13 +70,12 @@ class PersonNotifier extends _$PersonNotifier {
 
       loadingImageForPersonDetail(true);
 
-      final File imageFile = File(pickedFile!.path);
+      final File imageFile = File(pickedFile.path);
 
-      currentPersonDetail = Person(uid: "", name: "", avtUrl: "", groups: {});
-      currentPersonDetail!.uid = const Uuid().v4();
+      currentPersonDetail.uid = const Uuid().v4();
 
       // Create a unique filename using UUID
-      final fileName = '${currentPersonDetail!.uid}_${DateTime.now().millisecondsSinceEpoch}';
+      final fileName = '${currentPersonDetail.uid}_${DateTime.now().millisecondsSinceEpoch}';
       final storageRef = _storage.ref().child("avatars/$fileName");
 
       // Upload the file
@@ -84,7 +83,7 @@ class PersonNotifier extends _$PersonNotifier {
 
       // Wait for the upload to complete and get the download URL
       await uploadTask;
-      currentPersonDetail!.avtUrl = await storageRef.getDownloadURL();
+      currentPersonDetail.avtUrl = await storageRef.getDownloadURL();
       loadingImageForPersonDetail(false);
       state = state + 1;
     } catch (e) {
@@ -130,7 +129,7 @@ class PersonNotifier extends _$PersonNotifier {
 
   Future<void> addNewPerson(Person newPerson) async {
     try {
-      if (currentPersonDetail == null) return;
+      if (currentPersonDetail.uid.isEmpty) return;
       final databaseReference = FirebaseDatabase.instance.ref("persons");
       await databaseReference.child(newPerson.uid).set(newPerson.toJson());
       clearNewPersonData();
@@ -144,6 +143,7 @@ class PersonNotifier extends _$PersonNotifier {
 
   Future<void> updatePersonDetails(String userId, Map<String, dynamic> updates) async {
     try {
+      if (currentPersonDetail.uid.isEmpty) return;
       final databaseReference = FirebaseDatabase.instance.ref("persons");
       await databaseReference.child(userId).update(updates);
       // Refresh the list

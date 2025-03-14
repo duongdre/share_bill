@@ -31,13 +31,14 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
   @override
   void initState() {
     ref.read(personNotifierProvider.notifier).isLoadingImage = false;
-    if (ref.read(personNotifierProvider.notifier).currentPersonDetail == null) {
+    final currentPersonDetail = ref.read(personNotifierProvider.notifier).currentPersonDetail;
+    if (currentPersonDetail.uid.isEmpty) {
       isNewPerson = true;
     } else {
       isNewPerson = false;
     }
-    nameController = TextEditingController(text: ref.read(personNotifierProvider.notifier).currentPersonDetail?.name ?? "");
-    describeController = TextEditingController(text: ref.read(personNotifierProvider.notifier).currentPersonDetail?.describe ?? "");
+    nameController = TextEditingController(text: currentPersonDetail.name ?? "");
+    describeController = TextEditingController(text: currentPersonDetail.describe ?? "");
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
     super.initState();
   }
@@ -139,7 +140,7 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
     );
   }
 
-  Widget avatar(Person? currentPersonDetail) {
+  Widget avatar(Person currentPersonDetail) {
     return Padding(
       padding: const EdgeInsets.only(left: 16, right: 16),
       child: Column(
@@ -702,10 +703,9 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
     );
   }
 
-  Widget bottomButton(Person? currentPersonDetail) {
+  Widget bottomButton(Person currentPersonDetail) {
     return InkWell(
       onTap: () async {
-        if (currentPersonDetail == null) return;
         currentPersonDetail.name = nameController.text;
         currentPersonDetail.describe = describeController.text;
         if (isNewPerson) {

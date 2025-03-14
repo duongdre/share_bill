@@ -35,9 +35,20 @@ class Person {
       avtUrl: map['avtUrl'] ?? '',
       groups: (map['groups'] as Map<String, dynamic>?)?.map(
             (key, value) => MapEntry(key, value as bool),
-      ) ??
+          ) ??
           {},
     );
+  }
+
+  // Convert Transaction to a map for Firebase
+  Map<String, dynamic> toMap() {
+    return {
+      'uid': uid,
+      'name': name,
+      'describe': describe,
+      'avtUrl': avtUrl,
+      'groups': groups,
+    };
   }
 
   // Create a copy of this Person with modified fields

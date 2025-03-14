@@ -11,25 +11,54 @@ import '../../../models/data_models/person.dart';
 import '../../../utilities/utils/person_avatar.dart';
 import '../controller/person_provider.dart';
 
+//ignore: must_be_immutable
 class PersonDetailScreen extends ConsumerStatefulWidget {
   static const routeName = 'person_detail';
   static const routePath = '/$routeName';
+  String? personUid;
 
-  const PersonDetailScreen({super.key});
+  PersonDetailScreen({super.key, this.personUid});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _PersonDetailScreenState();
 }
 
 class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
+  bool _isLoading = true;
   bool isShowingGroup = true;
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController describeController = TextEditingController();
+  late TextEditingController nameController;
+  late TextEditingController describeController;
+  Person? person;
 
   @override
   void initState() {
+    nameController = TextEditingController(text: person?.name ?? "");
+    describeController = TextEditingController(text: person?.describe ?? "");
+    _loadInitialData();
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
     super.initState();
+  }
+
+  Future<void> _loadInitialData() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      // Get the notifier and fetch all person data
+      person = await ref.read(personNotifierProvider.notifier).allPersonMapping[widget.personUid];
+      nameController = TextEditingController(text: person?.name ?? "");
+      describeController = TextEditingController(text: person?.describe ?? "");
+    } catch (e) {
+      print('Error loading initial data: $e');
+      // You could show an error snackbar here
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -46,17 +75,22 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
         decoration: const BoxDecoration(
           color: ColorName.groupManagementBackground,
         ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              header(),
-              avatar(),
-              switchButton(),
-              Spacer(),
-              closeButton(),
-            ],
-          ),
-        ),
+        child: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : SafeArea(
+                child: RefreshIndicator(
+                  onRefresh: _loadInitialData,
+                  child: Column(
+                    children: [
+                      header(),
+                      avatar(),
+                      switchButton(),
+                      const Spacer(),
+                      closeButton(),
+                    ],
+                  ),
+                ),
+              ),
       ),
     );
   }
@@ -142,7 +176,7 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
               ],
             ),
             child: PersonAvatar(
-              person: null,
+              person: person,
               size: 160,
               isEditable: true,
             ),
@@ -682,15 +716,29 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
   Widget closeButton() {
     return InkWell(
       onTap: () {
-        ref.read(personNotifierProvider.notifier).addNewPerson(
-              Person(
-                uid: ref.read(personNotifierProvider.notifier).newPersonId,
-                name: nameController.text,
-                describe: describeController.text,
-                avtUrl: ref.read(personNotifierProvider.notifier).newPersonAvtUploaded,
-                groups: {},
-              ),
-            );
+        if (widget.personUid == null) {
+          ref.read(personNotifierProvider.notifier).addNewPerson(
+                Person(
+                  uid: ref.read(personNotifierProvider.notifier).newPersonId,
+                  name: nameController.text,
+                  describe: describeController.text,
+                  avtUrl: ref.read(personNotifierProvider.notifier).newPersonAvtUploaded,
+                  groups: {},
+                ),
+              );
+        } else {
+          final personData = person!;
+          ref.read(personNotifierProvider.notifier).updatePersonDetails(
+                personData.uid,
+                Person(
+                  uid: personData.uid,
+                  name: nameController.text,
+                  describe: describeController.text,
+                  avtUrl: personData.avtUrl,
+                  groups: personData.groups,
+                ).toMap(),
+              );
+        }
       },
       child: Container(
         height: 60,
@@ -705,7 +753,7 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
           ],
         ),
         child: Text(
-          "Thêm",
+          (widget.personUid == null) ? "Thêm" : "Cập nhật",
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(
             color: ColorName.homeWhiteButtonBg,

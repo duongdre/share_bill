@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:go_router/go_router.dart';
 import 'package:share_bill/gen/assets.gen.dart';
+import 'package:share_bill/models/data_models/group.dart';
 import 'package:share_bill/models/data_models/person.dart';
 import 'package:share_bill/screens/group/UI/group_management_screen.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -13,12 +14,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:share_bill/screens/group/controller/group_provider.dart';
 import 'package:share_bill/screens/person/UI/person_management_screen.dart';
 import 'package:share_bill/screens/spent/UI/spent_screen.dart';
 import 'package:share_bill/screens/transaction/UI/transaction_management_screen.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../gen/colors.gen.dart';
+import '../../../utilities/utils/group_avatar.dart';
 import '../../../utilities/utils/person_avatar.dart';
 import '../../person/controller/person_provider.dart';
 
@@ -38,9 +41,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
-
     _loadInitialData();
-
     super.initState();
   }
 
@@ -51,8 +52,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     try {
       // Get the notifier and fetch all person data
-      final personNotifier = ref.read(personNotifierProvider.notifier);
-      await personNotifier.fetchAllPerson();
+      await ref.read(personNotifierProvider.notifier).fetchAllPerson();
+      await ref.read(groupNotifierProvider.notifier).fetchAllGroup();
     } catch (e) {
       print('Error loading initial data: $e');
       // You could show an error snackbar here
@@ -68,7 +69,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     ref.watch(personNotifierProvider);
+    ref.watch(groupNotifierProvider);
     final persons = ref.read(personNotifierProvider.notifier).allPerson;
+    final groups = ref.read(groupNotifierProvider.notifier).allGroup;
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -89,7 +92,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             children: [
                               balance(context),
                               sendReceiveAndFriends(persons),
-                              groupList(),
+                              groupList(groups),
                               historyTransaction(),
                             ],
                           ),
@@ -106,12 +109,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget header() {
     return InkWell(
       onTap: () {
-        // ref.read(personNotifierProvider.notifier).addNewPerson(Person(
+        // ref.read(groupNotifierProvider.notifier).addNewGroup(Group(
         //       uid: Uuid().v4(),
-        //       name: "HungIct",
-        //       yearOfBirth: 1997,
-        //       avtUrl: "",
-        //       groupId: [],
+        //       name: "Testing 2",
+        //       createdAt: DateTime.now().millisecondsSinceEpoch,
+        //       members: {
+        //         "11fbed45-94b8-4e85-97a6-27b2612ebbbb": true,
+        //         "cd032d1b-24c9-4c25-9ba0-03f87e21c4c0": true
+        //       },
         //     ));
       },
       child: SizedBox(
@@ -348,7 +353,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Widget groupList() {
+  Widget groupList(List<Group> groups) {
     return Container(
       height: 200,
       width: double.infinity,
@@ -402,19 +407,42 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
           SizedBox(height: 12),
           Expanded(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  eachGroup(),
-                  eachGroup(),
-                  eachGroup(),
-                  eachGroup(),
-                  eachGroup(),
-                  eachGroup(),
-                ],
-              ),
-            ),
+            child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                shrinkWrap: true,
+                itemCount: groups.length,
+                itemBuilder: (context, index) {
+                  final group = groups[index];
+                  return Stack(
+                    children: [
+                      Container(
+                        width: 132,
+                        alignment: Alignment.topCenter,
+                        padding: EdgeInsets.only(left: 10, right: 10),
+                        child: GroupAvatar(
+                          group: group,
+                          size: 80,
+                          isEditable: true,
+                        ),
+                      ),
+                      Container(
+                        width: 132,
+                        margin: EdgeInsets.only(top: 96),
+                        alignment: Alignment.topCenter,
+                        child: Text(
+                          group.name,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: ColorName.loginTextColorGray,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          maxLines: 1,
+                        ),
+                      )
+                    ],
+                  );
+                }),
           )
         ],
       ),
@@ -487,76 +515,44 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Widget eachGroup() {
-    return Container(
-      margin: EdgeInsets.only(right: 16),
-      child: Stack(
-        children: [
-          Container(
-            height: 80,
-            width: 80,
-            decoration: BoxDecoration(
-              color: ColorName.homeWhiteAdd,
-              borderRadius: BorderRadius.all(Radius.circular(100)),
-              boxShadow: [
-                BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(2, 2)),
-              ],
-            ),
-          ),
-          Container(
-            height: 80,
-            width: 80,
-            margin: EdgeInsets.only(top: 4, left: 4),
-            decoration: BoxDecoration(
-              color: ColorName.homeWhiteAdd,
-              borderRadius: BorderRadius.all(Radius.circular(100)),
-              boxShadow: [
-                BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(2, 2)),
-              ],
-            ),
-          ),
-          Container(
-            height: 80,
-            width: 80,
-            margin: EdgeInsets.only(top: 8, left: 8),
-            decoration: BoxDecoration(
-              color: ColorName.homeWhiteAdd,
-              borderRadius: BorderRadius.all(Radius.circular(100)),
-              boxShadow: [
-                BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(2, 2)),
-              ],
-            ),
-          ),
-          Container(
-            height: 40,
-            width: 40,
-            margin: EdgeInsets.only(top: 50, left: 50),
-            decoration: BoxDecoration(
-              color: ColorName.homeWhiteButtonBg,
-              borderRadius: BorderRadius.all(Radius.circular(100)),
-              boxShadow: [
-                BoxShadow(color: ColorName.homeWhiteButtonBg, blurRadius: 4, offset: Offset(2, 2)),
-              ],
-            ),
-          ),
-          Container(
-            width: 100,
-            margin: EdgeInsets.only(top: 96),
-            child: Text(
-              "Hương Dương",
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: ColorName.loginTextColorGray,
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-              ),
-              maxLines: 1,
-            ),
-          )
-        ],
-      ),
-    );
-  }
+  // Widget eachGroup() {
+  //   return Container(
+  //     margin: EdgeInsets.only(right: 16),
+  //     child: Stack(
+  //       children: [
+  //         GroupAvatar(
+  //           group: grou,
+  //         ),
+  //         Container(
+  //           height: 40,
+  //           width: 40,
+  //           margin: EdgeInsets.only(top: 50, left: 50),
+  //           decoration: BoxDecoration(
+  //             color: ColorName.homeWhiteButtonBg,
+  //             borderRadius: BorderRadius.all(Radius.circular(100)),
+  //             boxShadow: [
+  //               BoxShadow(color: ColorName.homeWhiteButtonBg, blurRadius: 4, offset: Offset(2, 2)),
+  //             ],
+  //           ),
+  //         ),
+  //         Container(
+  //           width: 100,
+  //           margin: EdgeInsets.only(top: 96),
+  //           child: Text(
+  //             "Hương Dương",
+  //             overflow: TextOverflow.ellipsis,
+  //             style: const TextStyle(
+  //               color: ColorName.loginTextColorGray,
+  //               fontSize: 16,
+  //               fontWeight: FontWeight.w400,
+  //             ),
+  //             maxLines: 1,
+  //           ),
+  //         )
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget eachTransaction() {
     return Container(

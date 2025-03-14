@@ -1,29 +1,37 @@
 import 'dart:convert';
 
 class Group {
-  final String id;
-  final String name;
-  final int createdAt;
-  final Map<String, bool> members;
-
   Group({
-    required this.id,
+    required this.uid,
     required this.name,
-    int? createdAt,
-    Map<String, bool>? members,
-  }) :
-        this.createdAt = createdAt ?? DateTime.now().millisecondsSinceEpoch,
-        this.members = members ?? {};
+    this.createdAt,
+    required this.members,
+  });
+
+  String uid;
+  String name;
+  int? createdAt;
+  Map<String, bool> members;
+
+  int countMember() {
+    var result = 0;
+    for (final data in members.values.toList()) {
+      if (data) {
+        result = result + 1;
+      }
+    }
+    return result;
+  }
 
   // Create a Group from JSON data
   factory Group.fromJson(String id, Map<String, dynamic> json) {
     return Group(
-      id: id,
-      name: json['name'] ?? '',
-      createdAt: json['createdAt'] ?? DateTime.now().millisecondsSinceEpoch,
+      uid: json['uid'],
+      name: json['name'],
+      createdAt: json['createdAt'],
       members: (json['members'] as Map<String, dynamic>?)?.map(
             (key, value) => MapEntry(key, value as bool),
-      ) ??
+          ) ??
           {},
     );
   }
@@ -31,6 +39,7 @@ class Group {
   // Convert Group to JSON for Firebase
   Map<String, dynamic> toJson() {
     return {
+      'uid': uid,
       'name': name,
       'createdAt': createdAt,
       'members': members,
@@ -39,12 +48,13 @@ class Group {
 
   // Create a copy of Group with some changes
   Group copyWith({
+    String? uid,
     String? name,
     int? createdAt,
     Map<String, bool>? members,
   }) {
     return Group(
-      id: this.id,
+      uid: this.uid,
       name: name ?? this.name,
       createdAt: createdAt ?? this.createdAt,
       members: members ?? this.members,
@@ -75,18 +85,18 @@ class Group {
 
   @override
   String toString() {
-    return 'Group{id: $id, name: $name, createdAt: $createdAt, members: $members}';
+    return 'Group{id: $uid, name: $name, createdAt: $createdAt, members: $members}';
   }
 
   // Create a Group from a map
-  factory Group.fromMap(String id, Map<String, dynamic> map) {
+  factory Group.fromMap(Map<dynamic, dynamic> map) {
     return Group(
-      id: id,
+      uid: map['uid'] ?? '',
       name: map['name'] ?? '',
-      createdAt: map['createdAt'] ?? DateTime.now().millisecondsSinceEpoch,
-      members: (map['members'] as Map<String, dynamic>?)?.map(
+      createdAt: map['createdAt'],
+      members: (map['members'] as Map<dynamic, dynamic>?)?.map(
             (key, value) => MapEntry(key, value as bool),
-      ) ??
+          ) ??
           {},
     );
   }

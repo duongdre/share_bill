@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_bill/models/data_models/person.dart';
+import '../../gen/colors.gen.dart';
 import '../../screens/person/controller/person_provider.dart';
 
 class PersonAvatar extends ConsumerWidget {
@@ -25,7 +26,6 @@ class PersonAvatar extends ConsumerWidget {
 
     if (person == null) {
       if (homeScreenNotifier.newPersonAvtUploaded.isNotEmpty && homeScreenNotifier.newPersonId.isNotEmpty) {
-        print(homeScreenNotifier.newPersonAvtUploaded);
         // Use CachedNetworkImage to load and cache the avatar
         avatarWidget = ClipRRect(
           borderRadius: BorderRadius.circular(size / 2),
@@ -47,15 +47,25 @@ class PersonAvatar extends ConsumerWidget {
       avatarWidget = _buildPlaceholderAvatar();
     } else {
       // Use CachedNetworkImage to load and cache the avatar
-      avatarWidget = ClipRRect(
-        borderRadius: BorderRadius.circular(size / 2),
-        child: CachedNetworkImage(
-          imageUrl: person!.avtUrl,
-          width: size,
-          height: size,
-          fit: BoxFit.cover,
-          placeholder: (context, url) => const CircularProgressIndicator(),
-          errorWidget: (context, url, error) => _buildPlaceholderAvatar(),
+      avatarWidget = Container(
+        width: size,
+        height: size,
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(100)),
+          boxShadow: [
+            BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(-4, 4)),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(size / 2),
+          child: CachedNetworkImage(
+            imageUrl: person!.avtUrl,
+            width: size,
+            height: size,
+            fit: BoxFit.cover,
+            placeholder: (context, url) => const CircularProgressIndicator(),
+            errorWidget: (context, url, error) => _buildPlaceholderAvatar(),
+          ),
         ),
       );
     }

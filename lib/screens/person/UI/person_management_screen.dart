@@ -139,7 +139,7 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
   Widget friend(Person person) {
     return InkWell(
       onTap: () {
-        context.goNamed(PersonDetailScreen.routeName);
+        context.goNamed(PersonDetailScreen.routeName, extra: person.uid);
       },
       child: Container(
         width: double.infinity,

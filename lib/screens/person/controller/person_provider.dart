@@ -12,6 +12,7 @@ part 'person_provider.g.dart';
 @riverpod
 class PersonNotifier extends _$PersonNotifier {
   List<Person> allPerson = [];
+  Map<dynamic, dynamic> allPersonMapping = {};
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
   // New person
@@ -30,6 +31,7 @@ class PersonNotifier extends _$PersonNotifier {
       final snapshot = await databaseReference.get().timeout(const Duration(seconds: 30));
 
       allPerson.clear();
+      allPersonMapping.clear();
 
       if (snapshot.exists) {
         for (final data in snapshot.children) {
@@ -37,6 +39,7 @@ class PersonNotifier extends _$PersonNotifier {
           print('person data ${person.toJson()}');
           allPerson.add(person);
         }
+        allPersonMapping = snapshot.value as Map<dynamic, dynamic>;
       } else {
         print('No data available.');
       }
@@ -49,6 +52,10 @@ class PersonNotifier extends _$PersonNotifier {
   void clearNewPersonData() {
     newPersonId = "";
     newPersonAvtUploaded = "";
+  }
+
+  Person? findPersonWithUid(String userId) {
+    return Person.fromMap(allPersonMapping[userId] as Map);
   }
 
   Future<void> uploadUserAvatar() async {

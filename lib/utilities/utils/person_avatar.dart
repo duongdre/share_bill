@@ -11,11 +11,11 @@ class PersonAvatar extends ConsumerWidget {
   final bool isEditable;
 
   const PersonAvatar({
-    Key? key,
+    super.key,
     required this.person,
     this.size = 50.0,
     this.isEditable = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -25,12 +25,12 @@ class PersonAvatar extends ConsumerWidget {
     Widget avatarWidget;
 
     if (person == null) {
-      if (homeScreenNotifier.newPersonAvtUploaded.isNotEmpty && homeScreenNotifier.newPersonId.isNotEmpty) {
+      if (homeScreenNotifier.currentPersonDetail != null && homeScreenNotifier.currentPersonDetail!.avtUrl.isNotEmpty) {
         // Use CachedNetworkImage to load and cache the avatar
         avatarWidget = ClipRRect(
           borderRadius: BorderRadius.circular(size / 2),
           child: CachedNetworkImage(
-            imageUrl: homeScreenNotifier.newPersonAvtUploaded,
+            imageUrl: homeScreenNotifier.currentPersonDetail!.avtUrl,
             width: size,
             height: size,
             fit: BoxFit.cover,
@@ -79,11 +79,7 @@ class PersonAvatar extends ConsumerWidget {
             right: 0,
             child: GestureDetector(
               onTap: () {
-                if (person == null) {
-                  homeScreenNotifier.uploadUserAvatar();
-                } else {
-                  homeScreenNotifier.updateUserAvatar(person!.uid);
-                }
+                homeScreenNotifier.uploadAvatarForNewUser();
               },
               child: Container(
                 padding: EdgeInsets.all(4),

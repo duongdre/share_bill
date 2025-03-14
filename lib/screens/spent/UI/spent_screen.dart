@@ -15,15 +15,6 @@ import '../../../gen/colors.gen.dart';
 class SpentScreen extends ConsumerStatefulWidget {
   const SpentScreen({super.key});
 
-  static const routeNameFromHome = '${HomeScreen.routeName}/spent';
-  static const routePathFromHome = '${HomeScreen.routePath}/$routeNameFromHome';
-
-  static const routeNameFromTransaction = '${TransactionManagementScreen.routeName}/spent';
-  static const routePathFromTransaction = '${TransactionManagementScreen.routePath}/$routeNameFromTransaction';
-
-  static const routeNameFromPerson = '${PersonManagementScreen.routeName}/spent';
-  static const routePathFromPerson = '${PersonManagementScreen.routePath}/$routeNameFromPerson';
-
   static const routeName = 'spent';
   static const routePath = '/$routeName';
 

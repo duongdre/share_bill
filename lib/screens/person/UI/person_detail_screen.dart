@@ -5,60 +5,41 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_bill/screens/spent/UI/spent_screen.dart';
 import 'package:toastification/toastification.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../gen/colors.gen.dart';
 import '../../../models/data_models/person.dart';
 import '../../../utilities/utils/person_avatar.dart';
 import '../controller/person_provider.dart';
 
-//ignore: must_be_immutable
 class PersonDetailScreen extends ConsumerStatefulWidget {
   static const routeName = 'person_detail';
   static const routePath = '/$routeName';
-  String? personUid;
 
-  PersonDetailScreen({super.key, this.personUid});
+  const PersonDetailScreen({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _PersonDetailScreenState();
 }
 
 class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
-  bool _isLoading = true;
   bool isShowingGroup = true;
   late TextEditingController nameController;
   late TextEditingController describeController;
-  Person? person;
+  bool isNewPerson = true;
 
   @override
   void initState() {
-    nameController = TextEditingController(text: person?.name ?? "");
-    describeController = TextEditingController(text: person?.describe ?? "");
-    _loadInitialData();
+    ref.read(personNotifierProvider.notifier).isLoadingImage = false;
+    if (ref.read(personNotifierProvider.notifier).currentPersonDetail == null) {
+      isNewPerson = true;
+    } else {
+      isNewPerson = false;
+    }
+    nameController = TextEditingController(text: ref.read(personNotifierProvider.notifier).currentPersonDetail?.name ?? "");
+    describeController = TextEditingController(text: ref.read(personNotifierProvider.notifier).currentPersonDetail?.describe ?? "");
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
     super.initState();
-  }
-
-  Future<void> _loadInitialData() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      // Get the notifier and fetch all person data
-      person = await ref.read(personNotifierProvider.notifier).allPersonMapping[widget.personUid];
-      nameController = TextEditingController(text: person?.name ?? "");
-      describeController = TextEditingController(text: person?.describe ?? "");
-    } catch (e) {
-      print('Error loading initial data: $e');
-      // You could show an error snackbar here
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
   }
 
   @override
@@ -70,27 +51,24 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(personNotifierProvider);
+    final currentPersonDetail = ref.read(personNotifierProvider.notifier).currentPersonDetail;
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
           color: ColorName.groupManagementBackground,
         ),
-        child: _isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : SafeArea(
-                child: RefreshIndicator(
-                  onRefresh: _loadInitialData,
-                  child: Column(
-                    children: [
-                      header(),
-                      avatar(),
-                      switchButton(),
-                      const Spacer(),
-                      closeButton(),
-                    ],
-                  ),
-                ),
-              ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              header(),
+              avatar(currentPersonDetail),
+              switchButton(),
+              const Spacer(),
+              bottomButton(currentPersonDetail),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -161,7 +139,7 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
     );
   }
 
-  Widget avatar() {
+  Widget avatar(Person? currentPersonDetail) {
     return Padding(
       padding: const EdgeInsets.only(left: 16, right: 16),
       child: Column(
@@ -175,10 +153,23 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
                 BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
               ],
             ),
-            child: PersonAvatar(
-              person: person,
-              size: 160,
-              isEditable: true,
+            child: Stack(
+              children: [
+                PersonAvatar(
+                  person: currentPersonDetail,
+                  size: 160,
+                  isEditable: true,
+                ),
+                (ref.read(personNotifierProvider.notifier).isLoadingImage) ? Container(
+                  alignment: Alignment.center,
+                  child: Transform.scale(
+                    scale: 2,
+                    child: const CircularProgressIndicator(
+                        strokeWidth: 8,
+                    ),
+                  ),
+                ) : const SizedBox()
+              ],
             ),
           ),
           SizedBox(height: 8),
@@ -485,9 +476,7 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
                 children: [
                   Spacer(),
                   InkWell(
-                    onTap: () {
-                      context.goNamed(SpentScreen.routeNameFromPerson);
-                    },
+                    onTap: () {},
                     child: Container(
                       height: 40,
                       width: 280,
@@ -713,31 +702,33 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
     );
   }
 
-  Widget closeButton() {
+  Widget bottomButton(Person? currentPersonDetail) {
     return InkWell(
-      onTap: () {
-        if (widget.personUid == null) {
-          ref.read(personNotifierProvider.notifier).addNewPerson(
-                Person(
-                  uid: ref.read(personNotifierProvider.notifier).newPersonId,
-                  name: nameController.text,
-                  describe: describeController.text,
-                  avtUrl: ref.read(personNotifierProvider.notifier).newPersonAvtUploaded,
-                  groups: {},
-                ),
-              );
+      onTap: () async {
+        if (currentPersonDetail == null) return;
+        currentPersonDetail.name = nameController.text;
+        currentPersonDetail.describe = describeController.text;
+        if (isNewPerson) {
+          currentPersonDetail.uid = Uuid().v4();
+          await ref.read(personNotifierProvider.notifier).addNewPerson(currentPersonDetail);
+          context.pop();
+          toastification.show(
+            title: Text('Thành công thêm mới'),
+            style: ToastificationStyle.fillColored,
+            autoCloseDuration: const Duration(seconds: 3),
+          );
         } else {
-          final personData = person!;
-          ref.read(personNotifierProvider.notifier).updatePersonDetails(
-                personData.uid,
-                Person(
-                  uid: personData.uid,
-                  name: nameController.text,
-                  describe: describeController.text,
-                  avtUrl: personData.avtUrl,
-                  groups: personData.groups,
-                ).toMap(),
+          print("${currentPersonDetail.name}");
+          await ref.read(personNotifierProvider.notifier).updatePersonDetails(
+                currentPersonDetail.uid,
+                currentPersonDetail.toMap(),
               );
+          context.pop();
+          toastification.show(
+            title: Text('Thành công sửa thông tin'),
+            style: ToastificationStyle.fillColored,
+            autoCloseDuration: const Duration(seconds: 3),
+          );
         }
       },
       child: Container(
@@ -753,7 +744,7 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
           ],
         ),
         child: Text(
-          (widget.personUid == null) ? "Thêm" : "Cập nhật",
+          (isNewPerson) ? "Thêm" : "Cập nhật",
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(
             color: ColorName.homeWhiteButtonBg,

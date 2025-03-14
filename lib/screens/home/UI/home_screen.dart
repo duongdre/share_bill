@@ -23,6 +23,7 @@ import 'package:uuid/uuid.dart';
 import '../../../gen/colors.gen.dart';
 import '../../../utilities/utils/group_avatar.dart';
 import '../../../utilities/utils/person_avatar.dart';
+import '../../person/UI/person_detail_screen.dart';
 import '../../person/controller/person_provider.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -190,7 +191,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           children: [
             InkWell(
               onTap: () {
-                context.goNamed(SpentScreen.routeNameFromHome);
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => SpentScreen()));
               },
               child: Container(
                 height: 60,
@@ -224,7 +225,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
             InkWell(
               onTap: () {
-                context.goNamed(SpentScreen.routeNameFromHome);
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => SpentScreen()));
               },
               child: Container(
                 height: 60,
@@ -319,12 +320,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       final person = persons[index];
                       return Stack(
                         children: [
-                          Container(
-                            padding: EdgeInsets.only(left: 10, right: 10),
-                            child: PersonAvatar(
-                              person: person,
-                              size: 80,
-                              isEditable: true,
+                          InkWell(
+                            onTap: () {
+                              ref.read(personNotifierProvider.notifier).currentPersonDetail = person.copyWith();
+                              context.goNamed(PersonDetailScreen.routeName);
+                            },
+                            child: Container(
+                              padding: EdgeInsets.only(left: 10, right: 10),
+                              child: PersonAvatar(
+                                person: person,
+                                size: 80,
+                                isEditable: false,
+                              ),
                             ),
                           ),
                           Container(

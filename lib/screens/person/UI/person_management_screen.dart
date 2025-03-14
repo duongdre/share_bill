@@ -139,7 +139,8 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
   Widget friend(Person person) {
     return InkWell(
       onTap: () {
-        context.goNamed(PersonDetailScreen.routeName, extra: person.uid);
+        ref.read(personNotifierProvider.notifier).currentPersonDetail = person.copyWith();
+        context.goNamed(PersonDetailScreen.routeName);
       },
       child: Container(
         width: double.infinity,
@@ -155,7 +156,7 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
                 child: PersonAvatar(
                   person: person,
                   size: 80,
-                  isEditable: true,
+                  isEditable: false,
                 ),
               ),
               Expanded(
@@ -191,7 +192,9 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
                 ),
               ),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  ref.read(personNotifierProvider.notifier).deletePerson(person.uid);
+                },
                 child: Container(
                   height: 40,
                   padding: EdgeInsets.only(left: 16, right: 16),

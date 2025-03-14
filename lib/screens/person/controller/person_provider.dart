@@ -15,9 +15,9 @@ class PersonNotifier extends _$PersonNotifier {
   Map<dynamic, dynamic> allPersonMapping = {};
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
-  // New person
-  String newPersonId = "";
-  String newPersonAvtUploaded = "";
+  // Person detail
+  Person? currentPersonDetail;
+  bool isLoadingImage = false;
 
   @override
   int build() {
@@ -50,28 +50,33 @@ class PersonNotifier extends _$PersonNotifier {
   }
 
   void clearNewPersonData() {
-    newPersonId = "";
-    newPersonAvtUploaded = "";
+    currentPersonDetail = null;
   }
 
   Person? findPersonWithUid(String userId) {
     return Person.fromMap(allPersonMapping[userId] as Map);
   }
 
-  Future<void> uploadUserAvatar() async {
+  void loadingImageForPersonDetail(bool isLoading) {
+    isLoadingImage = isLoading;
+    state = state + 1;
+  }
+
+  Future<void> uploadAvatarForNewUser() async {
     try {
       // Pick image from gallery
       final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
-      if (pickedFile == null) {
-        clearNewPersonData();
-      }
+      if (pickedFile == null) return;
+
+      loadingImageForPersonDetail(true);
 
       final File imageFile = File(pickedFile!.path);
 
-      newPersonId = const Uuid().v4();
+      currentPersonDetail = Person(uid: "", name: "", avtUrl: "", groups: {});
+      currentPersonDetail!.uid = const Uuid().v4();
 
       // Create a unique filename using UUID
-      final fileName = '${newPersonId}_${DateTime.now().millisecondsSinceEpoch}';
+      final fileName = '${currentPersonDetail!.uid}_${DateTime.now().millisecondsSinceEpoch}';
       final storageRef = _storage.ref().child("avatars/$fileName");
 
       // Upload the file
@@ -79,7 +84,8 @@ class PersonNotifier extends _$PersonNotifier {
 
       // Wait for the upload to complete and get the download URL
       await uploadTask;
-      newPersonAvtUploaded = await storageRef.getDownloadURL();
+      currentPersonDetail!.avtUrl = await storageRef.getDownloadURL();
+      loadingImageForPersonDetail(false);
       state = state + 1;
     } catch (e) {
       clearNewPersonData();
@@ -93,6 +99,8 @@ class PersonNotifier extends _$PersonNotifier {
       // Pick image from gallery
       final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (pickedFile == null) return;
+
+      loadingImageForPersonDetail(true);
 
       final File imageFile = File(pickedFile.path);
 
@@ -113,6 +121,7 @@ class PersonNotifier extends _$PersonNotifier {
 
       // Refresh the person list to reflect the changes
       await fetchAllPerson();
+      loadingImageForPersonDetail(true);
       state = state + 1;
     } catch (e) {
       print("Error updating user avatar: $e");
@@ -121,7 +130,7 @@ class PersonNotifier extends _$PersonNotifier {
 
   Future<void> addNewPerson(Person newPerson) async {
     try {
-      if (newPersonId.isEmpty) return;
+      if (currentPersonDetail == null) return;
       final databaseReference = FirebaseDatabase.instance.ref("persons");
       await databaseReference.child(newPerson.uid).set(newPerson.toJson());
       clearNewPersonData();

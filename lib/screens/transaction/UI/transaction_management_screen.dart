@@ -92,7 +92,7 @@ class _TransactionManagementScreenState extends ConsumerState<TransactionManagem
           const Spacer(),
           InkWell(
             onTap: () {
-              context.goNamed(SpentScreen.routeNameFromTransaction);
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => SpentScreen()));
             },
             child: Container(
               height: 50,

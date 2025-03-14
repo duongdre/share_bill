@@ -29,86 +29,56 @@ final routeInformationProvider = ChangeNotifierProvider<GoRouteInformationProvid
 });
 
 final routerProvider = Provider<GoRouter>(
-      (ref) =>
-      GoRouter(
-        observers: [AppRouteObserver(ref)],
-        navigatorKey: _rootNavigatorKey,
-        initialLocation: SplashScreen.routeName,
+  (ref) => GoRouter(
+    observers: [AppRouteObserver(ref)],
+    navigatorKey: _rootNavigatorKey,
+    initialLocation: SplashScreen.routeName,
+    routes: [
+      GoRoute(
+        path: SplashScreen.routePath,
+        name: SplashScreen.routeName,
+        builder: (context, state) => const SplashScreen(),
+        routes: [],
+      ),
+      GoRoute(
+        path: HomeScreen.routePath,
+        name: HomeScreen.routeName,
+        builder: (context, state) => const HomeScreen(),
         routes: [
           GoRoute(
-            path: SplashScreen.routePath,
-            name: SplashScreen.routeName,
-            builder: (context, state) => const SplashScreen(),
-            routes: [],
-          ),
-          GoRoute(
-            path: HomeScreen.routePath,
-            name: HomeScreen.routeName,
-            builder: (context, state) => const HomeScreen(),
+            path: GroupManagementScreen.routePath,
+            name: GroupManagementScreen.routeName,
+            builder: (context, state) => const GroupManagementScreen(),
             routes: [
               GoRoute(
-                path: SpentScreen.routePathFromHome,
-                name: SpentScreen.routeNameFromHome,
-                builder: (context, state) => const SpentScreen(),
+                path: GroupDetailScreen.routePath,
+                name: GroupDetailScreen.routeName,
+                builder: (context, state) => const GroupDetailScreen(),
                 routes: [],
-              ),
-              GoRoute(
-                path: GroupManagementScreen.routePath,
-                name: GroupManagementScreen.routeName,
-                builder: (context, state) => const GroupManagementScreen(),
-                routes: [
-                  GoRoute(
-                    path: SpentScreen.routePath,
-                    name: SpentScreen.routeName,
-                    builder: (context, state) => const SpentScreen(),
-                    routes: [],
-                  ),
-                  GoRoute(
-                    path: GroupDetailScreen.routePath,
-                    name: GroupDetailScreen.routeName,
-                    builder: (context, state) => const GroupDetailScreen(),
-                    routes: [],
-                  ),
-                ],
-              ),
-              GoRoute(
-                path: PersonManagementScreen.routePath,
-                name: PersonManagementScreen.routeName,
-                builder: (context, state) => const PersonManagementScreen(),
-                routes: [
-                  GoRoute(
-                    path: PersonDetailScreen.routePath,
-                    name: PersonDetailScreen.routeName,
-                    builder: (context, state) {
-                      String? personData = state.extra as String?; // -> casting is important
-                      return PersonDetailScreen(personUid: personData);
-                    },
-                    routes: [
-                      GoRoute(
-                        path: SpentScreen.routePathFromPerson,
-                        name: SpentScreen.routeNameFromPerson,
-                        builder: (context, state) => const SpentScreen(),
-                        routes: [],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              GoRoute(
-                path: TransactionManagementScreen.routePath,
-                name: TransactionManagementScreen.routeName,
-                builder: (context, state) => const TransactionManagementScreen(),
-                routes: [
-                  GoRoute(
-                    path: SpentScreen.routePathFromTransaction,
-                    name: SpentScreen.routeNameFromTransaction,
-                    builder: (context, state) => const SpentScreen(),
-                    routes: [],
-                  ),
-                ],
               ),
             ],
           ),
+          GoRoute(
+            path: PersonManagementScreen.routePath,
+            name: PersonManagementScreen.routeName,
+            builder: (context, state) => const PersonManagementScreen(),
+            routes: [
+              GoRoute(
+                path: PersonDetailScreen.routePath,
+                name: PersonDetailScreen.routeName,
+                builder: (context, state) => const PersonDetailScreen(),
+                routes: [],
+              ),
+            ],
+          ),
+          GoRoute(
+            path: TransactionManagementScreen.routePath,
+            name: TransactionManagementScreen.routeName,
+            builder: (context, state) => const TransactionManagementScreen(),
+            routes: [],
+          ),
         ],
       ),
+    ],
+  ),
 );

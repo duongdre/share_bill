@@ -725,7 +725,7 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
               );
           context.pop();
           toastification.show(
-            title: Text('Thành công sửa thông tin'),
+            title: Text('Thành công cập nhật thông tin'),
             style: ToastificationStyle.fillColored,
             autoCloseDuration: const Duration(seconds: 3),
           );

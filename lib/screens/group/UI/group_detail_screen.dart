@@ -63,8 +63,8 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ref.watch(groupNotifierProvider);
     final currentGroupDetail = ref.read(groupNotifierProvider.notifier).currentGroupDetail;
+    print(currentGroupDetail.members.length);
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(FocusNode());
@@ -136,6 +136,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
   }
 
   Widget teamList() {
+    ref.watch(groupNotifierProvider);
     return Column(
       children: [
         TextField(
@@ -210,33 +211,37 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                   itemBuilder: (context, index) {
                     final groupData = group.members.keys.toList();
                     if (index < group.members.length) {
-                      return Stack(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.only(left: 10, right: 10),
-                            child: PersonAvatar(
-                              person: ref.read(personNotifierProvider.notifier).findPersonWithUid(groupData[index]),
-                              size: 80,
-                              isEditable: false,
-                            ),
-                          ),
-                          Container(
-                            width: 100,
-                            margin: EdgeInsets.only(top: 96),
-                            alignment: Alignment.topCenter,
-                            child: Text(
-                              ref.read(personNotifierProvider.notifier).findPersonWithUid(groupData[index])?.name ?? "",
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                color: ColorName.loginTextColorGray,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
+                      if (group.members[groupData[index]] == true) {
+                        return Stack(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.only(left: 10, right: 10),
+                              child: PersonAvatar(
+                                person: ref.read(personNotifierProvider.notifier).findPersonWithUid(groupData[index]),
+                                size: 80,
+                                isEditable: false,
                               ),
-                              maxLines: 1,
                             ),
-                          )
-                        ],
-                      );
+                            Container(
+                              width: 100,
+                              margin: EdgeInsets.only(top: 96),
+                              alignment: Alignment.topCenter,
+                              child: Text(
+                                ref.read(personNotifierProvider.notifier).findPersonWithUid(groupData[index])?.name ?? "",
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  color: ColorName.loginTextColorGray,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                                maxLines: 1,
+                              ),
+                            )
+                          ],
+                        );
+                      } else {
+                        return Container();
+                      }
                     } else {
                       return InkWell(
                         onTap: () {
@@ -245,7 +250,6 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                             builder: (_) => DialogAddMember(),
                             barrierColor: ColorName.blackColor.withOpacity(0.15),
                           );
-                          // ref.read(groupNotifierProvider.notifier).currentGroupDetail.members.addAll(other);
                         },
                         child: Container(
                           padding: EdgeInsets.only(left: 10, right: 10),
@@ -484,7 +488,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                   nameController.text,
                 );
             toastification.show(
-              title: Text('Thành công sửa thông tin'),
+              title: Text('Thành công cập nhật thông tin'),
               style: ToastificationStyle.fillColored,
               autoCloseDuration: const Duration(seconds: 3),
             );

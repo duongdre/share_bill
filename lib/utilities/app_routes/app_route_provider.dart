@@ -7,6 +7,7 @@ import 'package:share_bill/screens/group/UI/group_management_screen.dart';
 import 'package:share_bill/screens/person/UI/person_management_screen.dart';
 import 'package:share_bill/screens/spent/UI/spent_screen.dart';
 import 'package:share_bill/screens/transaction/UI/transaction_management_screen.dart';
+import 'package:share_bill/utilities/utils/dialogAddMember.dart';
 import '../../models/data_models/person.dart';
 import '../../screens/home/UI/home_screen.dart';
 import '../../screens/person/UI/person_detail_screen.dart';

@@ -4,7 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:share_bill/gen/colors.gen.dart';
 import 'package:share_bill/utilities/utils/enum.dart';
 import 'package:share_bill/utilities/utils/person_avatar.dart';
+import 'package:toastification/toastification.dart';
 
+import '../../models/data_models/person.dart';
+import '../../screens/group/controller/group_provider.dart';
 import '../../screens/person/controller/person_provider.dart';
 
 class DialogAddMember extends ConsumerStatefulWidget {
@@ -17,19 +20,24 @@ class DialogAddMember extends ConsumerStatefulWidget {
 class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerProviderStateMixin {
   late AnimationController controller;
   late Animation<double> scaleAnimation;
+  Map<String, bool> currentGroupMember = {};
 
   @override
   void initState() {
     super.initState();
-
+    currentGroupMember = {...ref.read(groupNotifierProvider.notifier).currentGroupDetail.members};
     controller = AnimationController(vsync: this, duration: Duration(milliseconds: 450));
     scaleAnimation = CurvedAnimation(parent: controller, curve: Curves.elasticInOut);
-
     controller.addListener(() {
       setState(() {});
     });
-
     controller.forward();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Initialize after dependencies are available
   }
 
   @override
@@ -78,7 +86,12 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
                         itemBuilder: (context, index) {
                           final person = persons[index];
                           return InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              setState(() {
+                                bool currentStatus = currentGroupMember[person.uid] == true;
+                                currentGroupMember[person.uid] = !currentStatus;
+                              });
+                            },
                             child: Stack(
                               children: [
                                 Container(
@@ -89,19 +102,20 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
                                     isEditable: false,
                                   ),
                                 ),
-                                Container(
-                                  margin: EdgeInsets.only(left: 30),
-                                  // TODO: HERE
-                                  child: const CircleAvatar(
-                                    radius: 20,
-                                    backgroundColor: ColorName.blueColor,
-                                    child: Icon(
-                                      Icons.check_circle_outline_outlined,
-                                      size: 40,
-                                      color: ColorName.homeWhiteAdd,
-                                    ),
-                                  ),
-                                ),
+                                (currentGroupMember[person.uid] == true)
+                                    ? Container(
+                                        margin: EdgeInsets.only(left: 30),
+                                        child: const CircleAvatar(
+                                          radius: 20,
+                                          backgroundColor: ColorName.blueColor,
+                                          child: Icon(
+                                            Icons.check_circle_outline_outlined,
+                                            size: 40,
+                                            color: ColorName.homeWhiteAdd,
+                                          ),
+                                        ),
+                                      )
+                                    : Container(),
                                 Container(
                                   width: 100,
                                   margin: EdgeInsets.only(top: 104),
@@ -123,8 +137,18 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
                         }),
                   ),
                   InkWell(
-                    onTap: () {
+                    onTap: () async {
+                      await ref.read(groupNotifierProvider.notifier).updateGroupMember(
+                            ref.read(groupNotifierProvider.notifier).currentGroupDetail.uid,
+                            currentGroupMember,
+                          );
+                      ref.read(groupNotifierProvider.notifier).currentGroupDetail.members = currentGroupMember;
                       context.pop();
+                      toastification.show(
+                        title: Text('Thành công cập nhật thông tin'),
+                        style: ToastificationStyle.fillColored,
+                        autoCloseDuration: const Duration(seconds: 3),
+                      );
                     },
                     child: Container(
                       height: 60,
@@ -139,7 +163,7 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
                         ],
                       ),
                       child: Text(
-                        "Thêm",
+                        "Cập nhật",
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           color: ColorName.groupManagementBackGroundButton,

@@ -62,17 +62,6 @@ class _GroupManagementScreenState extends ConsumerState<GroupManagementScreen> {
                       ],
                     );
                   },
-                  // child: Column(
-                  //   children: [
-                  //     teamList(),
-                  //     teamList(),
-                  //     teamList(),
-                  //     teamList(),
-                  //     teamList(),
-                  //     teamList(),
-                  //     closeButton(),
-                  //   ],
-                  // ),
                 ),
               )
             ],
@@ -201,41 +190,46 @@ class _GroupManagementScreenState extends ConsumerState<GroupManagementScreen> {
               child: Row(
                 children: [
                   Expanded(
-                      child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    itemCount: group.members.length,
-                    itemBuilder: (context, index) {
-                      final groupData = group.members.keys.toList();
-                      return Stack(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.only(left: 10, right: 10),
-                            child: PersonAvatar(
-                              person: ref.read(personNotifierProvider.notifier).findPersonWithUid(groupData[index]),
-                              size: 80,
-                              isEditable: false,
-                            ),
-                          ),
-                          Container(
-                            width: 100,
-                            margin: EdgeInsets.only(top: 96),
-                            alignment: Alignment.topCenter,
-                            child: Text(
-                              ref.read(personNotifierProvider.notifier).findPersonWithUid(groupData[index])?.name ?? "",
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                color: ColorName.loginTextColorGray,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      shrinkWrap: true,
+                      itemCount: group.members.length,
+                      itemBuilder: (context, index) {
+                        final groupData = group.members.keys.toList();
+                        if (group.members[groupData[index]] == true) {
+                          return Stack(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.only(left: 10, right: 10),
+                                child: PersonAvatar(
+                                  person: ref.read(personNotifierProvider.notifier).findPersonWithUid(groupData[index]),
+                                  size: 80,
+                                  isEditable: false,
+                                ),
                               ),
-                              maxLines: 1,
-                            ),
-                          )
-                        ],
-                      );
-                    },
-                  ))
+                              Container(
+                                width: 100,
+                                margin: EdgeInsets.only(top: 96),
+                                alignment: Alignment.topCenter,
+                                child: Text(
+                                  ref.read(personNotifierProvider.notifier).findPersonWithUid(groupData[index])?.name ?? "",
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    color: ColorName.loginTextColorGray,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  maxLines: 1,
+                                ),
+                              )
+                            ],
+                          );
+                        } else {
+                          return Container();
+                        }
+                      },
+                    ),
+                  )
                 ],
               ),
             ),

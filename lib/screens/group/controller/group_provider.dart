@@ -52,8 +52,18 @@ class GroupNotifier extends _$GroupNotifier {
   // Update group's member
   Future<void> updateGroupMember(String groupId, Map<String, dynamic> updates) async {
     try {
+      // Do not push the mapItem to firebase if the value is false
+      // Format the updates-input data to remove all the false-value
+      Map<String, dynamic> formatedUpdates = {};
+      updates.forEach((k, v) {
+        if (v) {
+          formatedUpdates[k] = v;
+        }
+      });
+
       final databaseReference = FirebaseDatabase.instance.ref("groups");
-      await databaseReference.child(groupId).child("members").update(updates);
+      // Because of only update true value. Needed to use set instead of update
+      await databaseReference.child(groupId).child("members").set(formatedUpdates);
       // Refresh the list
       await fetchAllGroup();
       state = state + 1;

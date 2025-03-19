@@ -16,7 +16,7 @@ class PersonNotifier extends _$PersonNotifier {
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
   // Person detail
-  late Person currentPersonDetail;
+  Person currentPersonDetail = Person(uid: "", name: "", avtUrl: "", groups: {});
   bool isLoadingImage = false;
 
   @override

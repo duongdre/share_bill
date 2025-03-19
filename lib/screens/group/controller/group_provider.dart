@@ -122,4 +122,18 @@ class GroupNotifier extends _$GroupNotifier {
       print("Error deleting group: $e");
     }
   }
+
+  Future<void> deleteAPersonFromAllGroup(String person) async {
+    try {
+      for (final group in allGroup) {
+        group.members[person] = false;
+        updateGroupMember(group.uid, group.members);
+      }
+      // Refresh the list
+      await fetchAllGroup();
+      state = state + 1;
+    } catch (e) {
+      print("Error deleting person from all group: $e");
+    }
+  }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_bill/models/data_models/person.dart';
+import 'package:share_bill/screens/group/controller/group_provider.dart';
 import 'package:share_bill/screens/home/UI/home_screen.dart';
 import 'package:share_bill/screens/person/UI/person_detail_screen.dart';
 import 'package:share_bill/screens/spent/UI/spent_screen.dart';
@@ -193,6 +194,8 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
               ),
               InkWell(
                 onTap: () {
+                  // Before delete a person, needed to delete all person's present in each group
+                  ref.read(groupNotifierProvider.notifier).deleteAPersonFromAllGroup(person.uid);
                   ref.read(personNotifierProvider.notifier).deletePerson(person.uid);
                 },
                 child: Container(

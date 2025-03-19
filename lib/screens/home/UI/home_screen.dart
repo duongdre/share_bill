@@ -23,6 +23,7 @@ import 'package:uuid/uuid.dart';
 import '../../../gen/colors.gen.dart';
 import '../../../utilities/utils/group_avatar.dart';
 import '../../../utilities/utils/person_avatar.dart';
+import '../../group/UI/group_detail_screen.dart';
 import '../../person/UI/person_detail_screen.dart';
 import '../../person/controller/person_provider.dart';
 
@@ -422,14 +423,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   final group = groups[index];
                   return Stack(
                     children: [
-                      Container(
-                        width: 132,
-                        alignment: Alignment.topCenter,
-                        padding: EdgeInsets.only(left: 10, right: 10),
-                        child: GroupAvatar(
-                          group: group,
-                          size: 80,
-                          isEditable: true,
+                      InkWell(
+                        onTap: () {
+                          ref.read(groupNotifierProvider.notifier).currentGroupDetail = group.copyWith();
+                          context.goNamed(GroupDetailScreen.routeName);
+                        },
+                        child: Container(
+                          width: 132,
+                          alignment: Alignment.topCenter,
+                          padding: EdgeInsets.only(left: 10, right: 10),
+                          child: GroupAvatar(
+                            group: group,
+                            size: 80,
+                            isEditable: true,
+                          ),
                         ),
                       ),
                       Container(

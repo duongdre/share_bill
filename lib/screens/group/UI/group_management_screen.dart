@@ -9,8 +9,8 @@ import 'package:share_bill/screens/spent/UI/spent_screen.dart';
 
 import '../../../gen/colors.gen.dart';
 import '../../../models/data_models/person.dart';
-import '../../../utilities/utils/group_avatar.dart';
-import '../../../utilities/utils/person_avatar.dart';
+import '../../../utilities/utils/avatar_group.dart';
+import '../../../utilities/utils/avatar_person.dart';
 import '../../person/UI/person_detail_screen.dart';
 import '../../person/controller/person_provider.dart';
 import '../controller/group_provider.dart';
@@ -86,7 +86,7 @@ class _GroupManagementScreenState extends ConsumerState<GroupManagementScreen> {
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
                 color: ColorName.homeBlackText,
-                fontSize: 20,
+                fontSize: 16,
                 fontWeight: FontWeight.w500,
                 shadows: <Shadow>[
                   Shadow(
@@ -120,7 +120,7 @@ class _GroupManagementScreenState extends ConsumerState<GroupManagementScreen> {
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   color: ColorName.homeBlackText,
-                  fontSize: 20,
+                  fontSize: 16,
                   fontWeight: FontWeight.w500,
                   shadows: <Shadow>[
                     Shadow(
@@ -166,7 +166,7 @@ class _GroupManagementScreenState extends ConsumerState<GroupManagementScreen> {
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       color: ColorName.homeBlackText,
-                      fontSize: 20,
+                      fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -186,7 +186,7 @@ class _GroupManagementScreenState extends ConsumerState<GroupManagementScreen> {
             ),
             const SizedBox(height: 18),
             SizedBox(
-              height: 116,
+              height: 106,
               child: Row(
                 children: [
                   Expanded(
@@ -201,22 +201,22 @@ class _GroupManagementScreenState extends ConsumerState<GroupManagementScreen> {
                             children: [
                               Container(
                                 padding: EdgeInsets.only(left: 10, right: 10),
-                                child: PersonAvatar(
+                                child: AvatarPerson(
                                   person: ref.read(personNotifierProvider.notifier).findPersonWithUid(groupData[index]),
-                                  size: 80,
+                                  size: 60,
                                   isEditable: false,
                                 ),
                               ),
                               Container(
-                                width: 100,
-                                margin: EdgeInsets.only(top: 96),
+                                width: 80,
+                                margin: EdgeInsets.only(top: 76),
                                 alignment: Alignment.topCenter,
                                 child: Text(
                                   ref.read(personNotifierProvider.notifier).findPersonWithUid(groupData[index])?.name ?? "",
                                   overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
                                     color: ColorName.loginTextColorGray,
-                                    fontSize: 16,
+                                    fontSize: 12,
                                     fontWeight: FontWeight.w400,
                                   ),
                                   maxLines: 1,
@@ -233,7 +233,6 @@ class _GroupManagementScreenState extends ConsumerState<GroupManagementScreen> {
                 ],
               ),
             ),
-            totalSpentReceive(),
             SizedBox(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -258,7 +257,7 @@ class _GroupManagementScreenState extends ConsumerState<GroupManagementScreen> {
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           color: ColorName.homeBlackText,
-                          fontSize: 20,
+                          fontSize: 16,
                           fontWeight: FontWeight.w500,
                           shadows: <Shadow>[
                             Shadow(
@@ -277,43 +276,6 @@ class _GroupManagementScreenState extends ConsumerState<GroupManagementScreen> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget totalSpentReceive() {
-    return Row(
-      children: [
-        Expanded(
-          child: Container(
-            alignment: Alignment.center,
-            margin: EdgeInsets.only(top: 16, bottom: 16),
-            child: Text(
-              "-\$xxx.xxx",
-              style: const TextStyle(
-                color: ColorName.homeRedText,
-                fontSize: 32,
-                fontWeight: FontWeight.w700,
-                letterSpacing: -2,
-              ),
-            ),
-          ),
-        ),
-        Expanded(
-          child: Container(
-            alignment: Alignment.center,
-            margin: EdgeInsets.only(bottom: 16),
-            child: Text(
-              "+\$xxx.xxx",
-              style: const TextStyle(
-                color: ColorName.spentBackGroundReceiveDialog,
-                fontSize: 32,
-                fontWeight: FontWeight.w700,
-                letterSpacing: -2,
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 
@@ -339,7 +301,7 @@ class _GroupManagementScreenState extends ConsumerState<GroupManagementScreen> {
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(
             color: ColorName.homeWhiteButtonBg,
-            fontSize: 20,
+            fontSize: 16,
             fontWeight: FontWeight.w400,
             shadows: <Shadow>[
               Shadow(

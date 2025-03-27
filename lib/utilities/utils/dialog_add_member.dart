@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_bill/gen/colors.gen.dart';
 import 'package:share_bill/utilities/utils/enum.dart';
-import 'package:share_bill/utilities/utils/person_avatar.dart';
+import 'package:share_bill/utilities/utils/avatar_person.dart';
 import 'package:toastification/toastification.dart';
 
 import '../../models/data_models/person.dart';
@@ -61,12 +61,12 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
                 children: [
                   Container(
                     padding: const EdgeInsets.only(top: 16.0, left: 20.0, right: 20.0),
-                    child: Text(
-                      "Người thực hiện khoản chi này",
+                    child: const Text(
+                      "Thêm người vào nhóm",
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         color: ColorName.homeWhiteButtonBg,
-                        fontSize: 20,
+                        fontSize: 16,
                         fontWeight: FontWeight.w400,
                         shadows: <Shadow>[
                           Shadow(
@@ -96,7 +96,7 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
                               children: [
                                 Container(
                                   padding: EdgeInsets.only(top: 16, left: 10, right: 10),
-                                  child: PersonAvatar(
+                                  child: AvatarPerson(
                                     person: person,
                                     size: 80,
                                     isEditable: false,
@@ -125,7 +125,7 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
                                     overflow: TextOverflow.ellipsis,
                                     style: const TextStyle(
                                       color: ColorName.loginTextColorGray,
-                                      fontSize: 16,
+                                      fontSize: 12,
                                       fontWeight: FontWeight.w400,
                                     ),
                                     maxLines: 1,
@@ -138,17 +138,27 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
                   ),
                   InkWell(
                     onTap: () async {
-                      await ref.read(groupNotifierProvider.notifier).updateGroupMember(
-                            ref.read(groupNotifierProvider.notifier).currentGroupDetail.uid,
-                            currentGroupMember,
-                          );
-                      ref.read(groupNotifierProvider.notifier).currentGroupDetail.members = currentGroupMember;
-                      context.pop();
-                      toastification.show(
-                        title: Text('Thành công cập nhật thông tin'),
-                        style: ToastificationStyle.fillColored,
-                        autoCloseDuration: const Duration(seconds: 3),
-                      );
+                      if (ref.read(groupNotifierProvider.notifier).currentGroupDetail.uid.isEmpty) {
+                        ref.read(groupNotifierProvider.notifier).updateGroupMemberOffline(currentGroupMember);
+                        context.pop();
+                        toastification.show(
+                          title: Text('Thành công cập nhật thông tin'),
+                          style: ToastificationStyle.fillColored,
+                          autoCloseDuration: const Duration(seconds: 3),
+                        );
+                      } else {
+                        await ref.read(groupNotifierProvider.notifier).updateGroupMember(
+                              ref.read(groupNotifierProvider.notifier).currentGroupDetail.uid,
+                              currentGroupMember,
+                            );
+                        ref.read(groupNotifierProvider.notifier).currentGroupDetail.members = currentGroupMember;
+                        context.pop();
+                        toastification.show(
+                          title: Text('Thành công cập nhật thông tin'),
+                          style: ToastificationStyle.fillColored,
+                          autoCloseDuration: const Duration(seconds: 3),
+                        );
+                      }
                     },
                     child: Container(
                       height: 60,
@@ -167,7 +177,7 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           color: ColorName.groupManagementBackGroundButton,
-                          fontSize: 20,
+                          fontSize: 16,
                           fontWeight: FontWeight.w400,
                           shadows: <Shadow>[
                             Shadow(

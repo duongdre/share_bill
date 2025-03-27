@@ -2,6 +2,7 @@
 <resources>
     <color name="whiteColor">#fefefd</color>
     <color name="blueColor">#2c74fe</color>
+    <color name="greenColor">#A231E514</color>
     <color name="blackColor">#000000</color>
 
     <color name="loginIconColorGray">#636268</color>

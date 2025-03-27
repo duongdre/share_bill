@@ -62,7 +62,7 @@ class PersonNotifier extends _$PersonNotifier {
     state = state + 1;
   }
 
-  Future<void> uploadAvatarForNewUser() async {
+  Future<void> uploadAvatarForUser_NewOrExisted() async {
     try {
       // Pick image from gallery
       final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -72,7 +72,9 @@ class PersonNotifier extends _$PersonNotifier {
 
       final File imageFile = File(pickedFile.path);
 
-      currentPersonDetail.uid = const Uuid().v4();
+      if (currentPersonDetail.uid.isEmpty) {
+        currentPersonDetail.uid = const Uuid().v4();
+      }
 
       // Create a unique filename using UUID
       final fileName = '${currentPersonDetail.uid}_${DateTime.now().millisecondsSinceEpoch}';

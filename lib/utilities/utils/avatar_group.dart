@@ -3,22 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_bill/gen/fonts.gen.dart';
 import 'package:share_bill/models/data_models/person.dart';
-import 'package:share_bill/utilities/utils/person_avatar.dart';
+import 'package:share_bill/utilities/utils/avatar_person.dart';
 import '../../gen/colors.gen.dart';
 import '../../models/data_models/group.dart';
 import '../../screens/person/controller/person_provider.dart';
 
-class GroupAvatar extends ConsumerWidget {
+class AvatarGroup extends ConsumerWidget {
   final Group group;
   final double size;
   final bool isEditable;
 
-  const GroupAvatar({
-    Key? key,
+  const AvatarGroup({
+    super.key,
     required this.group,
     this.size = 50.0,
     this.isEditable = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -31,7 +31,7 @@ class GroupAvatar extends ConsumerWidget {
 
     if (countMember == 1) {
       // Use CachedNetworkImage to load and cache the avatar
-      avatarWidget = PersonAvatar(
+      avatarWidget = AvatarPerson(
         person: personNotifier.findPersonWithUid(group.members.keys.toList()[0]),
         size: size,
         isEditable: false,
@@ -40,14 +40,14 @@ class GroupAvatar extends ConsumerWidget {
       // Use CachedNetworkImage to load and cache the avatar
       avatarWidget = Stack(
         children: [
-          PersonAvatar(
+          AvatarPerson(
             person: personNotifier.findPersonWithUid(group.members.keys.toList()[1]),
             size: size,
             isEditable: false,
           ),
           Container(
             margin: EdgeInsets.only(left: 16),
-            child: PersonAvatar(
+            child: AvatarPerson(
               person: personNotifier.findPersonWithUid(group.members.keys.toList()[0]),
               size: size,
               isEditable: false,
@@ -60,7 +60,7 @@ class GroupAvatar extends ConsumerWidget {
       avatarWidget = Stack(
         children: [
           Container(
-            child: PersonAvatar(
+            child: AvatarPerson(
               person: personNotifier.findPersonWithUid(group.members.keys.toList()[2]),
               size: size,
               isEditable: false,
@@ -68,7 +68,7 @@ class GroupAvatar extends ConsumerWidget {
           ),
           Container(
             margin: EdgeInsets.only(left: 16),
-            child: PersonAvatar(
+            child: AvatarPerson(
               person: personNotifier.findPersonWithUid(group.members.keys.toList()[1]),
               size: size,
               isEditable: false,
@@ -76,7 +76,7 @@ class GroupAvatar extends ConsumerWidget {
           ),
           Container(
             margin: EdgeInsets.only(left: 32),
-            child: PersonAvatar(
+            child: AvatarPerson(
               person: personNotifier.findPersonWithUid(group.members.keys.toList()[0]),
               size: size,
               isEditable: false,
@@ -89,7 +89,7 @@ class GroupAvatar extends ConsumerWidget {
       avatarWidget = Stack(
         children: [
           Container(
-            child: PersonAvatar(
+            child: AvatarPerson(
               person: personNotifier.findPersonWithUid(group.members.keys.toList()[2]),
               size: size,
               isEditable: false,
@@ -97,7 +97,7 @@ class GroupAvatar extends ConsumerWidget {
           ),
           Container(
             margin: EdgeInsets.only(left: 16),
-            child: PersonAvatar(
+            child: AvatarPerson(
               person: personNotifier.findPersonWithUid(group.members.keys.toList()[1]),
               size: size,
               isEditable: false,
@@ -105,26 +105,22 @@ class GroupAvatar extends ConsumerWidget {
           ),
           Container(
             margin: EdgeInsets.only(left: 32),
-            child: PersonAvatar(
+            child: AvatarPerson(
               person: personNotifier.findPersonWithUid(group.members.keys.toList()[0]),
               size: size,
               isEditable: false,
             ),
           ),
-          Container(
-            alignment: Alignment.centerRight,
-            margin: EdgeInsets.only(left: 32),
-            child: CircleAvatar(
-              radius: size / 4,
-              backgroundColor: ColorName.homeGrayHold,
-              child: Text(
-                "+ ${countMember - 3} ",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontFamily: FontFamily.raleway,
-                  fontStyle: FontStyle.italic,
-                  fontWeight: FontWeight.bold
-                ),
+          CircleAvatar(
+            radius: size / 4,
+            backgroundColor: ColorName.homeGrayHold,
+            child: Text(
+              "+ ${countMember - 3} ",
+              style: TextStyle(
+                fontSize: 16,
+                fontFamily: FontFamily.raleway,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.bold
               ),
             ),
           )

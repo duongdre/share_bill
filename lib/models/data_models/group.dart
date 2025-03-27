@@ -10,7 +10,7 @@ class Group {
 
   String uid;
   String name;
-  int? createdAt;
+  num? createdAt = DateTime.now().millisecondsSinceEpoch;
   Map<String, bool> members;
 
   int countMember() {
@@ -28,7 +28,7 @@ class Group {
     return Group(
       uid: json['uid'],
       name: json['name'],
-      createdAt: json['createdAt'],
+      createdAt: json['createdAt'] ?? DateTime.now().millisecondsSinceEpoch,
       members: (json['members'] as Map<String, dynamic>?)?.map(
             (key, value) => MapEntry(key, value as bool),
           ) ??
@@ -41,7 +41,7 @@ class Group {
     return {
       'uid': uid,
       'name': name,
-      'createdAt': createdAt,
+      'createdAt': createdAt ?? DateTime.now().millisecondsSinceEpoch,
       'members': members,
     };
   }
@@ -50,29 +50,15 @@ class Group {
   Group copyWith({
     String? uid,
     String? name,
-    int? createdAt,
+    num? createdAt,
     Map<String, bool>? members,
   }) {
     return Group(
       uid: this.uid,
       name: name ?? this.name,
-      createdAt: createdAt ?? this.createdAt,
+      createdAt: createdAt ?? this.createdAt ?? DateTime.now().millisecondsSinceEpoch,
       members: members ?? this.members,
     );
-  }
-
-  // Add a member to this group
-  Group addMember(String personId) {
-    final updatedMembers = Map<String, bool>.from(members);
-    updatedMembers[personId] = true;
-    return copyWith(members: updatedMembers);
-  }
-
-  // Remove a member from this group
-  Group removeMember(String personId) {
-    final updatedMembers = Map<String, bool>.from(members);
-    updatedMembers.remove(personId);
-    return copyWith(members: updatedMembers);
   }
 
   // Check if a person is a member of this group
@@ -82,6 +68,11 @@ class Group {
 
   // Get the number of members in this group
   int get memberCount => members.length;
+
+  String getNameForSpent() {
+    if (name.isEmpty) name = "NaN";
+    return name;
+  }
 
   @override
   String toString() {
@@ -93,7 +84,7 @@ class Group {
     return Group(
       uid: map['uid'] ?? '',
       name: map['name'] ?? '',
-      createdAt: map['createdAt'],
+      createdAt: map['createdAt'] ?? DateTime.now().millisecondsSinceEpoch,
       members: (map['members'] as Map<dynamic, dynamic>?)?.map(
             (key, value) => MapEntry(key, value as bool),
           ) ??

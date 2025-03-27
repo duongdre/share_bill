@@ -6,9 +6,9 @@ import 'package:share_bill/screens/group/UI/group_detail_screen.dart';
 import 'package:share_bill/screens/group/UI/group_management_screen.dart';
 import 'package:share_bill/screens/person/UI/person_management_screen.dart';
 import 'package:share_bill/screens/spent/UI/spent_screen.dart';
-import 'package:share_bill/screens/transaction/UI/transaction_management_screen.dart';
-import 'package:share_bill/utilities/utils/dialogAddMember.dart';
+import 'package:share_bill/utilities/utils/dialog_add_member.dart';
 import '../../models/data_models/person.dart';
+import '../../screens/bill/UI/bill_management_screen.dart';
 import '../../screens/home/UI/home_screen.dart';
 import '../../screens/person/UI/person_detail_screen.dart';
 import '../../screens/splash/UI/splash_screen.dart';
@@ -47,6 +47,12 @@ final routerProvider = Provider<GoRouter>(
         builder: (context, state) => const HomeScreen(),
         routes: [
           GoRoute(
+            path: SpentScreen.routePathFromHome,
+            name: SpentScreen.routeNameFromHome,
+            builder: (context, state) => const SpentScreen(),
+            routes: [],
+          ),
+          GoRoute(
             path: GroupManagementScreen.routePath,
             name: GroupManagementScreen.routeName,
             builder: (context, state) => const GroupManagementScreen(),
@@ -73,10 +79,17 @@ final routerProvider = Provider<GoRouter>(
             ],
           ),
           GoRoute(
-            path: TransactionManagementScreen.routePath,
-            name: TransactionManagementScreen.routeName,
-            builder: (context, state) => const TransactionManagementScreen(),
-            routes: [],
+            path: BillManagementScreen.routePath,
+            name: BillManagementScreen.routeName,
+            builder: (context, state) => const BillManagementScreen(),
+            routes: [
+              GoRoute(
+                path: SpentScreen.routePathFromBillManagement,
+                name: SpentScreen.routeNameFromBillManagement,
+                builder: (context, state) => const SpentScreen(),
+                routes: [],
+              ),
+            ],
           ),
         ],
       ),

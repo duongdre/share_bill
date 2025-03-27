@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../models/data_models/bill.dart';
 import '../../../models/data_models/group.dart';
 
 part 'group_provider.g.dart';
@@ -13,6 +14,7 @@ part 'group_provider.g.dart';
 @riverpod
 class GroupNotifier extends _$GroupNotifier {
   List<Group> allGroup = [];
+  Map<dynamic, dynamic> allGroupMapping = {};
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
   Group currentGroupDetail = Group(uid: "", name: "", members: {});
@@ -21,6 +23,15 @@ class GroupNotifier extends _$GroupNotifier {
   int build() {
     state = 0;
     return state;
+  }
+
+  List<Group> getAllGroupOfAPerson(String personId) {
+    List<Group> allBillOfGroup = allGroup.where((group) => (group.members.keys.contains(personId)) && (group.members[personId] == true)).toList();
+    return allBillOfGroup;
+  }
+
+  Group? findGroupWithUid(String groupId) {
+    return Group.fromMap(allGroupMapping[groupId] as Map);
   }
 
   void clearNewGroupData() {
@@ -33,6 +44,7 @@ class GroupNotifier extends _$GroupNotifier {
       final snapshot = await databaseReference.get().timeout(const Duration(seconds: 30));
 
       allGroup.clear();
+      allGroupMapping.clear();
 
       if (snapshot.exists) {
         for (final data in snapshot.children) {
@@ -40,12 +52,18 @@ class GroupNotifier extends _$GroupNotifier {
           print('group data ${group.toJson()}');
           allGroup.add(group);
         }
+        allGroupMapping = snapshot.value as Map<dynamic, dynamic>;
       } else {
         print('No data available.');
       }
     } catch (error) {
       print('Error fetching data: $error');
     }
+    state = state + 1;
+  }
+
+  Future<void> updateGroupMemberOffline(Map<String, bool> newGroupMember) async {
+    currentGroupDetail.members = newGroupMember;
     state = state + 1;
   }
 
@@ -89,7 +107,6 @@ class GroupNotifier extends _$GroupNotifier {
       if (currentGroupDetail.uid.isEmpty) return;
       final databaseReference = FirebaseDatabase.instance.ref("groups");
       await databaseReference.child(newGroup.uid).set(newGroup.toJson());
-      clearNewGroupData();
       // Refresh the list
       await fetchAllGroup();
       state = state + 1;
@@ -123,10 +140,10 @@ class GroupNotifier extends _$GroupNotifier {
     }
   }
 
-  Future<void> deleteAPersonFromAllGroup(String person) async {
+  Future<void> deleteAPersonFromAllGroup(String personId) async {
     try {
       for (final group in allGroup) {
-        group.members[person] = false;
+        group.members[personId] = false;
         updateGroupMember(group.uid, group.members);
       }
       // Refresh the list

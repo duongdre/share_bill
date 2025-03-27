@@ -1,46 +1,70 @@
+import 'dart:ffi';
+
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:share_bill/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:share_bill/gen/fonts.gen.dart';
+import 'package:share_bill/models/data_models/group.dart';
+import 'package:share_bill/screens/group/controller/group_provider.dart';
 import 'package:share_bill/screens/home/UI/home_screen.dart';
-import 'package:share_bill/screens/person/UI/person_management_screen.dart';
-import 'package:share_bill/screens/transaction/UI/transaction_management_screen.dart';
-import 'package:share_bill/utilities/utils/dialogConfirmExpanseCollection.dart';
+import 'package:share_bill/screens/person/controller/person_provider.dart';
+import 'package:share_bill/utilities/utils/dialog_choose_group.dart';
+import 'package:share_bill/utilities/utils/dialog_choose_person.dart';
 import 'package:share_bill/utilities/utils/enum.dart';
+import 'package:share_bill/utilities/utils/avatar_group.dart';
 
 import '../../../gen/colors.gen.dart';
+import '../../../utilities/utils/utils.dart';
+import '../../bill/UI/bill_management_screen.dart';
+import '../../bill/controller/bill_provider.dart';
 
 class SpentScreen extends ConsumerStatefulWidget {
   const SpentScreen({super.key});
 
-  static const routeName = 'spent';
-  static const routePath = '/$routeName';
+  static const routeNameFromHome = '${HomeScreen.routePath}/spent';
+  static const routePathFromHome = '/spent';
+
+  static const routeNameFromBillManagement = '${BillManagementScreen.routePath}/spent';
+  static const routePathFromBillManagement = '/spent';
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _SpentScreenState();
 }
 
 class _SpentScreenState extends ConsumerState<SpentScreen> {
+  late TextEditingController amountController;
+  int currentAmount = 0;
+
   @override
   void initState() {
+    amountController = TextEditingController(text: ref.read(groupNotifierProvider.notifier).currentGroupDetail.name);
+
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
     super.initState();
   }
 
   @override
+  void dispose() {
+    amountController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    ref.watch(billNotifierProvider);
+    final group = ref.read(billNotifierProvider.notifier).currentSpentGroup;
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: ColorName.spentBackGround,
         ),
         child: SafeArea(
           child: Column(
             children: [
               header(),
-              chooseGroup(),
+              chooseGroup(group),
               Expanded(
                 child: amout(),
               ),
@@ -80,7 +104,7 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   color: ColorName.homeBlackText,
-                  fontSize: 20,
+                  fontSize: 16,
                   fontWeight: FontWeight.w500,
                   shadows: <Shadow>[
                     Shadow(
@@ -99,7 +123,7 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               color: ColorName.homeBlackText,
-              fontSize: 20,
+              fontSize: 16,
               fontWeight: FontWeight.w500,
               shadows: <Shadow>[
                 Shadow(
@@ -130,7 +154,7 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   color: ColorName.homeBlackText,
-                  fontSize: 20,
+                  fontSize: 16,
                   fontWeight: FontWeight.w500,
                   shadows: <Shadow>[
                     Shadow(
@@ -149,12 +173,12 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
   }
 
   // chooseGroup
-  Widget chooseGroup() {
+  Widget chooseGroup(Group group) {
     return Container(
       height: 176,
-      padding: EdgeInsets.only(top: 16, bottom: 16, left: 16, right: 16),
-      margin: EdgeInsets.only(left: 16, right: 16),
-      decoration: BoxDecoration(
+      padding: const EdgeInsets.only(top: 16, bottom: 16, left: 16, right: 16),
+      margin: const EdgeInsets.only(left: 16, right: 16),
+      decoration: const BoxDecoration(
         color: ColorName.homeWhiteButtonBg,
         borderRadius: BorderRadius.all(Radius.circular(20)),
         boxShadow: [
@@ -168,13 +192,13 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
             children: [
               Expanded(
                 child: Container(
-                  padding: EdgeInsets.only(right: 16),
+                  padding: const EdgeInsets.only(right: 16),
                   child: Text(
-                    "Mèo đuôi dài óng ánh ",
+                    group.getNameForSpent(),
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       color: ColorName.homeBlackText,
-                      fontSize: 20,
+                      fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -182,12 +206,18 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
               ),
             ],
           ),
-          Divider(),
-          SizedBox(height: 8),
+          const Divider(),
+          const SizedBox(height: 8),
           Row(
             children: [
-              groupAvts(),
-              Expanded(child: groupInfos()),
+              Container(
+                margin: const EdgeInsets.only(right: 16),
+                child: AvatarGroup(
+                  group: group,
+                  size: 80,
+                ),
+              ),
+              Expanded(child: groupInfos(group)),
             ],
           )
         ],
@@ -195,52 +225,7 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
     );
   }
 
-  Widget groupAvts() {
-    return Container(
-      margin: EdgeInsets.only(right: 16),
-      child: Stack(
-        children: [
-          Container(
-            height: 80,
-            width: 80,
-            decoration: BoxDecoration(
-              color: ColorName.homeWhiteAdd,
-              borderRadius: BorderRadius.all(Radius.circular(100)),
-              boxShadow: [
-                BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(2, 2)),
-              ],
-            ),
-          ),
-          Container(
-            height: 80,
-            width: 80,
-            margin: EdgeInsets.only(top: 4, left: 4),
-            decoration: BoxDecoration(
-              color: ColorName.homeWhiteAdd,
-              borderRadius: BorderRadius.all(Radius.circular(100)),
-              boxShadow: [
-                BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(2, 2)),
-              ],
-            ),
-          ),
-          Container(
-            height: 80,
-            width: 80,
-            margin: EdgeInsets.only(top: 8, left: 8),
-            decoration: BoxDecoration(
-              color: ColorName.homeWhiteAdd,
-              borderRadius: BorderRadius.all(Radius.circular(100)),
-              boxShadow: [
-                BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(2, 2)),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget groupInfos() {
+  Widget groupInfos(Group group) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -251,38 +236,42 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Expanded(
-                child: Container(
-                  child: Text(
-                    "Hương, Dương, Hưng, Đăng, Hùng, Đức, Ngọc, Tú, Chiến, Nghĩa",
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: ColorName.homeBlackText,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    maxLines: 2,
+                child: Text(
+                  ref.read(billNotifierProvider.notifier).getAllMemberNameOfChoseGroup(),
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: ColorName.homeBlackText,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
                   ),
+                  maxLines: 2,
                 ),
               ),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (_) => DialogChooseGroup(),
+                    barrierColor: ColorName.blackColor.withOpacity(0.15),
+                  );
+                },
                 child: Container(
                   height: 40,
                   width: 80,
                   alignment: Alignment.center,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: ColorName.spentBackGroundButton,
                     borderRadius: const BorderRadius.all(Radius.circular(100)),
                     boxShadow: [
                       BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 1, offset: Offset(1, 1)),
                     ],
                   ),
-                  child: Text(
-                    "Change",
+                  child: const Text(
+                    "Nhóm",
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       color: ColorName.homeBlackText,
-                      fontSize: 16,
+                      fontSize: 12,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -294,11 +283,12 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
         Container(
           alignment: Alignment.topLeft,
           child: Text(
-            "Total Spent: \$521,098",
+            "Total Spent: \$NaN",
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               color: ColorName.homeBlackText,
-              fontSize: 18,
+              fontSize: 12,
+              fontStyle: FontStyle.italic,
               fontWeight: FontWeight.w400,
             ),
           ),
@@ -312,12 +302,13 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
     return Container(
       alignment: Alignment.center,
       padding: EdgeInsets.only(top: 16),
-      child: Text(
-        "\$12.900.000",
-        overflow: TextOverflow.ellipsis,
+      child: TextField(
+        controller: amountController,
+        textAlign: TextAlign.center,
+        cursorColor: ColorName.homeBlackText,
         style: const TextStyle(
           color: ColorName.homeBlackText,
-          fontSize: 60,
+          fontSize: 54,
           fontWeight: FontWeight.w500,
           shadows: <Shadow>[
             Shadow(
@@ -326,6 +317,24 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
               color: ColorName.homeGrayBalance,
             ),
           ],
+        ),
+        decoration: const InputDecoration(
+          border: InputBorder.none,
+          enabled: false,
+          hintText: 'Nhập số tiền',
+          hintStyle: TextStyle(
+            color: ColorName.loginIconColorGray,
+            fontSize: 54,
+            fontStyle: FontStyle.italic,
+            fontWeight: FontWeight.w400,
+            shadows: <Shadow>[
+              Shadow(
+                offset: Offset(2.0, 2.0),
+                blurRadius: 4.0,
+                color: ColorName.homeGrayBalance,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -338,15 +347,15 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
     return Container(
       height: 308,
       alignment: Alignment.center,
-      margin: EdgeInsets.only(top: 16, bottom: 8, left: 16, right: 16),
-      decoration: BoxDecoration(
+      margin: const EdgeInsets.only(top: 16, bottom: 8, left: 16, right: 16),
+      decoration: const BoxDecoration(
         color: ColorName.homeWhiteButtonBg,
-        borderRadius: const BorderRadius.all(Radius.circular(20)),
+        borderRadius: BorderRadius.all(Radius.circular(20)),
         boxShadow: [
           BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
         ],
       ),
-      padding: EdgeInsets.only(top: 16, bottom: 16, left: 16, right: 16),
+      padding: const EdgeInsets.only(top: 16, bottom: 16, left: 16, right: 16),
       child: Column(
         children: [
           for (int item1 in [0, 1, 2, 3])
@@ -356,13 +365,22 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
                   Expanded(
                     child: InkWell(
                       onTap: () {
-                        print(item2);
+                        print(numpadData[item2 + item1 * 3 - 1]);
+                        final number = numpadData[item2 + item1 * 3 - 1];
+                        if (number == "000") {
+                          currentAmount = currentAmount * 1000;
+                        } else if (isNumeric(number)) {
+                          currentAmount = currentAmount * 10 + int.parse(number);
+                        } else {
+                          currentAmount = currentAmount ~/ 10;
+                        }
+                        amountController.text = NumberFormat.currency(locale: "vi_VN", symbol: "Đ").format(currentAmount);
                       },
                       child: Container(
                         height: 60,
-                        margin: EdgeInsets.all(4),
+                        margin: const EdgeInsets.all(4),
                         alignment: Alignment.center,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: ColorName.spentBackGroundButton,
                           borderRadius: const BorderRadius.all(Radius.circular(100)),
                           boxShadow: [
@@ -374,7 +392,7 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             color: ColorName.homeBlackText,
-                            fontSize: 20,
+                            fontSize: 16,
                             fontWeight: FontWeight.w500,
                             shadows: <Shadow>[
                               Shadow(
@@ -399,9 +417,10 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
   Widget spentButton() {
     return InkWell(
       onTap: () {
+        ref.read(billNotifierProvider.notifier).changeAmount(currentAmount);
         showDialog(
           context: context,
-          builder: (_) => DialogConfirmExpanseCollection(ExpanseCollection.expanse),
+          builder: (_) => DialogChoosePerson(),
           barrierColor: ColorName.blackColor.withOpacity(0.15),
         );
       },

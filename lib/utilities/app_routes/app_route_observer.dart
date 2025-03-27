@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:share_bill/screens/bill/controller/bill_provider.dart';
 import 'package:share_bill/screens/group/controller/group_provider.dart';
 import '../../screens/person/controller/person_provider.dart';
 
@@ -20,6 +21,9 @@ class AppRouteObserver extends NavigatorObserver {
     }
     if (route.settings.name == 'group_detail') {
       ref.read(groupNotifierProvider.notifier).clearNewGroupData();
+    }
+    if (route.settings.name == '/home/spent' || route.settings.name == '/bill_management/spent') {
+      ref.read(billNotifierProvider.notifier).removeCurrentSpent();
     }
   }
 

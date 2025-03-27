@@ -3,8 +3,10 @@ import 'dart:math';
 
 import 'package:go_router/go_router.dart';
 import 'package:share_bill/gen/assets.gen.dart';
+import 'package:share_bill/models/data_models/bill.dart';
 import 'package:share_bill/models/data_models/group.dart';
 import 'package:share_bill/models/data_models/person.dart';
+import 'package:share_bill/screens/bill/controller/bill_provider.dart';
 import 'package:share_bill/screens/group/UI/group_management_screen.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -17,12 +19,13 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_bill/screens/group/controller/group_provider.dart';
 import 'package:share_bill/screens/person/UI/person_management_screen.dart';
 import 'package:share_bill/screens/spent/UI/spent_screen.dart';
-import 'package:share_bill/screens/transaction/UI/transaction_management_screen.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../gen/colors.gen.dart';
-import '../../../utilities/utils/group_avatar.dart';
-import '../../../utilities/utils/person_avatar.dart';
+import '../../../utilities/utils/avatar_dialog.dart';
+import '../../../utilities/utils/avatar_group.dart';
+import '../../../utilities/utils/avatar_person.dart';
+import '../../bill/UI/bill_management_screen.dart';
 import '../../group/UI/group_detail_screen.dart';
 import '../../person/UI/person_detail_screen.dart';
 import '../../person/controller/person_provider.dart';
@@ -56,6 +59,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       // Get the notifier and fetch all person data
       await ref.read(personNotifierProvider.notifier).fetchAllPerson();
       await ref.read(groupNotifierProvider.notifier).fetchAllGroup();
+      await ref.read(billNotifierProvider.notifier).fetchAllBill();
     } catch (e) {
       print('Error loading initial data: $e');
       // You could show an error snackbar here
@@ -72,8 +76,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     ref.watch(personNotifierProvider);
     ref.watch(groupNotifierProvider);
+    ref.watch(billNotifierProvider);
     final persons = ref.read(personNotifierProvider.notifier).allPerson;
     final groups = ref.read(groupNotifierProvider.notifier).allGroup;
+    final bills = ref.read(billNotifierProvider.notifier).getFirst5Bills();
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -95,7 +101,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               balance(context),
                               sendReceiveAndFriends(persons),
                               groupList(groups),
-                              historyTransaction(),
+                              historyTransaction(bills),
                             ],
                           ),
                         ),
@@ -111,15 +117,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget header() {
     return InkWell(
       onTap: () {
-        // ref.read(groupNotifierProvider.notifier).addNewGroup(Group(
-        //       uid: Uuid().v4(),
-        //       name: "Testing 2",
-        //       createdAt: DateTime.now().millisecondsSinceEpoch,
-        //       members: {
-        //         "11fbed45-94b8-4e85-97a6-27b2612ebbbb": true,
-        //         "cd032d1b-24c9-4c25-9ba0-03f87e21c4c0": true
-        //       },
-        //     ));
+        // ref.read(billNotifierProvider.notifier).addNewBill(
+        //       Bill(
+        //         uid: Uuid().v4(),
+        //         groupId: "7f6fc0e2-dc64-48bd-a332-855aa0e45f4d",
+        //         personId: "77ad1052-8407-4d0d-baf7-6ae4a8c4ac54",
+        //         amount: 2500000,
+        //         description: "",
+        //         createdAt: DateTime.now().millisecondsSinceEpoch,
+        //       ),
+        //     );
       },
       child: SizedBox(
         height: 100,
@@ -165,7 +172,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             "Duong's ${AppLocalizations.of(context).homeTotalSpent}",
             style: const TextStyle(
               color: ColorName.homeGrayBalance,
-              fontSize: 16,
+              fontSize: 12,
               fontWeight: FontWeight.w400,
             ),
           ),
@@ -174,7 +181,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             "\$${0}",
             style: const TextStyle(
               color: ColorName.blackColor,
-              fontSize: 48,
+              fontSize: 44,
               fontWeight: FontWeight.w700,
               letterSpacing: -2,
             ),
@@ -192,7 +199,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           children: [
             InkWell(
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => SpentScreen()));
+                context.goNamed(SpentScreen.routeNameFromHome);
               },
               child: Container(
                 height: 60,
@@ -216,7 +223,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       "Chi thêm",
                       style: const TextStyle(
                         color: ColorName.homeBlackText,
-                        fontSize: 24,
+                        fontSize: 20,
                         fontWeight: FontWeight.w400,
                       ),
                     )
@@ -226,7 +233,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
             InkWell(
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => SpentScreen()));
+                context.goNamed(SpentScreen.routeNameFromHome);
               },
               child: Container(
                 height: 60,
@@ -250,7 +257,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       "Nhận thêm",
                       style: const TextStyle(
                         color: ColorName.homeBlackText,
-                        fontSize: 24,
+                        fontSize: 20,
                         fontWeight: FontWeight.w400,
                       ),
                     )
@@ -261,7 +268,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ],
         ),
         Container(
-          height: 200,
+          height: 160,
           width: double.infinity,
           padding: EdgeInsets.only(top: 16, bottom: 16, left: 16, right: 16),
           margin: EdgeInsets.only(top: 16, bottom: 16, left: 16, right: 16),
@@ -281,7 +288,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       color: ColorName.homeBlackText,
-                      fontSize: 20,
+                      fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -297,7 +304,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         decoration: TextDecoration.underline,
                         decorationStyle: TextDecorationStyle.double,
                         color: ColorName.homeBlackText,
-                        fontSize: 18,
+                        fontSize: 14,
                         // fontWeight: FontWeight.w500,
                         shadows: <Shadow>[
                           Shadow(
@@ -328,23 +335,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             },
                             child: Container(
                               padding: EdgeInsets.only(left: 10, right: 10),
-                              child: PersonAvatar(
+                              child: AvatarPerson(
                                 person: person,
-                                size: 80,
+                                size: 60,
                                 isEditable: false,
                               ),
                             ),
                           ),
                           Container(
-                            width: 100,
-                            margin: EdgeInsets.only(top: 96),
+                            width: 80,
+                            margin: EdgeInsets.only(top: 76),
                             alignment: Alignment.topCenter,
                             child: Text(
                               person.name,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 color: ColorName.loginTextColorGray,
-                                fontSize: 16,
+                                fontSize: 12,
                                 fontWeight: FontWeight.w400,
                               ),
                               maxLines: 1,
@@ -363,7 +370,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Widget groupList(List<Group> groups) {
     return Container(
-      height: 200,
+      height: 160,
       width: double.infinity,
       padding: EdgeInsets.only(top: 16, bottom: 16, left: 16, right: 16),
       margin: EdgeInsets.only(left: 16, right: 16),
@@ -383,7 +390,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   color: ColorName.homeBlackText,
-                  fontSize: 20,
+                  fontSize: 16,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -399,7 +406,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     decoration: TextDecoration.underline,
                     decorationStyle: TextDecorationStyle.double,
                     color: ColorName.homeBlackText,
-                    fontSize: 18,
+                    fontSize: 14,
                     // fontWeight: FontWeight.w500,
                     shadows: <Shadow>[
                       Shadow(
@@ -429,26 +436,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           context.goNamed(GroupDetailScreen.routeName);
                         },
                         child: Container(
-                          width: 132,
+                          width: 112,
                           alignment: Alignment.topCenter,
                           padding: EdgeInsets.only(left: 10, right: 10),
-                          child: GroupAvatar(
+                          child: AvatarGroup(
                             group: group,
-                            size: 80,
+                            size: 60,
                             isEditable: true,
                           ),
                         ),
                       ),
                       Container(
-                        width: 132,
-                        margin: EdgeInsets.only(top: 96),
+                        width: 112,
+                        margin: EdgeInsets.only(top: 76),
                         alignment: Alignment.topCenter,
                         child: Text(
                           group.name,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             color: ColorName.loginTextColorGray,
-                            fontSize: 16,
+                            fontSize: 12,
                             fontWeight: FontWeight.w400,
                           ),
                           maxLines: 1,
@@ -463,7 +470,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Widget historyTransaction() {
+  Widget historyTransaction(List<Bill> bills) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.only(top: 16, bottom: 16, left: 16, right: 16),
@@ -485,14 +492,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   color: ColorName.homeBlackText,
-                  fontSize: 20,
+                  fontSize: 16,
                   fontWeight: FontWeight.w500,
                 ),
               ),
               Spacer(),
               InkWell(
                 onTap: () async {
-                  context.goNamed(TransactionManagementScreen.routeName);
+                  context.goNamed(BillManagementScreen.routeName);
                 },
                 child: Text(
                   "xem thêm",
@@ -501,7 +508,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     decoration: TextDecoration.underline,
                     decorationStyle: TextDecorationStyle.double,
                     color: ColorName.homeBlackText,
-                    fontSize: 18,
+                    fontSize: 14,
                     // fontWeight: FontWeight.w500,
                     shadows: <Shadow>[
                       Shadow(
@@ -516,141 +523,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ],
           ),
           SizedBox(height: 12),
-          eachTransaction(),
-          eachTransaction(),
-          eachTransaction(),
-          eachTransaction(),
-          eachTransaction(),
-          eachTransaction(),
-          eachTransaction(),
-          eachTransaction()
-        ],
-      ),
-    );
-  }
-
-  // Widget eachGroup() {
-  //   return Container(
-  //     margin: EdgeInsets.only(right: 16),
-  //     child: Stack(
-  //       children: [
-  //         GroupAvatar(
-  //           group: grou,
-  //         ),
-  //         Container(
-  //           height: 40,
-  //           width: 40,
-  //           margin: EdgeInsets.only(top: 50, left: 50),
-  //           decoration: BoxDecoration(
-  //             color: ColorName.homeWhiteButtonBg,
-  //             borderRadius: BorderRadius.all(Radius.circular(100)),
-  //             boxShadow: [
-  //               BoxShadow(color: ColorName.homeWhiteButtonBg, blurRadius: 4, offset: Offset(2, 2)),
-  //             ],
-  //           ),
-  //         ),
-  //         Container(
-  //           width: 100,
-  //           margin: EdgeInsets.only(top: 96),
-  //           child: Text(
-  //             "Hương Dương",
-  //             overflow: TextOverflow.ellipsis,
-  //             style: const TextStyle(
-  //               color: ColorName.loginTextColorGray,
-  //               fontSize: 16,
-  //               fontWeight: FontWeight.w400,
-  //             ),
-  //             maxLines: 1,
-  //           ),
-  //         )
-  //       ],
-  //     ),
-  //   );
-  // }
-
-  Widget eachTransaction() {
-    return Container(
-      margin: EdgeInsets.only(bottom: 20, right: 16),
-      child: Row(
-        children: [
-          Stack(
-            children: [
-              Container(
-                height: 80,
-                width: 80,
-                decoration: BoxDecoration(
-                  color: ColorName.homeWhiteAdd,
-                  borderRadius: BorderRadius.all(Radius.circular(100)),
-                  boxShadow: [
-                    BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(2, 2)),
-                  ],
-                ),
-              ),
-              Container(
-                height: 80,
-                width: 80,
-                margin: EdgeInsets.only(top: 4, left: 4),
-                decoration: BoxDecoration(
-                  color: ColorName.homeWhiteAdd,
-                  borderRadius: BorderRadius.all(Radius.circular(100)),
-                  boxShadow: [
-                    BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(2, 2)),
-                  ],
-                ),
-              ),
-              Container(
-                height: 80,
-                width: 80,
-                margin: EdgeInsets.only(top: 8, left: 8),
-                decoration: BoxDecoration(
-                  color: ColorName.homeWhiteAdd,
-                  borderRadius: BorderRadius.all(Radius.circular(100)),
-                  boxShadow: [
-                    BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(2, 2)),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Ăn tất niên",
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: ColorName.homeBlackText,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  maxLines: 1,
-                ),
-                Text(
-                  "28 tháng 1 * 00:01 AM",
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: ColorName.loginTextColorGray,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400,
-                  ),
-                  maxLines: 1,
-                ),
-              ],
-            ),
-          ),
-          SizedBox(width: 16),
-          Text(
-            "-\$500k",
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              color: ColorName.homeRedText,
-              fontSize: 20,
-              fontWeight: FontWeight.w500,
-            ),
-            maxLines: 1,
-          ),
+          SizedBox(
+            height: 60 * bills.length.toDouble(),
+            child: ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: bills.length,
+                itemBuilder: (context, index) {
+                  final bill = bills[index];
+                  return AvatarBill(
+                    bill: bill,
+                    size: 40,
+                  );
+                }),
+          )
         ],
       ),
     );

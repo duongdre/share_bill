@@ -11,7 +11,7 @@ import 'package:share_bill/screens/spent/UI/spent_screen.dart';
 import 'package:share_bill/utilities/utils/enum.dart';
 
 import '../../../gen/colors.gen.dart';
-import '../../../utilities/utils/person_avatar.dart';
+import '../../../utilities/utils/avatar_person.dart';
 import '../controller/person_provider.dart';
 
 class PersonManagementScreen extends ConsumerStatefulWidget {
@@ -85,7 +85,7 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
                 color: ColorName.homeBlackText,
-                fontSize: 20,
+                fontSize: 16,
                 fontWeight: FontWeight.w500,
                 shadows: <Shadow>[
                   Shadow(
@@ -119,7 +119,7 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   color: ColorName.homeBlackText,
-                  fontSize: 20,
+                  fontSize: 16,
                   fontWeight: FontWeight.w500,
                   shadows: <Shadow>[
                     Shadow(
@@ -151,12 +151,12 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
           child: Row(
             children: [
               Container(
-                height: 80,
-                width: 80,
+                height: 60,
+                width: 60,
                 margin: EdgeInsets.only(top: 4, bottom: 8, left: 8, right: 8),
-                child: PersonAvatar(
+                child: AvatarPerson(
                   person: person,
-                  size: 80,
+                  size: 60,
                   isEditable: false,
                 ),
               ),
@@ -169,7 +169,7 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         color: ColorName.homeBlackText,
-                        fontSize: 20,
+                        fontSize: 16,
                         fontWeight: FontWeight.w500,
                         shadows: <Shadow>[
                           Shadow(
@@ -185,7 +185,7 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         color: ColorName.homeGrayBalance,
-                        fontSize: 18,
+                        fontSize: 14,
                         fontWeight: FontWeight.w500,
                       ),
                     )
@@ -218,7 +218,7 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       color: ColorName.homeBlackText,
-                      fontSize: 20,
+                      fontSize: 16,
                       fontWeight: FontWeight.w500,
                       shadows: <Shadow>[
                         Shadow(

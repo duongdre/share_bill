@@ -1,21 +1,25 @@
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:share_bill/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:share_bill/screens/bill/controller/bill_provider.dart';
 import 'package:share_bill/screens/home/UI/home_screen.dart';
 import 'package:share_bill/screens/spent/UI/spent_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:share_bill/utilities/utils/dialogAddMember.dart';
+import 'package:share_bill/utilities/utils/dialog_add_member.dart';
 import 'package:toastification/toastification.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../gen/colors.gen.dart';
 import '../../../gen/fonts.gen.dart';
+import '../../../models/data_models/bill.dart';
 import '../../../models/data_models/group.dart';
-import '../../../utilities/utils/dialogConfirmExpanseCollection.dart';
+import '../../../utilities/utils/avatar_dialog.dart';
+import '../../../utilities/utils/dialog_choose_person.dart';
 import '../../../utilities/utils/enum.dart';
-import '../../../utilities/utils/person_avatar.dart';
+import '../../../utilities/utils/avatar_person.dart';
 import '../../person/controller/person_provider.dart';
 import '../controller/group_provider.dart';
 
@@ -31,6 +35,8 @@ class GroupDetailScreen extends ConsumerStatefulWidget {
 
 class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
   late TextEditingController nameController;
+  late List<Bill> allBillOfGroup;
+  late Map<String, double> groupWithTotalPaidByPerson;
   final FocusNode nameFocus = FocusNode();
 
   String bottomButtonName = "Trở lại";
@@ -38,15 +44,29 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
 
   @override
   void initState() {
-    if (ref.read(groupNotifierProvider.notifier).currentGroupDetail.uid.isEmpty) {
+    final groupData = ref.read(groupNotifierProvider.notifier).currentGroupDetail;
+    if (groupData.uid.isEmpty) {
       isNewGroup = true;
     } else {
       isNewGroup = false;
+      allBillOfGroup = ref.read(billNotifierProvider.notifier).getAllBillOfGroup(groupData.uid);
+      calculatePersonAndTheirPaid(groupData);
     }
-    nameController = TextEditingController(text: ref.read(groupNotifierProvider.notifier).currentGroupDetail.name);
+    nameController = TextEditingController(text: groupData.name);
     nameFocus.addListener(onFocusChange);
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
     super.initState();
+  }
+
+  void calculatePersonAndTheirPaid(Group group) {
+    groupWithTotalPaidByPerson = ref.read(billNotifierProvider.notifier).getPersonWithPaidInGroup(group);
+    for (final person in group.members.keys) {
+      if (group.members[person] == true) {
+        if (groupWithTotalPaidByPerson[person] == null) {
+          groupWithTotalPaidByPerson[person] = 0;
+        }
+      }
+    }
   }
 
   @override
@@ -64,14 +84,13 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final currentGroupDetail = ref.read(groupNotifierProvider.notifier).currentGroupDetail;
-    print(currentGroupDetail.members.length);
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(FocusNode());
       },
       child: Scaffold(
         body: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: ColorName.groupManagementBackground,
           ),
           child: SafeArea(
@@ -82,15 +101,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                     header(),
                     teamList(),
                     Expanded(
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.vertical,
-                        child: Column(
-                          children: [
-                            totalSpentReceive(),
-                            historyTransaction(),
-                          ],
-                        ),
-                      ),
+                      child: SingleChildScrollView(scrollDirection: Axis.vertical, child: (!isNewGroup) ? historyTransaction() : Container()),
                     ),
                   ],
                 ),
@@ -120,7 +131,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(
             color: ColorName.homeBlackText,
-            fontSize: 20,
+            fontSize: 16,
             fontWeight: FontWeight.w500,
             shadows: <Shadow>[
               Shadow(
@@ -158,7 +169,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
           cursorColor: ColorName.homeBlackText,
           style: const TextStyle(
             color: ColorName.homeBlackText,
-            fontSize: 32,
+            fontSize: 28,
             fontWeight: FontWeight.w400,
             shadows: <Shadow>[
               Shadow(
@@ -170,10 +181,10 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
           ),
           decoration: const InputDecoration(
               border: InputBorder.none,
-              hintText: 'Nhập tên',
+              hintText: 'Nhập tên nhóm',
               hintStyle: TextStyle(
                 color: ColorName.loginIconColorGray,
-                fontSize: 32,
+                fontSize: 28,
                 fontStyle: FontStyle.italic,
                 fontWeight: FontWeight.w400,
                 shadows: <Shadow>[
@@ -200,7 +211,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
       children: [
         const SizedBox(height: 18),
         SizedBox(
-          height: 116,
+          height: 140,
           child: Row(
             children: [
               Expanded(
@@ -209,30 +220,45 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                   shrinkWrap: true,
                   itemCount: group.members.length + 1,
                   itemBuilder: (context, index) {
-                    final groupData = group.members.keys.toList();
+                    final eachPerson = group.members.keys.toList();
                     if (index < group.members.length) {
-                      if (group.members[groupData[index]] == true) {
+                      if (group.members[eachPerson[index]] == true) {
                         return Stack(
                           children: [
                             Container(
-                              padding: EdgeInsets.only(left: 10, right: 10),
-                              child: PersonAvatar(
-                                person: ref.read(personNotifierProvider.notifier).findPersonWithUid(groupData[index]),
+                              padding: EdgeInsets.only(left: 20, right: 20),
+                              child: AvatarPerson(
+                                person: ref.read(personNotifierProvider.notifier).findPersonWithUid(eachPerson[index]),
                                 size: 80,
                                 isEditable: false,
                               ),
                             ),
                             Container(
-                              width: 100,
+                              width: 120,
                               margin: EdgeInsets.only(top: 96),
                               alignment: Alignment.topCenter,
                               child: Text(
-                                ref.read(personNotifierProvider.notifier).findPersonWithUid(groupData[index])?.name ?? "",
+                                ref.read(personNotifierProvider.notifier).findPersonWithUid(eachPerson[index])?.name ?? "",
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                   color: ColorName.loginTextColorGray,
-                                  fontSize: 16,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.w400,
+                                ),
+                                maxLines: 1,
+                              ),
+                            ),
+                            Container(
+                              width: 120,
+                              margin: EdgeInsets.only(top: 120),
+                              alignment: Alignment.topCenter,
+                              child: Text(
+                                NumberFormat.currency(locale: "vi_VN", symbol: "VNĐ").format(groupWithTotalPaidByPerson[eachPerson[index]]),
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  color: ColorName.blackColor,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
                                 ),
                                 maxLines: 1,
                               ),
@@ -260,7 +286,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                             child: Text(
                               "+",
                               style: TextStyle(
-                                fontSize: 50,
+                                fontSize: 46,
                                 fontFamily: FontFamily.raleway,
                               ),
                             ),
@@ -278,48 +304,12 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
     );
   }
 
-  Widget totalSpentReceive() {
-    return Row(
-      children: [
-        Expanded(
-          child: Container(
-            alignment: Alignment.center,
-            margin: EdgeInsets.only(bottom: 16),
-            child: Text(
-              "-\$xxx.xxx",
-              style: const TextStyle(
-                color: ColorName.homeRedText,
-                fontSize: 48,
-                fontWeight: FontWeight.w700,
-                letterSpacing: -2,
-              ),
-            ),
-          ),
-        ),
-        Expanded(
-          child: Container(
-            alignment: Alignment.center,
-            margin: EdgeInsets.only(bottom: 16),
-            child: Text(
-              "+\$xxx.xxx",
-              style: const TextStyle(
-                color: ColorName.spentBackGroundReceiveDialog,
-                fontSize: 48,
-                fontWeight: FontWeight.w700,
-                letterSpacing: -2,
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget historyTransaction() {
     return Container(
+      alignment: Alignment.center,
       width: double.infinity,
-      padding: EdgeInsets.only(top: 16, bottom: 16, left: 16, right: 16),
-      margin: EdgeInsets.only(bottom: 120, left: 16, right: 16),
+      padding: EdgeInsets.only(top: 16, bottom: 0, left: 16, right: 16),
+      margin: EdgeInsets.only(top: 16, bottom: 16, left: 16, right: 16),
       decoration: BoxDecoration(
         color: ColorName.homeWhiteButtonBg,
         borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -327,52 +317,17 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
           BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
         ],
       ),
-      child: Column(
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                "Lịch sử chi tiêu",
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: ColorName.homeBlackText,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              Spacer(),
-              Text(
-                "xem thêm",
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  decoration: TextDecoration.underline,
-                  decorationStyle: TextDecorationStyle.double,
-                  color: ColorName.homeBlackText,
-                  fontSize: 18,
-                  // fontWeight: FontWeight.w500,
-                  shadows: <Shadow>[
-                    Shadow(
-                      offset: Offset(1.0, 1.0),
-                      blurRadius: 4.0,
-                      color: ColorName.homeGrayBalance,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 12),
-          eachTransaction(),
-          eachTransaction(),
-          eachTransaction(),
-          eachTransaction(),
-          eachTransaction(),
-          eachTransaction(),
-          eachTransaction(),
-          eachTransaction()
-        ],
-      ),
+      child: ListView.builder(
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          itemCount: allBillOfGroup.length,
+          itemBuilder: (context, index) {
+            final bill = allBillOfGroup[index];
+            return AvatarBill(
+              bill: bill,
+              size: 40,
+            );
+          }),
     );
   }
 
@@ -430,7 +385,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     color: ColorName.homeBlackText,
-                    fontSize: 20,
+                    fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),
                   maxLines: 1,
@@ -440,7 +395,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     color: ColorName.loginTextColorGray,
-                    fontSize: 16,
+                    fontSize: 12,
                     fontWeight: FontWeight.w400,
                   ),
                   maxLines: 1,
@@ -454,7 +409,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               color: ColorName.homeRedText,
-              fontSize: 20,
+              fontSize: 16,
               fontWeight: FontWeight.w500,
             ),
             maxLines: 1,
@@ -513,7 +468,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(
             color: ColorName.homeWhiteButtonBg,
-            fontSize: 20,
+            fontSize: 16,
             fontWeight: FontWeight.w400,
             shadows: <Shadow>[
               Shadow(

@@ -19,6 +19,9 @@ class ColorName {
   /// Color: #2c74fe
   static const Color blueColor = Color(0xFF2C74FE);
 
+  /// Color: #A231E514
+  static const Color greenColor = Color(0xA231E514);
+
   /// Color: #111111
   static const Color groupManagementBackGroundButton = Color(0xFF111111);
 

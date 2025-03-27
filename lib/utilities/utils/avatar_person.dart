@@ -5,12 +5,12 @@ import 'package:share_bill/models/data_models/person.dart';
 import '../../gen/colors.gen.dart';
 import '../../screens/person/controller/person_provider.dart';
 
-class PersonAvatar extends ConsumerWidget {
+class AvatarPerson extends ConsumerWidget {
   final Person? person;
   final double size;
   final bool isEditable;
 
-  const PersonAvatar({
+  const AvatarPerson({
     super.key,
     required this.person,
     this.size = 50.0,
@@ -79,7 +79,7 @@ class PersonAvatar extends ConsumerWidget {
             right: 0,
             child: GestureDetector(
               onTap: () {
-                homeScreenNotifier.uploadAvatarForNewUser();
+                homeScreenNotifier.uploadAvatarForUser_NewOrExisted();
               },
               child: Container(
                 padding: EdgeInsets.all(4),

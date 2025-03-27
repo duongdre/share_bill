@@ -17,6 +17,10 @@ class Person {
     return describe ?? "";
   }
 
+  String getPersonName() {
+    return name ?? "";
+  }
+
   factory Person.fromJson(Map<String, dynamic> json) {
     return Person(
       uid: json['uid'],

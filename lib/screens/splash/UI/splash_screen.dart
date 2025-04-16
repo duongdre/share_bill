@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:share_bill/screens/login/UI/login_screen.dart';
 
 import '../../../gen/assets.gen.dart';
 import '../../home/UI/home_screen.dart';
@@ -18,7 +19,7 @@ class SplashScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
 
     Timer(const Duration(seconds: 1), () {
-      context.goNamed(HomeScreen.routeName);
+      context.goNamed(LoginScreen.routeName);
     });
 
     return Scaffold(

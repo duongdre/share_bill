@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:share_bill/screens/group/UI/group_detail_screen.dart';
 import 'package:share_bill/screens/group/UI/group_management_screen.dart';
+import 'package:share_bill/screens/login/UI/create_account_screen.dart';
+import 'package:share_bill/screens/login/UI/login_screen.dart';
 import 'package:share_bill/screens/person/UI/person_management_screen.dart';
 import 'package:share_bill/screens/spent/UI/spent_screen.dart';
 import 'package:share_bill/utilities/utils/dialog_add_member.dart';
@@ -40,6 +42,19 @@ final routerProvider = Provider<GoRouter>(
         name: SplashScreen.routeName,
         builder: (context, state) => const SplashScreen(),
         routes: [],
+      ),
+      GoRoute(
+        path: LoginScreen.routePath,
+        name: LoginScreen.routeName,
+        builder: (context, state) => const LoginScreen(),
+        routes: [
+          GoRoute(
+            path: CreateAccountScreen.routePath,
+            name: CreateAccountScreen.routeName,
+            builder: (context, state) => const CreateAccountScreen(),
+            routes: [],
+          ),
+        ],
       ),
       GoRoute(
         path: HomeScreen.routePath,

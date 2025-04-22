@@ -65,55 +65,12 @@ class _BillManagementScreenState extends ConsumerState<BillManagementScreen> {
                                   size: 60,
                                 ),
                               ),
-                              /*Container(
-                                margin: EdgeInsets.only(top: 64, bottom: 28, left: 16),
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      ref.read(personNotifierProvider.notifier).findPersonWithUid(bill.personId)?.name ?? "",
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        color: ColorName.blueColor,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                      maxLines: 1,
-                                    ),
-                                    const Text(
-                                      " > ",
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        color: ColorName.homeBlackText,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                      maxLines: 1,
-                                    ),
-                                    Expanded(
-                                      child: Text(
-                                        ref.read(groupNotifierProvider.notifier).findGroupWithUid(bill.groupId)?.name ?? "",
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
-                                          color: ColorName.greenColor,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                        maxLines: 1,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              )*/
                             ],
                           );
                         }),
                   ),
                 ],
               ),
-              Container(
-                alignment: Alignment.bottomCenter,
-                child: bottomButton(),
-              )
             ],
           ),
         ),
@@ -184,43 +141,6 @@ class _BillManagementScreenState extends ConsumerState<BillManagementScreen> {
             ),
           )
         ],
-      ),
-    );
-  }
-
-  Widget bottomButton() {
-    return InkWell(
-      onTap: () {
-        context.pop();
-      },
-      child: Container(
-        height: 60,
-        width: 120,
-        alignment: Alignment.center,
-        margin: EdgeInsets.only(top: 16, bottom: 24),
-        decoration: BoxDecoration(
-          color: ColorName.groupManagementBackGroundButton,
-          borderRadius: const BorderRadius.all(Radius.circular(100)),
-          boxShadow: [
-            BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
-          ],
-        ),
-        child: Text(
-          "Close",
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
-            color: ColorName.homeWhiteButtonBg,
-            fontSize: 16,
-            fontWeight: FontWeight.w400,
-            shadows: <Shadow>[
-              Shadow(
-                offset: Offset(2.0, 2.0),
-                blurRadius: 4.0,
-                color: ColorName.loginAvatarBackGround,
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

@@ -11,6 +11,7 @@ import 'package:share_bill/screens/spent/UI/spent_screen.dart';
 import 'package:share_bill/utilities/utils/dialog_add_member.dart';
 import '../../models/data_models/person.dart';
 import '../../screens/bill/UI/bill_management_screen.dart';
+import '../../screens/home/UI/app_scaffold.dart';
 import '../../screens/home/UI/home_screen.dart';
 import '../../screens/person/UI/person_detail_screen.dart';
 import '../../screens/splash/UI/splash_screen.dart';
@@ -32,16 +33,15 @@ final routeInformationProvider = ChangeNotifierProvider<GoRouteInformationProvid
 });
 
 final routerProvider = Provider<GoRouter>(
-  (ref) => GoRouter(
+      (ref) => GoRouter(
     observers: [AppRouteObserver(ref)],
     navigatorKey: _rootNavigatorKey,
-    initialLocation: SplashScreen.routeName,
+    initialLocation: HomeScreen.routePath,
     routes: [
       GoRoute(
         path: SplashScreen.routePath,
         name: SplashScreen.routeName,
         builder: (context, state) => const SplashScreen(),
-        routes: [],
       ),
       GoRoute(
         path: LoginScreen.routePath,
@@ -52,57 +52,82 @@ final routerProvider = Provider<GoRouter>(
             path: CreateAccountScreen.routePath,
             name: CreateAccountScreen.routeName,
             builder: (context, state) => const CreateAccountScreen(),
-            routes: [],
           ),
         ],
       ),
-      GoRoute(
-        path: HomeScreen.routePath,
-        name: HomeScreen.routeName,
-        builder: (context, state) => const HomeScreen(),
-        routes: [
-          GoRoute(
-            path: SpentScreen.routePathFromHome,
-            name: SpentScreen.routeNameFromHome,
-            builder: (context, state) => const SpentScreen(),
-            routes: [],
-          ),
-          GoRoute(
-            path: GroupManagementScreen.routePath,
-            name: GroupManagementScreen.routeName,
-            builder: (context, state) => const GroupManagementScreen(),
+      // StatefulShellRoute for bottom navigation
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          // The StatefulShellRoute passes the navigationShell to our custom scaffold
+          return AppScaffold(navigationShell: navigationShell);
+        },
+        branches: [
+          StatefulShellBranch(
             routes: [
               GoRoute(
-                path: GroupDetailScreen.routePath,
-                name: GroupDetailScreen.routeName,
-                builder: (context, state) => const GroupDetailScreen(),
-                routes: [],
+                path: HomeScreen.routePath,
+                name: HomeScreen.routeName,
+                builder: (context, state) => const HomeScreen(),
               ),
             ],
           ),
-          GoRoute(
-            path: PersonManagementScreen.routePath,
-            name: PersonManagementScreen.routeName,
-            builder: (context, state) => const PersonManagementScreen(),
+          StatefulShellBranch(
             routes: [
               GoRoute(
-                path: PersonDetailScreen.routePath,
-                name: PersonDetailScreen.routeName,
-                builder: (context, state) => const PersonDetailScreen(),
-                routes: [],
+                path: BillManagementScreen.routePath,
+                name: BillManagementScreen.routeName,
+                builder: (context, state) => const BillManagementScreen(),
+                routes: [
+                  GoRoute(
+                    path: SpentScreen.routePathFromBillManagement,
+                    name: SpentScreen.routeNameFromBillManagement,
+                    parentNavigatorKey: _rootNavigatorKey,
+                    builder: (context, state) => const SpentScreen(),
+                  ),
+                ],
               ),
             ],
           ),
-          GoRoute(
-            path: BillManagementScreen.routePath,
-            name: BillManagementScreen.routeName,
-            builder: (context, state) => const BillManagementScreen(),
+          StatefulShellBranch(
             routes: [
               GoRoute(
-                path: SpentScreen.routePathFromBillManagement,
-                name: SpentScreen.routeNameFromBillManagement,
+                path: SpentScreen.routePathFromHome,
+                name: SpentScreen.routeNameFromHome,
                 builder: (context, state) => const SpentScreen(),
-                routes: [],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: GroupManagementScreen.routePath,
+                name: GroupManagementScreen.routeName,
+                builder: (context, state) => const GroupManagementScreen(),
+                routes: [
+                  GoRoute(
+                    path: GroupDetailScreen.routePath,
+                    name: GroupDetailScreen.routeName,
+                    parentNavigatorKey: _rootNavigatorKey,
+                    builder: (context, state) => const GroupDetailScreen(),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: PersonManagementScreen.routePath,
+                name: PersonManagementScreen.routeName,
+                builder: (context, state) => const PersonManagementScreen(),
+                routes: [
+                  GoRoute(
+                    path: PersonDetailScreen.routePath,
+                    name: PersonDetailScreen.routeName,
+                    parentNavigatorKey: _rootNavigatorKey,
+                    builder: (context, state) => const PersonDetailScreen(),
+                  ),
+                ],
               ),
             ],
           ),

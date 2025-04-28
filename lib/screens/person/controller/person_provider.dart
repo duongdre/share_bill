@@ -18,11 +18,17 @@ class PersonNotifier extends _$PersonNotifier {
   // Person detail
   Person currentPersonDetail = Person(uid: "", name: "", avtUrl: "", groups: {});
   bool isLoadingImage = false;
+  double itemSize = 80;
 
   @override
   int build() {
     state = 0;
     return state;
+  }
+
+  Future<void> onChangeItemSize(double newSize) async {
+    itemSize = newSize;
+    state = state + 1;
   }
 
   Future<void> fetchAllPerson() async {

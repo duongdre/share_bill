@@ -26,6 +26,8 @@ import '../../../gen/colors.gen.dart';
 import '../../../utilities/utils/avatar_dialog.dart';
 import '../../../utilities/utils/avatar_group.dart';
 import '../../../utilities/utils/avatar_person.dart';
+import '../../../utilities/utils/widget_list_bill.dart';
+import '../../../utilities/utils/widget_list_group.dart';
 import '../../bill/UI/bill_management_screen.dart';
 import '../../group/UI/group_detail_screen.dart';
 import '../../person/UI/person_detail_screen.dart';
@@ -122,7 +124,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                                 ),
                               ),
-                              recentGroups(groups),
+                              ListGroup(
+                                groups: groups,
+                                scrollable: true,
+                                onGroupTap: (group) {
+                                  // Handle group selection
+                                },
+                              ),
                               const SizedBox(height: 16),
 
                               /// Recent Payments
@@ -133,7 +141,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                                 ),
                               ),
-                              recentPayments(bills),
+                              ListBill(
+                                bills: bills,
+                                scrollable: true,
+                                onBillTap: (group) {
+                                  // Handle group selection
+                                },
+                              ),
                               const SizedBox(height: 32),
                             ],
                           ),
@@ -162,7 +176,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         //     );
       },
       child: Container(
-        height: 64,
+        height: 56,
         padding: EdgeInsets.all(12.0),
         decoration: BoxDecoration(
           color: ColorName.white,
@@ -268,156 +282,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                 )
               ],
-            );
-          }),
-    );
-  }
-
-  Widget recentGroups(List<Group> groups) {
-    return Container(
-      height: (6 + 6 + 76) * groups.length * 1.0,
-      child: ListView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: false,
-          itemCount: groups.length,
-          itemBuilder: (context, index) {
-            final group = groups[index];
-            return Container(
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-                boxShadow: [
-                  BoxShadow(color: ColorName.whiteShadow, blurRadius: 2, offset: Offset(1, 1)),
-                ],
-                color: ColorName.white,
-              ),
-              margin: EdgeInsets.only(top: 6, bottom: 6, left: 16, right: 16),
-              child: Row(
-                children: [
-                  Container(
-                    // color: Colors.red,
-                    width: 76,
-                    height: 76,
-                    alignment: Alignment.centerLeft,
-                    padding: EdgeInsets.all(16.0),
-                    child: AvatarGroup(
-                      group: group,
-                      size: 56,
-                      isEditable: false,
-                    ),
-                  ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          group.name,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: ColorName.textBlack,
-                            fontSize: 16,
-                          ),
-                          maxLines: 1,
-                        ),
-                        Text(
-                          group.getMember(),
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: ColorName.textGray,
-                            fontSize: 14,
-                          ),
-                          maxLines: 1,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Text(
-                    NumberFormat.currency(locale: "vi_VN", symbol: "").format(ref.read(billNotifierProvider.notifier).getTotalPaidOfAGroup(group).toInt()),
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: ColorName.textGreen,
-                      fontSize: 16,
-                    ),
-                    maxLines: 1,
-                  ),
-                  const SizedBox(width: 16),
-                ],
-              ),
-            );
-          }),
-    );
-  }
-
-  Widget recentPayments(List<Bill> bills) {
-    return Container(
-      height: (6 + 6 + 76) * bills.length * 1.0,
-      child: ListView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: false,
-          itemCount: bills.length,
-          itemBuilder: (context, index) {
-            final bill = bills[index];
-            final recentPerson = ref.read(personNotifierProvider.notifier).findPersonWithUid(bill.personId);
-            final recentGroup = ref.read(groupNotifierProvider.notifier).findGroupWithUid(bill.groupId);
-            return Container(
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-                boxShadow: [
-                  BoxShadow(color: ColorName.whiteShadow, blurRadius: 2, offset: Offset(1, 1)),
-                ],
-                color: ColorName.white,
-              ),
-              margin: EdgeInsets.only(top: 6, bottom: 6, left: 16, right: 16),
-              child: Row(
-                children: [
-                  Container(
-                    // color: Colors.red,
-                    width: 76,
-                    height: 76,
-                    alignment: Alignment.centerLeft,
-                    padding: EdgeInsets.all(16.0),
-                    child: AvatarPerson(
-                      person: recentPerson,
-                      size: 56,
-                      isEditable: false,
-                    ),
-                  ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "${recentPerson?.name}",
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: ColorName.textBlack,
-                            fontSize: 16,
-                          ),
-                          maxLines: 1,
-                        ),
-                        Text(
-                          "${recentGroup?.name}",
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: ColorName.textGray,
-                            fontSize: 14,
-                          ),
-                          maxLines: 1,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Text(
-                    NumberFormat.currency(locale: "vi_VN", symbol: "").format(bill.amount.toInt()),
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: ColorName.textGreen,
-                      fontSize: 16,
-                    ),
-                    maxLines: 1,
-                  ),
-                  const SizedBox(width: 16),
-                ],
-              ),
             );
           }),
     );

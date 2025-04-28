@@ -13,14 +13,29 @@ import 'package:flutter/material.dart';
 class ColorName {
   ColorName._();
 
+  /// Color: #F9FAFB
+  static const Color background = Color(0xFFF9FAFB);
+
   /// Color: #000000
   static const Color blackColor = Color(0xFF000000);
+
+  /// Color: #DBEAFE
+  static const Color blueBackground = Color(0xFFDBEAFE);
 
   /// Color: #2c74fe
   static const Color blueColor = Color(0xFF2C74FE);
 
+  /// Color: #2563EB
+  static const Color blueDarkBackground = Color(0xFF2563EB);
+
+  /// Color: #D1FAE5
+  static const Color greenBackground = Color(0xFFD1FAE5);
+
   /// Color: #A231E514
   static const Color greenColor = Color(0xA231E514);
+
+  /// Color: #059669
+  static const Color greenDarkBackground = Color(0xFF059669);
 
   /// Color: #111111
   static const Color groupManagementBackGroundButton = Color(0xFF111111);
@@ -67,6 +82,12 @@ class ColorName {
   /// Color: #787882
   static const Color loginTextColorGray = Color(0xFF787882);
 
+  /// Color: #DAD2FF
+  static const Color purpleBackground = Color(0xFFDAD2FF);
+
+  /// Color: #7C3AED
+  static const Color purpleDarkBackground = Color(0xFF7C3AED);
+
   /// Color: #EEF0F2
   static const Color spentBackGround = Color(0xFFEEF0F2);
 
@@ -79,6 +100,24 @@ class ColorName {
   /// Color: #F76766
   static const Color spentBackGroundSpentDialog = Color(0xFFF76766);
 
+  /// Color: #000000
+  static const Color textBlack = Color(0xFF000000);
+
+  /// Color: #6B7280
+  static const Color textGray = Color(0xFF6B7280);
+
+  /// Color: #059669
+  static const Color textGreen = Color(0xFF059669);
+
+  /// Color: #FFFFFF
+  static const Color white = Color(0xFFFFFFFF);
+
   /// Color: #fefefd
   static const Color whiteColor = Color(0xFFFEFEFD);
+
+  /// Color: #DEE0EFFF
+  static const Color whiteLightShadow = Color(0xDEE0EFFF);
+
+  /// Color: #C3C5C9
+  static const Color whiteShadow = Color(0xFFC3C5C9);
 }

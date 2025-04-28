@@ -1,5 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--    NEW COLOR-->
+    <color name="white">#FFFFFF</color>
+    <color name="whiteShadow">#C3C5C9</color>
+    <color name="whiteLightShadow">#DEE0EFFF</color>
+    <color name="background">#F9FAFB</color>
+    <color name="blueBackground">#DBEAFE</color>
+    <color name="blueDarkBackground">#2563EB</color>
+    <color name="purpleBackground">#DAD2FF</color>
+    <color name="purpleDarkBackground">#7C3AED</color>
+    <color name="greenBackground">#D1FAE5</color>
+    <color name="greenDarkBackground">#059669</color>
+
+    <color name="textBlack">#000000</color>
+    <color name="textGray">#6B7280</color>
+    <color name="textGreen">#059669</color>
+
+
+    <!--    OLD COLOR-->
     <color name="whiteColor">#fefefd</color>
     <color name="blueColor">#2c74fe</color>
     <color name="greenColor">#A231E514</color>
@@ -10,7 +28,6 @@
     <color name="loginTextColorBlue">#192E87</color>
     <color name="loginTextColorGray">#787882</color>
     <color name="loginIconColor">#145FDB</color>
-    <color name="loginButtonDisable">#EEF0FF</color>
     <color name="loginButtonDisable">#EEF0FF</color>
 
     <color name="homeGrayBalance">#A2A2A2</color>

@@ -23,6 +23,17 @@ class Group {
     return result;
   }
 
+  String getMember() {
+    final member = countMember();
+    if (member < 1) {
+      return "0 member";
+    } else if (member == 1) {
+      return "$member member";
+    } else {
+      return "$member members";
+    }
+  }
+
   // Create a Group from JSON data
   factory Group.fromJson(String id, Map<String, dynamic> json) {
     return Group(

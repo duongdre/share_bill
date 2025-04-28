@@ -47,26 +47,33 @@ class AvatarPerson extends ConsumerWidget {
       avatarWidget = _buildPlaceholderAvatar();
     } else {
       // Use CachedNetworkImage to load and cache the avatar
-      avatarWidget = Container(
-        width: size,
-        height: size,
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(100)),
-          boxShadow: [
-            BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(-4, 4)),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(size / 2),
-          child: CachedNetworkImage(
-            imageUrl: person!.avtUrl,
+      avatarWidget = Stack(
+        alignment: AlignmentDirectional.center,
+        children: [
+          Container(
             width: size,
             height: size,
-            fit: BoxFit.cover,
-            placeholder: (context, url) => const CircularProgressIndicator(),
-            errorWidget: (context, url, error) => _buildPlaceholderAvatar(),
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(100)),
+              color: ColorName.white,
+            ),
           ),
-        ),
+          Container(
+            width: size-2,
+            height: size-2,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(size / 2),
+              child: CachedNetworkImage(
+                imageUrl: person!.avtUrl,
+                width: size-2,
+                height: size-2,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => const CircularProgressIndicator(),
+                errorWidget: (context, url, error) => _buildPlaceholderAvatar(),
+              ),
+            ),
+          ),
+        ],
       );
     }
 

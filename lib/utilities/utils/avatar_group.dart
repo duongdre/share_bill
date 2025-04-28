@@ -33,104 +33,69 @@ class AvatarGroup extends ConsumerWidget {
       // Use CachedNetworkImage to load and cache the avatar
       avatarWidget = AvatarPerson(
         person: personNotifier.findPersonWithUid(group.members.keys.toList()[0]),
-        size: size,
+        size: size / 1.75,
         isEditable: false,
       );
     } else if (countMember == 2) {
       // Use CachedNetworkImage to load and cache the avatar
       avatarWidget = Stack(
         children: [
-          AvatarPerson(
-            person: personNotifier.findPersonWithUid(group.members.keys.toList()[1]),
-            size: size,
-            isEditable: false,
-          ),
           Container(
-            margin: EdgeInsets.only(left: 16),
             child: AvatarPerson(
-              person: personNotifier.findPersonWithUid(group.members.keys.toList()[0]),
-              size: size,
+              person: personNotifier.findPersonWithUid(group.members.keys.toList()[1]),
+              size: size / 1.75,
               isEditable: false,
             ),
-          )
+          ),
+          Container(
+            margin: EdgeInsets.only(top: size*0.23, left: size*0.23),
+            child: AvatarPerson(
+              person: personNotifier.findPersonWithUid(group.members.keys.toList()[0]),
+              size: size / 1.75,
+              isEditable: false,
+            ),
+          ),
         ],
       );
-    } else if (countMember == 3) {
+    } else if (countMember > 2) {
       // Use CachedNetworkImage to load and cache the avatar
       avatarWidget = Stack(
         children: [
           Container(
+            margin: EdgeInsets.only(top: size*0.12),
             child: AvatarPerson(
               person: personNotifier.findPersonWithUid(group.members.keys.toList()[2]),
-              size: size,
+              size: size / 1.75,
               isEditable: false,
             ),
           ),
           Container(
-            margin: EdgeInsets.only(left: 16),
+            margin: EdgeInsets.only(left: size*0.23),
             child: AvatarPerson(
               person: personNotifier.findPersonWithUid(group.members.keys.toList()[1]),
-              size: size,
+              size: size / 1.75,
               isEditable: false,
             ),
           ),
           Container(
-            margin: EdgeInsets.only(left: 32),
+            margin: EdgeInsets.only(top: size*0.23, left: size*0.23),
             child: AvatarPerson(
               person: personNotifier.findPersonWithUid(group.members.keys.toList()[0]),
-              size: size,
-              isEditable: false,
-            ),
-          )
-        ],
-      );
-    } else if (countMember > 3) {
-      // Use CachedNetworkImage to load and cache the avatar
-      avatarWidget = Stack(
-        children: [
-          Container(
-            child: AvatarPerson(
-              person: personNotifier.findPersonWithUid(group.members.keys.toList()[2]),
-              size: size,
+              size: size / 1.75,
               isEditable: false,
             ),
           ),
-          Container(
-            margin: EdgeInsets.only(left: 16),
-            child: AvatarPerson(
-              person: personNotifier.findPersonWithUid(group.members.keys.toList()[1]),
-              size: size,
-              isEditable: false,
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.only(left: 32),
-            child: AvatarPerson(
-              person: personNotifier.findPersonWithUid(group.members.keys.toList()[0]),
-              size: size,
-              isEditable: false,
-            ),
-          ),
-          CircleAvatar(
-            radius: size / 4,
-            backgroundColor: ColorName.homeGrayHold,
-            child: Text(
-              "+ ${countMember - 3} ",
-              style: TextStyle(
-                fontSize: 16,
-                fontFamily: FontFamily.raleway,
-                fontStyle: FontStyle.italic,
-                fontWeight: FontWeight.bold
-              ),
-            ),
-          )
         ],
       );
     } else {
       avatarWidget = _buildPlaceholderAvatar();
     }
 
-    return avatarWidget;
+    return Container(
+      height: size,
+      width: size,
+      child: avatarWidget,
+    );
   }
 
   Widget _buildPlaceholderAvatar() {

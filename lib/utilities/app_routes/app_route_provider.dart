@@ -55,6 +55,12 @@ final routerProvider = Provider<GoRouter>(
           ),
         ],
       ),
+      GoRoute(
+        path: SpentScreen.routePathFromHome,
+        name: SpentScreen.routeNameFromHome,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const SpentScreen(),
+      ),
       // StatefulShellRoute for bottom navigation
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
@@ -85,15 +91,6 @@ final routerProvider = Provider<GoRouter>(
                     builder: (context, state) => const SpentScreen(),
                   ),
                 ],
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: SpentScreen.routePathFromHome,
-                name: SpentScreen.routeNameFromHome,
-                builder: (context, state) => const SpentScreen(),
               ),
             ],
           ),

@@ -30,6 +30,15 @@ class BillNotifier extends _$BillNotifier {
     return state;
   }
 
+  double getTotalPaidOfAGroup(Group group) {
+    List<Bill> listBillOfGroup = allBill.where((bill) => bill.groupId == group.uid).toList();
+    double totalPaidInGroup = 0;
+    for (final bill in listBillOfGroup) {
+      totalPaidInGroup += bill.amount;
+    }
+    return totalPaidInGroup;
+  }
+
   double getGroupWithTotalPaidByPerson(String personId, Group group) {
     List<Bill> listBillOfGroup = allBill.where((bill) => bill.groupId == group.uid).toList();
     double totalPaidInGroup = 0;

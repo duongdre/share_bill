@@ -24,6 +24,7 @@ class AppScaffold extends ConsumerWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: navigationShell, // This displays the current tab's content
+      resizeToAvoidBottomInset: false, // This prevents the scaffold from resizing when keyboard appears
       floatingActionButton: Container(
         height: 56,
         width: 56,
@@ -44,7 +45,9 @@ class AppScaffold extends ConsumerWidget {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       extendBody: true, // This makes body extend behind the bottom app bar
-      bottomNavigationBar: Container(
+      bottomNavigationBar: MediaQuery.of(context).viewInsets.bottom > 0
+          ? null  // Hide bottom navigation when keyboard is visible
+          : Container(
         decoration: BoxDecoration(
           boxShadow: <BoxShadow>[
             BoxShadow(

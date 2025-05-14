@@ -175,6 +175,15 @@ class PersonListItem extends ConsumerWidget {
               ],
             ),
           ),
+          Icon(
+            Icons.star_border,
+            color: ColorName.textGray,
+          ),
+          const SizedBox(width: 8),
+          Icon(
+            Icons.delete,
+            color: ColorName.textGray,
+          ),
           const SizedBox(width: 16),
         ],
       ),

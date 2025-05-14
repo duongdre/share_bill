@@ -95,7 +95,7 @@ class AnimatedSearchBarState extends State<AnimatedSearchBar> with SingleTickerP
             controller: _textController,
             focusNode: _focusNode,
             decoration: InputDecoration(
-              hintText: 'Search persons or groups...',
+              hintText: 'Search...',
               hintStyle: const TextStyle(
                 color: ColorName.homeGrayBalance,
                 fontSize: 14,

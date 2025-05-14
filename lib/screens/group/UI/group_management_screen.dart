@@ -6,11 +6,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_bill/models/data_models/group.dart';
 import 'package:share_bill/screens/home/UI/home_screen.dart';
 import 'package:share_bill/screens/spent/UI/spent_screen.dart';
+import 'package:share_bill/utilities/utils/widget_list_group.dart';
 
 import '../../../gen/colors.gen.dart';
 import '../../../models/data_models/person.dart';
 import '../../../utilities/utils/avatar_group.dart';
 import '../../../utilities/utils/avatar_person.dart';
+import '../../../utilities/utils/enum.dart';
+import '../../../utilities/utils/widget_animated_search_bar.dart';
 import '../../person/UI/person_detail_screen.dart';
 import '../../person/controller/person_provider.dart';
 import '../controller/group_provider.dart';
@@ -27,6 +30,8 @@ class GroupManagementScreen extends ConsumerStatefulWidget {
 }
 
 class _GroupManagementScreenState extends ConsumerState<GroupManagementScreen> {
+  final FocusNode _searchFocusNode = FocusNode();
+
   @override
   void initState() {
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
@@ -34,37 +39,53 @@ class _GroupManagementScreenState extends ConsumerState<GroupManagementScreen> {
   }
 
   @override
+  void dispose() {
+    // Always remember to dispose focus nodes
+    _searchFocusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     ref.watch(groupNotifierProvider);
     final groups = ref.read(groupNotifierProvider.notifier).allGroup;
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          color: ColorName.groupManagementBackground,
-        ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              header(),
-              Expanded(
-                child: ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  itemCount: groups.length,
-                  itemBuilder: (context, index) {
-                    final group = groups[index];
-                    return Stack(
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent, // Ensures taps are detected even on empty areas
+      onTap: () {
+        // Hide keyboard and remove focus when tapping elsewhere
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        body: Container(
+          decoration: BoxDecoration(
+            color: ColorName.background,
+          ),
+          child: SafeArea(
+            child: Column(
+              children: [
+                header(),
+                searchBar(),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          padding: EdgeInsets.only(left: 10, right: 10),
-                          child: groupWidget(group),
+                        ListGroup(
+                          groups: groups,
+                          scrollable: true,
+                          onGroupTap: (group) {
+                            ref.read(groupNotifierProvider.notifier).currentGroupDetail = group.copyWith();
+                            context.goNamed(GroupDetailScreen.routeName);
+                          },
                         ),
+                        const SizedBox(height: 16),
+                        const SizedBox(height: 32),
                       ],
-                    );
-                  },
-                ),
-              )
-            ],
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -73,246 +94,52 @@ class _GroupManagementScreenState extends ConsumerState<GroupManagementScreen> {
 
   Widget header() {
     return Container(
-      height: 100,
+      height: 56,
+      padding: EdgeInsets.all(12.0),
+      decoration: BoxDecoration(
+        color: ColorName.white,
+        boxShadow: [
+          BoxShadow(color: ColorName.groupManagementBackground, blurRadius: 2, offset: Offset(2, 2)),
+        ],
+      ),
       child: Row(
         children: [
-          SizedBox(width: 16),
-          InkWell(
-            onTap: () {
-              context.pop();
-            },
-            child: Text(
-              "< Trang chủ",
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: ColorName.homeBlackText,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                shadows: <Shadow>[
-                  Shadow(
-                    offset: Offset(2.0, 2.0),
-                    blurRadius: 4.0,
-                    color: ColorName.homeGrayBalance,
-                  ),
-                ],
-              ),
-            ),
+          Icon(
+            Icons.arrow_back,
+            size: 25,
           ),
           const Spacer(),
-          InkWell(
-            onTap: () {
-              context.goNamed(GroupDetailScreen.routeName);
-            },
-            child: Container(
-              height: 50,
-              width: 120,
-              alignment: Alignment.center,
-              margin: EdgeInsets.only(left: 8, right: 16),
-              decoration: BoxDecoration(
-                color: ColorName.homeWhiteButtonBg,
-                borderRadius: const BorderRadius.all(Radius.circular(100)),
-                boxShadow: [
-                  BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
-                ],
-              ),
-              child: Text(
-                "New",
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: ColorName.homeBlackText,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  shadows: <Shadow>[
-                    Shadow(
-                      offset: Offset(2.0, 2.0),
-                      blurRadius: 4.0,
-                      color: ColorName.homeGrayBalance,
-                    ),
-                  ],
-                ),
-              ),
+          Text(
+            "Group manager",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          const Spacer(),
+          PopupMenuButton<PersonMenuItem>(
+            child: Icon(
+              Icons.more_vert,
+              size: 25,
             ),
+            onSelected: (PersonMenuItem item) {
+              FocusScope.of(context).unfocus();
+              setState(() {});
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<PersonMenuItem>>[
+            ],
           )
         ],
       ),
     );
   }
 
-  Widget groupWidget(Group group) {
-    return InkWell(
-      onTap: () {
-        ref.read(groupNotifierProvider.notifier).currentGroupDetail = group.copyWith();
-        context.goNamed(GroupDetailScreen.routeName);
+  Widget searchBar() {
+    return AnimatedSearchBar(
+      focusNode: _searchFocusNode, // Pass our focus node to the search bar
+      onSearch: (value) {
+        // ref.read(personNotifierProvider.notifier).searchPersons(value);
       },
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.only(top: 16, bottom: 16),
-        margin: EdgeInsets.only(bottom: 16, left: 8, right: 8),
-        decoration: BoxDecoration(
-          color: ColorName.homeWhiteButtonBg,
-          borderRadius: BorderRadius.all(Radius.circular(20)),
-          boxShadow: [
-            BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
-          ],
-        ),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: EdgeInsets.only(left: 16, right: 16),
-                  child: Text(
-                    group.name,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: ColorName.homeBlackText,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-                Spacer(),
-                InkWell(
-                  onTap: () {
-                    ref.read(groupNotifierProvider.notifier).deleteGroup(group.uid);
-                  },
-                  child: Icon(
-                    Icons.delete_forever,
-                    size: 29,
-                  ),
-                ),
-                SizedBox(width: 12)
-              ],
-            ),
-            const SizedBox(height: 18),
-            SizedBox(
-              height: 106,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      shrinkWrap: true,
-                      itemCount: group.members.length,
-                      itemBuilder: (context, index) {
-                        final groupData = group.members.keys.toList();
-                        if (group.members[groupData[index]] == true) {
-                          return Stack(
-                            children: [
-                              Container(
-                                padding: EdgeInsets.only(left: 10, right: 10),
-                                child: AvatarPerson(
-                                  person: ref.read(personNotifierProvider.notifier).findPersonWithUid(groupData[index]),
-                                  size: 60,
-                                  isEditable: false,
-                                ),
-                              ),
-                              Container(
-                                width: 80,
-                                margin: EdgeInsets.only(top: 76),
-                                alignment: Alignment.topCenter,
-                                child: Text(
-                                  ref.read(personNotifierProvider.notifier).findPersonWithUid(groupData[index])?.name ?? "",
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    color: ColorName.loginTextColorGray,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                  maxLines: 1,
-                                ),
-                              )
-                            ],
-                          );
-                        } else {
-                          return Container();
-                        }
-                      },
-                    ),
-                  )
-                ],
-              ),
-            ),
-            SizedBox(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Spacer(),
-                  InkWell(
-                    onTap: () {},
-                    child: Container(
-                      height: 40,
-                      width: 280,
-                      alignment: Alignment.center,
-                      margin: EdgeInsets.only(left: 8, right: 16),
-                      decoration: BoxDecoration(
-                        color: ColorName.homeWhiteButtonBg,
-                        borderRadius: const BorderRadius.all(Radius.circular(100)),
-                        boxShadow: [
-                          BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 8, offset: Offset(1, 1)),
-                        ],
-                      ),
-                      child: Text(
-                        "Thêm khoản chi cho nhóm",
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: ColorName.homeBlackText,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          shadows: <Shadow>[
-                            Shadow(
-                              offset: Offset(2.0, 2.0),
-                              blurRadius: 4.0,
-                              color: ColorName.homeGrayBalance,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget closeButton() {
-    return InkWell(
-      onTap: () {
-        context.pop();
+      onClear: () {
+        // ref.read(personNotifierProvider.notifier).resetSearchFilter();
       },
-      child: Container(
-        height: 60,
-        width: 120,
-        alignment: Alignment.center,
-        margin: EdgeInsets.only(top: 16, bottom: 24),
-        decoration: BoxDecoration(
-          color: ColorName.groupManagementBackGroundButton,
-          borderRadius: const BorderRadius.all(Radius.circular(100)),
-          boxShadow: [
-            BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
-          ],
-        ),
-        child: Text(
-          "Close",
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
-            color: ColorName.homeWhiteButtonBg,
-            fontSize: 16,
-            fontWeight: FontWeight.w400,
-            shadows: <Shadow>[
-              Shadow(
-                offset: Offset(2.0, 2.0),
-                blurRadius: 4.0,
-                color: ColorName.loginAvatarBackGround,
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

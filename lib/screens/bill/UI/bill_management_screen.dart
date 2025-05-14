@@ -10,9 +10,11 @@ import 'package:share_bill/screens/person/UI/person_detail_screen.dart';
 import 'package:share_bill/screens/person/controller/person_provider.dart';
 import 'package:share_bill/screens/spent/UI/spent_screen.dart';
 import 'package:share_bill/utilities/utils/enum.dart';
+import 'package:share_bill/utilities/utils/widget_list_bill.dart';
 
 import '../../../gen/colors.gen.dart';
 import '../../../utilities/utils/avatar_dialog.dart';
+import '../../../utilities/utils/widget_animated_search_bar.dart';
 
 class BillManagementScreen extends ConsumerStatefulWidget {
   static const routeName = 'bill_management';
@@ -25,7 +27,7 @@ class BillManagementScreen extends ConsumerStatefulWidget {
 }
 
 class _BillManagementScreenState extends ConsumerState<BillManagementScreen> {
-  bool isShowingGroup = true;
+  final FocusNode _searchFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -34,44 +36,54 @@ class _BillManagementScreenState extends ConsumerState<BillManagementScreen> {
   }
 
   @override
+  void dispose() {
+    // Always remember to dispose focus nodes
+    _searchFocusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     ref.watch(billNotifierProvider);
     final bills = ref.read(billNotifierProvider.notifier).allBill;
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          color: ColorName.groupManagementBackground,
-        ),
-        child: SafeArea(
-          child: Stack(
-            children: [
-              Column(
-                children: [
-                  header(),
-                  Expanded(
-                    child: ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        shrinkWrap: true,
-                        itemCount: bills.length,
-                        itemBuilder: (context, index) {
-                          double bottomMargin = (index == bills.length - 1) ? 120 : 0;
-                          final bill = (bills + bills + bills + bills)[index];
-                          return Stack(
-                            children: [
-                              Container(
-                                margin: EdgeInsets.only(bottom: bottomMargin, left: 16, right: 4),
-                                child: AvatarBill(
-                                  bill: bill,
-                                  size: 60,
-                                ),
-                              ),
-                            ],
-                          );
-                        }),
-                  ),
-                ],
-              ),
-            ],
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent, // Ensures taps are detected even on empty areas
+      onTap: () {
+        // Hide keyboard and remove focus when tapping elsewhere
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        body: Container(
+          decoration: BoxDecoration(
+            color: ColorName.background,
+          ),
+          child: SafeArea(
+            child: Stack(
+              children: [
+                Column(
+                  children: [
+                    header(),
+                    searchBar(),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ListBill(
+                              bills: bills,
+                              scrollable: true,
+                              onBillTap: (bill) {},
+                            ),
+                            const SizedBox(height: 16),
+                            const SizedBox(height: 32),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -80,68 +92,51 @@ class _BillManagementScreenState extends ConsumerState<BillManagementScreen> {
 
   Widget header() {
     return Container(
-      height: 100,
+      height: 56,
+      padding: EdgeInsets.all(12.0),
+      decoration: BoxDecoration(
+        color: ColorName.white,
+        boxShadow: [
+          BoxShadow(color: ColorName.groupManagementBackground, blurRadius: 2, offset: Offset(2, 2)),
+        ],
+      ),
       child: Row(
         children: [
-          SizedBox(width: 16),
-          InkWell(
-            onTap: () {
-              context.pop();
-            },
-            child: Text(
-              "< Trang chủ",
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: ColorName.homeBlackText,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                shadows: <Shadow>[
-                  Shadow(
-                    offset: Offset(2.0, 2.0),
-                    blurRadius: 4.0,
-                    color: ColorName.homeGrayBalance,
-                  ),
-                ],
-              ),
-            ),
+          Icon(
+            Icons.arrow_back,
+            size: 25,
           ),
           const Spacer(),
-          InkWell(
-            onTap: () {
-              context.goNamed(SpentScreen.routeNameFromBillManagement);
-            },
-            child: Container(
-              height: 50,
-              width: 120,
-              alignment: Alignment.center,
-              margin: EdgeInsets.only(left: 8, right: 16),
-              decoration: BoxDecoration(
-                color: ColorName.homeWhiteButtonBg,
-                borderRadius: const BorderRadius.all(Radius.circular(100)),
-                boxShadow: [
-                  BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
-                ],
-              ),
-              child: Text(
-                "New",
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: ColorName.homeBlackText,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  shadows: <Shadow>[
-                    Shadow(
-                      offset: Offset(2.0, 2.0),
-                      blurRadius: 4.0,
-                      color: ColorName.homeGrayBalance,
-                    ),
-                  ],
-                ),
-              ),
+          Text(
+            "Payment manager",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          const Spacer(),
+          PopupMenuButton<PersonMenuItem>(
+            child: Icon(
+              Icons.more_vert,
+              size: 25,
             ),
+            onSelected: (PersonMenuItem item) {
+              FocusScope.of(context).unfocus();
+              setState(() {});
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<PersonMenuItem>>[],
           )
         ],
       ),
+    );
+  }
+
+  Widget searchBar() {
+    return AnimatedSearchBar(
+      focusNode: _searchFocusNode, // Pass our focus node to the search bar
+      onSearch: (value) {
+        // ref.read(personNotifierProvider.notifier).searchPersons(value);
+      },
+      onClear: () {
+        // ref.read(personNotifierProvider.notifier).resetSearchFilter();
+      },
     );
   }
 }

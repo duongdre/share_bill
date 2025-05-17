@@ -87,30 +87,19 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
 
   Widget header() {
     return Container(
-      height: 100,
+      height: 56,
+      padding: EdgeInsets.all(12.0),
+      decoration: BoxDecoration(
+        color: ColorName.white,
+        boxShadow: [
+          BoxShadow(color: ColorName.groupManagementBackground, blurRadius: 2, offset: Offset(2, 2)),
+        ],
+      ),
       child: Row(
         children: [
-          SizedBox(width: 16),
-          InkWell(
-            onTap: () {
-              context.pop();
-            },
-            child: Text(
-              "< Bạn bè",
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: ColorName.homeBlackText,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                shadows: <Shadow>[
-                  Shadow(
-                    offset: Offset(2.0, 2.0),
-                    blurRadius: 4.0,
-                    color: ColorName.homeGrayBalance,
-                  ),
-                ],
-              ),
-            ),
+          Icon(
+            Icons.arrow_back,
+            size: 25,
           ),
           const Spacer(),
           InkWell(
@@ -121,29 +110,16 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
                 autoCloseDuration: const Duration(seconds: 3),
               );
             },
-            child: Container(
-              height: 50,
-              width: 50,
-              alignment: Alignment.center,
-              margin: EdgeInsets.only(left: 8, right: 16),
-              decoration: BoxDecoration(
-                color: ColorName.homeWhiteButtonBg,
-                borderRadius: const BorderRadius.all(Radius.circular(100)),
-                boxShadow: [
-                  BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
-                ],
-              ),
-              child: Icon(
-                Icons.settings,
-                size: 32,
-                shadows: <Shadow>[
-                  Shadow(
-                    offset: Offset(2.0, 2.0),
-                    blurRadius: 4.0,
-                    color: ColorName.homeGrayBalance,
-                  ),
-                ],
-              ),
+            child: Icon(
+              Icons.settings,
+              size: 32,
+              shadows: <Shadow>[
+                Shadow(
+                  offset: Offset(2.0, 2.0),
+                  blurRadius: 4.0,
+                  color: ColorName.homeGrayBalance,
+                ),
+              ],
             ),
           )
         ],

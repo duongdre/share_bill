@@ -17,9 +17,6 @@ class ListPerson extends ConsumerWidget {
   final EdgeInsets? margin;
   final bool scrollable;
   final Function(Person)? onPersonTap;
-  final ViewMode viewMode;
-  final double? gridItemSize;
-  final int? gridAxisCount;
 
   const ListPerson({
     super.key,
@@ -28,23 +25,12 @@ class ListPerson extends ConsumerWidget {
     this.margin,
     this.scrollable = false,
     this.onPersonTap,
-    this.viewMode = ViewMode.list,
-    this.gridItemSize,
-    this.gridAxisCount,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Calculate height for list view
     final double calculatedHeight = height ?? (6 + 6 + 76) * persons.length * 1.0;
-
-    return viewMode == ViewMode.list ? _buildListView(calculatedHeight, ref) : _buildGridView(context, ref);
-  }
-
-  Widget _buildListView(double calculatedHeight, WidgetRef ref) {
-    if (persons.isEmpty) {
-      return const Center(child: Text("No persons available"));
-    }
 
     return Container(
       height: scrollable ? null : calculatedHeight,
@@ -64,10 +50,11 @@ class ListPerson extends ConsumerWidget {
           );
         },
       ),
-    );
-  }
+    );  }
 
-  Widget _buildGridView(BuildContext context, WidgetRef ref) {
+  //Person grid view
+  ///TODO: Save for further actions / features
+  /*Widget _buildGridView(BuildContext context, WidgetRef ref) {
     if (persons.isEmpty) {
       return const Center(child: Text("No persons available"));
     }
@@ -110,7 +97,7 @@ class ListPerson extends ConsumerWidget {
         },
       ),
     );
-  }
+  }*/
 }
 
 class PersonListItem extends ConsumerWidget {

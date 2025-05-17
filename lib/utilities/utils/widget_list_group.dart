@@ -124,6 +124,11 @@ class GroupListItem extends ConsumerWidget {
             ),
             maxLines: 1,
           ),
+          const SizedBox(width: 8),
+          Icon(
+            Icons.star_border,
+            color: ColorName.textGray,
+          ),
           const SizedBox(width: 16),
         ],
       ),

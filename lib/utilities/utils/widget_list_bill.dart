@@ -118,6 +118,15 @@ class BillListItem extends ConsumerWidget {
                   ),
                   maxLines: 1,
                 ),
+                Text(
+                  DateFormat("MMM dd, yyyy - HH:mm").format(DateTime.fromMillisecondsSinceEpoch(bill.createdAt ?? 0)),
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: ColorName.textGray,
+                    fontSize: 14,
+                  ),
+                  maxLines: 1,
+                ),
               ],
             ),
           ),

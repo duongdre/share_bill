@@ -29,7 +29,6 @@ class PersonManagementScreen extends ConsumerStatefulWidget {
 
 class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen> {
   final FocusNode _searchFocusNode = FocusNode();
-  ViewMode _currentViewMode = ViewMode.grid; // Default to list view
 
   @override
   void initState() {
@@ -76,8 +75,6 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
                         ListPerson(
                           persons: persons,
                           scrollable: true,
-                          viewMode: _currentViewMode,
-                          gridItemSize: ref.read(personNotifierProvider.notifier).itemSize,
                           onPersonTap: (person) {
                             ref.read(personNotifierProvider.notifier).currentPersonDetail = person.copyWith();
                             context.goNamed(PersonDetailScreen.routeName);
@@ -139,16 +136,6 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
             ),
             onSelected: (PersonMenuItem item) {
               FocusScope.of(context).unfocus();
-              setState(() {
-                switch (item) {
-                  case PersonMenuItem.listView:
-                    _currentViewMode = ViewMode.list;
-                    break;
-                  case PersonMenuItem.gridView:
-                    _currentViewMode = ViewMode.grid;
-                    break;
-                }
-              });
             },
             itemBuilder: (BuildContext context) => <PopupMenuEntry<PersonMenuItem>>[
               PopupMenuItem<PersonMenuItem>(

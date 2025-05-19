@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_bill/screens/spent/UI/spent_screen.dart';
+import 'package:share_bill/utilities/utils/widget_list_bill.dart';
 import 'package:toastification/toastification.dart';
 import 'package:uuid/uuid.dart';
 
@@ -15,7 +16,9 @@ import '../../../models/data_models/person.dart';
 import '../../../utilities/utils/avatar_dialog.dart';
 import '../../../utilities/utils/avatar_group.dart';
 import '../../../utilities/utils/avatar_person.dart';
+import '../../../utilities/utils/widget_list_group.dart';
 import '../../bill/controller/bill_provider.dart';
+import '../../group/UI/group_detail_screen.dart';
 import '../../group/controller/group_provider.dart';
 import '../controller/person_provider.dart';
 
@@ -31,11 +34,11 @@ class PersonDetailScreen extends ConsumerStatefulWidget {
 
 class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
   late TextEditingController nameController;
+  late TextEditingController ageController;
   late TextEditingController describeController;
   late List<Bill> allBillOfPerson;
   late List<Group> allGroupOfPerson;
   bool isNewPerson = true;
-  bool isShowingGroup = true;
 
   @override
   void initState() {
@@ -49,7 +52,8 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
       allGroupOfPerson = ref.read(groupNotifierProvider.notifier).getAllGroupOfAPerson(currentPersonDetail.uid);
     }
     nameController = TextEditingController(text: currentPersonDetail.name ?? "");
-    describeController = TextEditingController(text: currentPersonDetail.describe ?? "");
+    ageController = TextEditingController(text: "Age: 18" ?? "");
+    describeController = TextEditingController(text: currentPersonDetail.describe.toString() ?? "");
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
     super.initState();
   }
@@ -57,6 +61,7 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
   @override
   void dispose() {
     nameController.dispose();
+    ageController.dispose();
     describeController.dispose();
     super.dispose();
   }
@@ -74,10 +79,42 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
           child: Column(
             children: [
               header(),
-              avatar(currentPersonDetail),
-              switchButton(),
-              (isNewPerson) ? const Spacer() : Expanded(child: groupOrHistoryTransaction()),
-              bottomButton(currentPersonDetail),
+              info(currentPersonDetail),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(left: 16, top: 16, bottom: 16),
+                        child: Text(
+                          "Groups",
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: ColorName.homeBlackText,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      groups(),
+                      Container(
+                        margin: EdgeInsets.only(left: 16, top: 16, bottom: 16),
+                        child: Text(
+                          "Recent Payments",
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: ColorName.homeBlackText,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      historyTransaction(),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -97,11 +134,21 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.arrow_back,
-            size: 25,
+          InkWell(
+            onTap: () {
+              context.pop();
+            },
+            child: Icon(
+              Icons.arrow_back,
+              size: 25,
+            ),
           ),
-          const Spacer(),
+          Spacer(),
+          Text(
+            "Person details",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          Spacer(),
           InkWell(
             onTap: () {
               toastification.show(
@@ -127,14 +174,17 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
     );
   }
 
-  Widget avatar(Person currentPersonDetail) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 16, right: 16),
-      child: Column(
+  Widget info(Person currentPersonDetail) {
+    return Container(
+      height: 136,
+      margin: EdgeInsets.only(top: 1),
+      padding: EdgeInsets.all(16),
+      color: ColorName.white,
+      child: Row(
         children: [
           Container(
-            width: 160,
-            height: 160,
+            width: 80,
+            height: 80,
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(Radius.circular(100)),
               boxShadow: [
@@ -145,7 +195,7 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
               children: [
                 AvatarPerson(
                   person: currentPersonDetail,
-                  size: 160,
+                  size: 80,
                   isEditable: true,
                 ),
                 (ref.read(personNotifierProvider.notifier).isLoadingImage)
@@ -162,309 +212,145 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
               ],
             ),
           ),
-          SizedBox(height: 8),
-          TextField(
-            controller: nameController,
-            textAlign: TextAlign.center,
-            cursorColor: ColorName.homeBlackText,
-            style: const TextStyle(
-              color: ColorName.homeBlackText,
-              fontSize: 28,
-              fontWeight: FontWeight.w400,
-              shadows: <Shadow>[
-                Shadow(
-                  offset: Offset(2.0, 2.0),
-                  blurRadius: 4.0,
-                  color: ColorName.homeGrayBalance,
-                ),
-              ],
-            ),
-            decoration: const InputDecoration(
-                border: InputBorder.none,
-                hintText: 'Nhập tên',
-                hintStyle: TextStyle(
-                  color: ColorName.loginIconColorGray,
-                  fontSize: 28,
-                  fontStyle: FontStyle.italic,
-                  fontWeight: FontWeight.w400,
-                  shadows: <Shadow>[
-                    Shadow(
-                      offset: Offset(2.0, 2.0),
-                      blurRadius: 4.0,
-                      color: ColorName.homeGrayBalance,
-                    ),
-                  ],
-                )),
-          ),
-          TextField(
-            controller: describeController,
-            keyboardType: TextInputType.multiline,
-            textAlign: TextAlign.center,
-            cursorColor: ColorName.homeBlackText,
-            style: const TextStyle(
-              color: ColorName.homeBlackText,
-              fontSize: 16,
-              fontWeight: FontWeight.w400,
-            ),
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: "Gợi nhớ hoặc mô tả về người dùng này ",
-              hintStyle: const TextStyle(
-                color: ColorName.loginIconColorGray,
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-              ),
-              hintMaxLines: 3,
-            ),
-            minLines: 1,
-            maxLines: 3,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget switchButton() {
-    return Row(
-      children: [
-        Expanded(
-          child: InkWell(
-            onTap: () {
-              setState(() {
-                isShowingGroup = true;
-              });
-              toastification.show(
-                title: Text('Group của X'),
-                style: ToastificationStyle.fillColored,
-                autoCloseDuration: const Duration(seconds: 2),
-              );
-            },
-            child: Container(
-              height: 60,
-              width: 120,
-              alignment: Alignment.center,
-              margin: const EdgeInsets.only(top: 16, bottom: 24, left: 16, right: 8),
-              decoration: (isShowingGroup)
-                  ? const BoxDecoration(
-                      color: ColorName.groupManagementBackGroundButton,
-                      borderRadius: BorderRadius.all(Radius.circular(100)),
-                      boxShadow: [
-                        BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
-                      ],
-                    )
-                  : BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(100)),
-                      border: Border.all(),
-                    ),
-              child: Text(
-                "Danh sách nhóm",
-                overflow: TextOverflow.ellipsis,
-                style: (isShowingGroup)
-                    ? const TextStyle(
-                        color: ColorName.homeWhiteButtonBg,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                        shadows: <Shadow>[
-                          Shadow(
-                            offset: Offset(2.0, 2.0),
-                            blurRadius: 4.0,
-                            color: ColorName.loginAvatarBackGround,
-                          ),
-                        ],
-                      )
-                    : const TextStyle(
-                        color: ColorName.loginAvatarBackGround,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                        shadows: <Shadow>[
-                          Shadow(
-                            offset: Offset(2.0, 2.0),
-                            blurRadius: 4.0,
-                            color: ColorName.homeWhiteButtonBg,
-                          ),
-                        ],
-                      ),
-              ),
-            ),
-          ),
-        ),
-        Expanded(
-          child: InkWell(
-            onTap: () {
-              setState(() {
-                isShowingGroup = false;
-              });
-              toastification.show(
-                title: Text('Lịch sử chi tiêu của X'),
-                style: ToastificationStyle.fillColored,
-                autoCloseDuration: const Duration(seconds: 2),
-              );
-            },
-            child: Container(
-              height: 60,
-              width: 120,
-              alignment: Alignment.center,
-              margin: const EdgeInsets.only(top: 16, bottom: 24, left: 8, right: 16),
-              decoration: (isShowingGroup)
-                  ? BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(100)),
-                      border: Border.all(),
-                    )
-                  : const BoxDecoration(
-                      color: ColorName.groupManagementBackGroundButton,
-                      borderRadius: BorderRadius.all(Radius.circular(100)),
-                      boxShadow: [
-                        BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
-                      ],
-                    ),
-              child: Text(
-                "Lịch sử chi tiêu",
-                overflow: TextOverflow.ellipsis,
-                style: (isShowingGroup)
-                    ? const TextStyle(
-                        color: ColorName.loginAvatarBackGround,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                        shadows: <Shadow>[
-                          Shadow(
-                            offset: Offset(2.0, 2.0),
-                            blurRadius: 4.0,
-                            color: ColorName.homeWhiteButtonBg,
-                          ),
-                        ],
-                      )
-                    : const TextStyle(
-                        color: ColorName.homeWhiteButtonBg,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                        shadows: <Shadow>[
-                          Shadow(
-                            offset: Offset(2.0, 2.0),
-                            blurRadius: 4.0,
-                            color: ColorName.loginAvatarBackGround,
-                          ),
-                        ],
-                      ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget groupOrHistoryTransaction() {
-    if (isShowingGroup) {
-      return historyGroup();
-    } else {
-      return historyTransaction();
-    }
-  }
-
-  Widget historyGroup() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.only(top: 16, bottom: 0, left: 16, right: 16),
-      margin: const EdgeInsets.only(top: 16, bottom: 16, left: 16, right: 16),
-      decoration: const BoxDecoration(
-        color: ColorName.homeWhiteButtonBg,
-        borderRadius: BorderRadius.all(Radius.circular(20)),
-        boxShadow: [
-          BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
-        ],
-      ),
-      child: ListView.builder(
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          itemCount: allGroupOfPerson.length,
-          itemBuilder: (context, index) {
-            final group = allGroupOfPerson[index];
-            return Row(
+          SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  margin: const EdgeInsets.only(top: 8, bottom: 8, right: 16),
-                  child: AvatarGroup(
-                    group: group,
-                    size: 80,
+                SizedBox(height: 8),
+                SizedBox(
+                  height: 28,
+                  child: TextField(
+                    controller: nameController,
+                    textAlign: TextAlign.start,
+                    cursorColor: ColorName.homeBlackText,
+                    style: const TextStyle(
+                      color: ColorName.homeBlackText,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      shadows: <Shadow>[
+                        Shadow(
+                          offset: Offset(2.0, 2.0),
+                          blurRadius: 4.0,
+                          color: ColorName.homeGrayBalance,
+                        ),
+                      ],
+                    ),
+                    decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        hintText: 'Nhập tên',
+                        hintStyle: TextStyle(
+                          color: ColorName.loginIconColorGray,
+                          fontSize: 20,
+                          fontStyle: FontStyle.italic,
+                          fontWeight: FontWeight.w600,
+                          shadows: <Shadow>[
+                            Shadow(
+                              offset: Offset(2.0, 2.0),
+                              blurRadius: 4.0,
+                              color: ColorName.homeGrayBalance,
+                            ),
+                          ],
+                        )),
                   ),
                 ),
-                Expanded(child: groupInfos(group)),
+                SizedBox(
+                  height: 23,
+                  child: TextField(
+                    controller: ageController,
+                    textAlign: TextAlign.start,
+                    cursorColor: ColorName.textGray,
+                    style: const TextStyle(
+                      color: ColorName.textGray,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        hintText: 'Nhập tên',
+                        hintStyle: TextStyle(
+                          color: ColorName.loginIconColorGray,
+                          fontSize: 16,
+                          fontStyle: FontStyle.italic,
+                          fontWeight: FontWeight.w400,
+                          shadows: <Shadow>[
+                            Shadow(
+                              offset: Offset(2.0, 2.0),
+                              blurRadius: 4.0,
+                              color: ColorName.homeGrayBalance,
+                            ),
+                          ],
+                        )),
+                  ),
+                ),
+                SizedBox(
+                  height: 24,
+                  child: TextField(
+                    controller: describeController,
+                    keyboardType: TextInputType.multiline,
+                    textAlign: TextAlign.start,
+                    cursorColor: ColorName.homeBlackText,
+                    style: const TextStyle(
+                      color: ColorName.homeBlackText,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(vertical: -26.0),
+                      border: InputBorder.none,
+                      hintText: "Gợi nhớ hoặc mô tả về người dùng này ",
+                      hintStyle: const TextStyle(
+                        color: ColorName.loginIconColorGray,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                      hintMaxLines: 2,
+                    ),
+                    minLines: 1,
+                    maxLines: 2,
+                  ),
+                ),
               ],
-            );
-          }),
+            ),
+          )
+        ],
+      ),
     );
   }
 
-  Widget groupInfos(Group group) {
+  Widget groups() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Container(
-          alignment: Alignment.topLeft,
-          child: Text(
-            group.name,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              color: ColorName.homeBlackText,
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ),
-        Text(
-          ref.read(billNotifierProvider.notifier).getAllMemberNameOfAGroup(group),
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
-            color: ColorName.homeBlackText,
-            fontSize: 12,
-            fontStyle: FontStyle.italic,
-            fontWeight: FontWeight.w400,
-          ),
-          maxLines: 2,
-        ),
-        Text(
-          NumberFormat.currency(locale: "vi_VN", symbol: "VNĐ").format(
-              ref.read(billNotifierProvider.notifier).getGroupWithTotalPaidByPerson(ref.read(personNotifierProvider.notifier).currentPersonDetail.uid, group)),
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
-            color: ColorName.homeBlackText,
-            fontSize: 12,
-            fontWeight: FontWeight.w400,
-          ),
-          maxLines: 1,
+        ListGroup(
+          groups: allGroupOfPerson,
+          scrollable: true,
+          onGroupTap: (group) {
+            ref.read(groupNotifierProvider.notifier).currentGroupDetail = group.copyWith();
+            context.goNamed(GroupDetailScreen.routeName);
+          },
         ),
       ],
     );
   }
 
   Widget historyTransaction() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.only(top: 16, bottom: 0, left: 16, right: 16),
-      margin: const EdgeInsets.only(top: 16, bottom: 16, left: 16, right: 16),
-      decoration: const BoxDecoration(
-        color: ColorName.homeWhiteButtonBg,
-        borderRadius: BorderRadius.all(Radius.circular(20)),
-        boxShadow: [
-          BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
-        ],
-      ),
-      child: ListView.builder(
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          itemCount: allBillOfPerson.length,
-          itemBuilder: (context, index) {
-            final bill = allBillOfPerson[index];
-            return AvatarBill(
-              bill: bill,
-              size: 40,
-            );
-          }),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ListBill(
+          bills: allBillOfPerson,
+          scrollable: true,
+          onBillTap: (bill) {
+            ///TODO: Bill click
+          },
+        ),
+      ],
     );
   }
 
-  Widget bottomButton(Person currentPersonDetail) {
+  ///TODO: Move this logic to other place to save person info
+/*Widget bottomButton(Person currentPersonDetail) {
     return InkWell(
       onTap: () async {
         currentPersonDetail.name = nameController.text;
@@ -522,5 +408,5 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
         ),
       ),
     );
-  }
+  }*/
 }

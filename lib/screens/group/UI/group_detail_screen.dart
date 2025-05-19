@@ -344,15 +344,15 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                           );
                         },
                         child: Container(
-                          padding: EdgeInsets.only(left: 10, right: 10),
+                          padding: EdgeInsets.only(left: 16, right: 10),
                           alignment: Alignment.topCenter,
                           child: CircleAvatar(
-                            radius: 40,
+                            radius: 31,
                             backgroundColor: ColorName.homeGrayHold,
                             child: Text(
                               "+",
                               style: TextStyle(
-                                fontSize: 46,
+                                fontSize: 38,
                                 fontFamily: FontFamily.raleway,
                               ),
                             ),

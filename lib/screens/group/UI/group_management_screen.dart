@@ -102,30 +102,33 @@ class _GroupManagementScreenState extends ConsumerState<GroupManagementScreen> {
           BoxShadow(color: ColorName.groupManagementBackground, blurRadius: 2, offset: Offset(2, 2)),
         ],
       ),
-      child: Row(
+      child: Stack(
         children: [
-          Icon(
-            Icons.arrow_back,
-            size: 25,
-          ),
-          const Spacer(),
-          Text(
-            "Group manager",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          const Spacer(),
-          PopupMenuButton<PersonMenuItem>(
-            child: Icon(
-              Icons.more_vert,
-              size: 25,
+          Align(
+            alignment: Alignment.center,
+            child: Text(
+              "Group manager",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-            onSelected: (PersonMenuItem item) {
-              FocusScope.of(context).unfocus();
-              setState(() {});
-            },
-            itemBuilder: (BuildContext context) => <PopupMenuEntry<PersonMenuItem>>[
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Icon(
+                Icons.notifications_none_sharp,
+                size: 20,
+              ),
+              Container(
+                height: 32,
+                width: 32,
+                margin: EdgeInsets.only(left: 8, right: 16),
+                decoration: BoxDecoration(
+                  color: ColorName.blackColor,
+                  borderRadius: const BorderRadius.all(Radius.circular(100)),
+                ),
+              ),
             ],
-          )
+          ),
         ],
       ),
     );

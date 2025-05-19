@@ -9,6 +9,7 @@ import 'package:share_bill/screens/home/UI/home_screen.dart';
 import 'package:share_bill/screens/spent/UI/spent_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:share_bill/utilities/utils/dialog_add_member.dart';
+import 'package:share_bill/utilities/utils/widget_list_person.dart';
 import 'package:toastification/toastification.dart';
 import 'package:uuid/uuid.dart';
 
@@ -20,6 +21,7 @@ import '../../../utilities/utils/avatar_dialog.dart';
 import '../../../utilities/utils/dialog_choose_person.dart';
 import '../../../utilities/utils/enum.dart';
 import '../../../utilities/utils/avatar_person.dart';
+import '../../../utilities/utils/widget_list_bill.dart';
 import '../../person/controller/person_provider.dart';
 import '../controller/group_provider.dart';
 
@@ -39,7 +41,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
   late Map<String, double> groupWithTotalPaidByPerson;
   final FocusNode nameFocus = FocusNode();
 
-  String bottomButtonName = "Trở lại";
+  bool isUpdateInfo = false;
   bool isNewGroup = true;
 
   @override
@@ -98,17 +100,38 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
               children: [
                 Column(
                   children: [
-                    header(),
+                    header(currentGroupDetail),
                     teamList(),
                     Expanded(
-                      child: SingleChildScrollView(scrollDirection: Axis.vertical, child: (!isNewGroup) ? historyTransaction() : Container()),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(left: 16, top: 24, bottom: 16),
+                              child: Text(
+                                "Recent Payments",
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  color: ColorName.homeBlackText,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                            recentPayments(),
+                            SizedBox(height: 120)
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
-                Container(
-                  alignment: Alignment.bottomCenter,
-                  child: bottomButton(currentGroupDetail),
-                ),
+                // Container(
+                //   alignment: Alignment.bottomCenter,
+                //   child: bottomButton(currentGroupDetail),
+                // ),
               ],
             ),
           ),
@@ -117,92 +140,135 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
     );
   }
 
-  Widget header() {
+  Widget header(Group currentGroupDetail) {
     return Container(
-      height: 65,
-      padding: EdgeInsets.only(left: 16),
-      alignment: Alignment.bottomLeft,
-      child: InkWell(
-        onTap: () {
-          context.pop();
-        },
-        child: Text(
-          "< Nhóm",
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
-            color: ColorName.homeBlackText,
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            shadows: <Shadow>[
-              Shadow(
-                offset: Offset(2.0, 2.0),
-                blurRadius: 4.0,
-                color: ColorName.homeGrayBalance,
-              ),
-            ],
-          ),
-        ),
+      height: 56,
+      padding: EdgeInsets.all(12.0),
+      decoration: BoxDecoration(
+        color: ColorName.white,
+        boxShadow: [
+          BoxShadow(color: ColorName.groupManagementBackground, blurRadius: 2, offset: Offset(2, 2)),
+        ],
       ),
+      child: Row(
+        children: [
+          InkWell(
+            onTap: () {
+              context.pop();
+            },
+            child: Icon(
+              Icons.arrow_back,
+              size: 25,
+            ),
+          ),
+          Spacer(),
+          Container(
+            height: 56,
+            width: 200,
+            child: TextField(
+              onChanged: (value) {
+                final groupName = ref.read(groupNotifierProvider.notifier).currentGroupDetail.name;
+                if (groupName == value) {
+                  setState(() {
+                    isUpdateInfo = false;
+                  });
+                } else {
+                  setState(() {
+                    isUpdateInfo = true;
+                  });
+                }
+              },
+              focusNode: nameFocus,
+              controller: nameController,
+              textAlign: TextAlign.center,
+              cursorColor: ColorName.homeBlackText,
+              style: const TextStyle(
+                color: ColorName.homeBlackText,
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+              ),
+              decoration: const InputDecoration(
+                  contentPadding: EdgeInsets.symmetric(vertical: -22.0),
+                  border: InputBorder.none,
+                  hintText: 'Nhập tên nhóm',
+                  hintStyle: TextStyle(
+                    color: ColorName.loginIconColorGray,
+                    fontSize: 20,
+                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.w600,
+                  )),
+            ),
+          ),
+          Spacer(),
+          InkWell(
+            onTap: () async {
+              if (isNewGroup) {
+                if (nameController.text.isEmpty) return;
+                //Only call add New Group
+                currentGroupDetail.uid = Uuid().v4();
+                currentGroupDetail.name = nameController.text;
+                await ref.read(groupNotifierProvider.notifier).addNewGroup(
+                      currentGroupDetail,
+                    );
+                toastification.show(
+                  title: Text('Thành công thêm mới'),
+                  style: ToastificationStyle.fillColored,
+                  autoCloseDuration: const Duration(seconds: 3),
+                );
+              } else {
+                if (isUpdateInfo == true) {
+                  //Call Update group
+                  await ref.read(groupNotifierProvider.notifier).updateGroupName(
+                        currentGroupDetail.uid,
+                        nameController.text,
+                      );
+                  toastification.show(
+                    title: Text('Thành công cập nhật thông tin'),
+                    style: ToastificationStyle.fillColored,
+                    autoCloseDuration: const Duration(seconds: 3),
+                  );
+                }
+              }
+              context.pop();
+            },
+            child: getHeaderIcon(),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget? getHeaderIcon() {
+    IconData? data = Icons.add;
+    if (isNewGroup) {
+      data = Icons.add;
+    } else {
+      if (isUpdateInfo) {
+        data = Icons.check_circle_outline;
+      } else {
+        return Container();
+      }
+    }
+    return Icon(
+      data,
+      size: 32,
     );
   }
 
   Widget teamList() {
     ref.watch(groupNotifierProvider);
-    return Column(
-      children: [
-        TextField(
-          onChanged: (value) {
-            final groupName = ref.read(groupNotifierProvider.notifier).currentGroupDetail.name;
-            if (groupName == value) {
-              setState(() {
-                bottomButtonName = "Trở lại";
-              });
-            } else {
-              setState(() {
-                bottomButtonName = "Cập nhật";
-              });
-            }
-          },
-          focusNode: nameFocus,
-          controller: nameController,
-          textAlign: TextAlign.center,
-          cursorColor: ColorName.homeBlackText,
-          style: const TextStyle(
-            color: ColorName.homeBlackText,
-            fontSize: 28,
-            fontWeight: FontWeight.w400,
-            shadows: <Shadow>[
-              Shadow(
-                offset: Offset(2.0, 2.0),
-                blurRadius: 4.0,
-                color: ColorName.homeGrayBalance,
-              ),
-            ],
-          ),
-          decoration: const InputDecoration(
-              border: InputBorder.none,
-              hintText: 'Nhập tên nhóm',
-              hintStyle: TextStyle(
-                color: ColorName.loginIconColorGray,
-                fontSize: 28,
-                fontStyle: FontStyle.italic,
-                fontWeight: FontWeight.w400,
-                shadows: <Shadow>[
-                  Shadow(
-                    offset: Offset(2.0, 2.0),
-                    blurRadius: 4.0,
-                    color: ColorName.homeGrayBalance,
-                  ),
-                ],
-              )),
-        ),
-        Container(
-          padding: EdgeInsets.only(left: 10, right: 10),
-          child: groupWidget(
-            ref.read(groupNotifierProvider.notifier).currentGroupDetail,
-          ),
-        )
-      ],
+    return Container(
+      color: ColorName.white,
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+            child: groupWidget(
+              ref.read(groupNotifierProvider.notifier).currentGroupDetail,
+            ),
+          )
+        ],
+      ),
     );
   }
 
@@ -211,7 +277,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
       children: [
         const SizedBox(height: 18),
         SizedBox(
-          height: 140,
+          height: 120,
           child: Row(
             children: [
               Expanded(
@@ -229,13 +295,13 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                               padding: EdgeInsets.only(left: 20, right: 20),
                               child: AvatarPerson(
                                 person: ref.read(personNotifierProvider.notifier).findPersonWithUid(eachPerson[index]),
-                                size: 80,
+                                size: 60,
                                 isEditable: false,
                               ),
                             ),
                             Container(
-                              width: 120,
-                              margin: EdgeInsets.only(top: 96),
+                              width: 100,
+                              margin: EdgeInsets.only(top: 76),
                               alignment: Alignment.topCenter,
                               child: Text(
                                 ref.read(personNotifierProvider.notifier).findPersonWithUid(eachPerson[index])?.name ?? "",
@@ -249,8 +315,8 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                               ),
                             ),
                             Container(
-                              width: 120,
-                              margin: EdgeInsets.only(top: 120),
+                              width: 100,
+                              margin: EdgeInsets.only(top: 100),
                               alignment: Alignment.topCenter,
                               child: Text(
                                 NumberFormat.currency(locale: "vi_VN", symbol: "VNĐ").format(groupWithTotalPaidByPerson[eachPerson[index]]),
@@ -278,15 +344,15 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                           );
                         },
                         child: Container(
-                          padding: EdgeInsets.only(left: 10, right: 10),
+                          padding: EdgeInsets.only(left: 16, right: 10),
                           alignment: Alignment.topCenter,
                           child: CircleAvatar(
-                            radius: 40,
+                            radius: 31,
                             backgroundColor: ColorName.homeGrayHold,
                             child: Text(
                               "+",
                               style: TextStyle(
-                                fontSize: 46,
+                                fontSize: 38,
                                 fontFamily: FontFamily.raleway,
                               ),
                             ),
@@ -304,182 +370,18 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
     );
   }
 
-  Widget historyTransaction() {
-    return Container(
-      alignment: Alignment.center,
-      width: double.infinity,
-      padding: EdgeInsets.only(top: 16, bottom: 0, left: 16, right: 16),
-      margin: EdgeInsets.only(top: 16, bottom: 16, left: 16, right: 16),
-      decoration: BoxDecoration(
-        color: ColorName.homeWhiteButtonBg,
-        borderRadius: BorderRadius.all(Radius.circular(20)),
-        boxShadow: [
-          BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
-        ],
-      ),
-      child: ListView.builder(
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          itemCount: allBillOfGroup.length,
-          itemBuilder: (context, index) {
-            final bill = allBillOfGroup[index];
-            return AvatarBill(
-              bill: bill,
-              size: 40,
-            );
-          }),
-    );
-  }
-
-  Widget eachTransaction() {
-    return Container(
-      margin: EdgeInsets.only(bottom: 20, right: 16),
-      child: Row(
-        children: [
-          Stack(
-            children: [
-              Container(
-                height: 80,
-                width: 80,
-                decoration: BoxDecoration(
-                  color: ColorName.homeWhiteAdd,
-                  borderRadius: BorderRadius.all(Radius.circular(100)),
-                  boxShadow: [
-                    BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(2, 2)),
-                  ],
-                ),
-              ),
-              Container(
-                height: 80,
-                width: 80,
-                margin: EdgeInsets.only(top: 4, left: 4),
-                decoration: BoxDecoration(
-                  color: ColorName.homeWhiteAdd,
-                  borderRadius: BorderRadius.all(Radius.circular(100)),
-                  boxShadow: [
-                    BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(2, 2)),
-                  ],
-                ),
-              ),
-              Container(
-                height: 80,
-                width: 80,
-                margin: EdgeInsets.only(top: 8, left: 8),
-                decoration: BoxDecoration(
-                  color: ColorName.homeWhiteAdd,
-                  borderRadius: BorderRadius.all(Radius.circular(100)),
-                  boxShadow: [
-                    BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(2, 2)),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Ăn tất niên",
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: ColorName.homeBlackText,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  maxLines: 1,
-                ),
-                Text(
-                  "28 tháng 1 * 00:01 AM",
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: ColorName.loginTextColorGray,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                  ),
-                  maxLines: 1,
-                ),
-              ],
-            ),
-          ),
-          SizedBox(width: 16),
-          Text(
-            "-\$500k",
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              color: ColorName.homeRedText,
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-            maxLines: 1,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget bottomButton(Group currentGroupDetail) {
-    return InkWell(
-      onTap: () async {
-        if (isNewGroup) {
-          if (nameController.text.isEmpty) return;
-          //Only call add New Group
-          currentGroupDetail.uid = Uuid().v4();
-          currentGroupDetail.name = nameController.text;
-          await ref.read(groupNotifierProvider.notifier).addNewGroup(
-                currentGroupDetail,
-              );
-          toastification.show(
-            title: Text('Thành công thêm mới'),
-            style: ToastificationStyle.fillColored,
-            autoCloseDuration: const Duration(seconds: 3),
-          );
-        } else {
-          if (bottomButtonName == "Cập nhật") {
-            //Call Update group
-            await ref.read(groupNotifierProvider.notifier).updateGroupName(
-                  currentGroupDetail.uid,
-                  nameController.text,
-                );
-            toastification.show(
-              title: Text('Thành công cập nhật thông tin'),
-              style: ToastificationStyle.fillColored,
-              autoCloseDuration: const Duration(seconds: 3),
-            );
-          }
-        }
-        context.pop();
-      },
-      child: Container(
-        height: 60,
-        width: 120,
-        alignment: Alignment.center,
-        margin: EdgeInsets.only(bottom: 24),
-        decoration: BoxDecoration(
-          color: ColorName.groupManagementBackGroundButton,
-          borderRadius: const BorderRadius.all(Radius.circular(100)),
-          boxShadow: [
-            BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
-          ],
+  Widget recentPayments() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ListBill(
+          bills: allBillOfGroup,
+          scrollable: true,
+          onBillTap: (bill) {
+            ///TODO: Bill click
+          },
         ),
-        child: Text(
-          (isNewGroup) ? "Thêm mới" : bottomButtonName,
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
-            color: ColorName.homeWhiteButtonBg,
-            fontSize: 16,
-            fontWeight: FontWeight.w400,
-            shadows: <Shadow>[
-              Shadow(
-                offset: Offset(2.0, 2.0),
-                blurRadius: 4.0,
-                color: ColorName.loginAvatarBackGround,
-              ),
-            ],
-          ),
-        ),
-      ),
+      ],
     );
   }
 }

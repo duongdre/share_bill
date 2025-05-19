@@ -41,7 +41,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
   late Map<String, double> groupWithTotalPaidByPerson;
   final FocusNode nameFocus = FocusNode();
 
-  String bottomButtonName = "Trở lại";
+  bool isUpdateInfo = false;
   bool isNewGroup = true;
 
   @override
@@ -100,7 +100,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
               children: [
                 Column(
                   children: [
-                    header(),
+                    header(currentGroupDetail),
                     teamList(),
                     Expanded(
                       child: SingleChildScrollView(
@@ -128,10 +128,10 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                     ),
                   ],
                 ),
-                Container(
-                  alignment: Alignment.bottomCenter,
-                  child: bottomButton(currentGroupDetail),
-                ),
+                // Container(
+                //   alignment: Alignment.bottomCenter,
+                //   child: bottomButton(currentGroupDetail),
+                // ),
               ],
             ),
           ),
@@ -140,7 +140,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
     );
   }
 
-  Widget header() {
+  Widget header(Group currentGroupDetail) {
     return Container(
       height: 56,
       padding: EdgeInsets.all(12.0),
@@ -170,11 +170,11 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                 final groupName = ref.read(groupNotifierProvider.notifier).currentGroupDetail.name;
                 if (groupName == value) {
                   setState(() {
-                    bottomButtonName = "Trở lại";
+                    isUpdateInfo = false;
                   });
                 } else {
                   setState(() {
-                    bottomButtonName = "Cập nhật";
+                    isUpdateInfo = true;
                   });
                 }
               },
@@ -201,27 +201,57 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
           ),
           Spacer(),
           InkWell(
-            onTap: () {
-              toastification.show(
-                title: Text('Tính năng sẽ sớm ra mắt'),
-                style: ToastificationStyle.fillColored,
-                autoCloseDuration: const Duration(seconds: 3),
-              );
+            onTap: () async {
+              if (isNewGroup) {
+                if (nameController.text.isEmpty) return;
+                //Only call add New Group
+                currentGroupDetail.uid = Uuid().v4();
+                currentGroupDetail.name = nameController.text;
+                await ref.read(groupNotifierProvider.notifier).addNewGroup(
+                      currentGroupDetail,
+                    );
+                toastification.show(
+                  title: Text('Thành công thêm mới'),
+                  style: ToastificationStyle.fillColored,
+                  autoCloseDuration: const Duration(seconds: 3),
+                );
+              } else {
+                if (isUpdateInfo == true) {
+                  //Call Update group
+                  await ref.read(groupNotifierProvider.notifier).updateGroupName(
+                        currentGroupDetail.uid,
+                        nameController.text,
+                      );
+                  toastification.show(
+                    title: Text('Thành công cập nhật thông tin'),
+                    style: ToastificationStyle.fillColored,
+                    autoCloseDuration: const Duration(seconds: 3),
+                  );
+                }
+              }
+              context.pop();
             },
-            child: Icon(
-              Icons.settings,
-              size: 32,
-              shadows: <Shadow>[
-                Shadow(
-                  offset: Offset(2.0, 2.0),
-                  blurRadius: 4.0,
-                  color: ColorName.homeGrayBalance,
-                ),
-              ],
-            ),
+            child: getHeaderIcon(),
           )
         ],
       ),
+    );
+  }
+
+  Widget? getHeaderIcon() {
+    IconData? data = Icons.add;
+    if (isNewGroup) {
+      data = Icons.add;
+    } else {
+      if (isUpdateInfo) {
+        data = Icons.check_circle_outline;
+      } else {
+        return Container();
+      }
+    }
+    return Icon(
+      data,
+      size: 32,
     );
   }
 
@@ -352,70 +382,6 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
           },
         ),
       ],
-    );
-  }
-
-  Widget bottomButton(Group currentGroupDetail) {
-    return InkWell(
-      onTap: () async {
-        if (isNewGroup) {
-          if (nameController.text.isEmpty) return;
-          //Only call add New Group
-          currentGroupDetail.uid = Uuid().v4();
-          currentGroupDetail.name = nameController.text;
-          await ref.read(groupNotifierProvider.notifier).addNewGroup(
-                currentGroupDetail,
-              );
-          toastification.show(
-            title: Text('Thành công thêm mới'),
-            style: ToastificationStyle.fillColored,
-            autoCloseDuration: const Duration(seconds: 3),
-          );
-        } else {
-          if (bottomButtonName == "Cập nhật") {
-            //Call Update group
-            await ref.read(groupNotifierProvider.notifier).updateGroupName(
-                  currentGroupDetail.uid,
-                  nameController.text,
-                );
-            toastification.show(
-              title: Text('Thành công cập nhật thông tin'),
-              style: ToastificationStyle.fillColored,
-              autoCloseDuration: const Duration(seconds: 3),
-            );
-          }
-        }
-        context.pop();
-      },
-      child: Container(
-        height: 60,
-        width: 120,
-        alignment: Alignment.center,
-        margin: EdgeInsets.only(bottom: 24),
-        decoration: BoxDecoration(
-          color: ColorName.groupManagementBackGroundButton,
-          borderRadius: const BorderRadius.all(Radius.circular(100)),
-          boxShadow: [
-            BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
-          ],
-        ),
-        child: Text(
-          (isNewGroup) ? "Thêm mới" : bottomButtonName,
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
-            color: ColorName.homeWhiteButtonBg,
-            fontSize: 16,
-            fontWeight: FontWeight.w400,
-            shadows: <Shadow>[
-              Shadow(
-                offset: Offset(2.0, 2.0),
-                blurRadius: 4.0,
-                color: ColorName.loginAvatarBackGround,
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

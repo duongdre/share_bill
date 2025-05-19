@@ -86,7 +86,7 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        margin: EdgeInsets.only(left: 16, top: 16, bottom: 16),
+                        margin: EdgeInsets.only(left: 16, top: 24, bottom: 16),
                         child: Text(
                           "Groups",
                           overflow: TextOverflow.ellipsis,
@@ -110,7 +110,7 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
                           ),
                         ),
                       ),
-                      historyTransaction(),
+                      recentPayments(),
                     ],
                   ),
                 ),
@@ -334,7 +334,7 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
     );
   }
 
-  Widget historyTransaction() {
+  Widget recentPayments() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

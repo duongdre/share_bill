@@ -319,7 +319,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                               margin: EdgeInsets.only(top: 100),
                               alignment: Alignment.topCenter,
                               child: Text(
-                                NumberFormat.currency(locale: "vi_VN", symbol: "VNĐ").format(groupWithTotalPaidByPerson[eachPerson[index]]),
+                                NumberFormat.currency(locale: "vi_VN", symbol: "VNĐ").format(groupWithTotalPaidByPerson[eachPerson[index]] ?? 0),
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                   color: ColorName.blackColor,

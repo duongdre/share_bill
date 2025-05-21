@@ -45,6 +45,9 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
   late TextEditingController descriptionController;
   late TextEditingController dateController;
 
+  // Track keyboard visibility
+  bool isKeyboardVisible = false;
+
   @override
   void initState() {
     amountController = TextEditingController(text: "");
@@ -53,7 +56,6 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
 
     amountController.addListener(_updateText);
 
-    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
     super.initState();
   }
 
@@ -94,90 +96,123 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
   Widget build(BuildContext context) {
     ref.watch(billNotifierProvider);
     final group = ref.read(billNotifierProvider.notifier).currentSpentGroup;
+
+    // Listen for keyboard visibility changes
+    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+    isKeyboardVisible = bottomInset > 0;
+
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          color: ColorName.spentBackGround,
-        ),
-        child: SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              header(),
-              Container(
-                margin: EdgeInsets.only(left: 16, top: 24, bottom: 16),
-                child: Text(
-                  "Select Group",
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: ColorName.iconGray,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              selectGroup(ref.read(groupNotifierProvider.notifier).allGroup),
-              (ref.read(billNotifierProvider.notifier).currentSpentGroup.uid != "")
-                  ? Container(
-                      margin: EdgeInsets.only(left: 16, top: 16, bottom: 16),
-                      child: Text(
-                        "Who paid?",
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: ColorName.iconGray,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
+      resizeToAvoidBottomInset: false, // Prevent resizing when keyboard appears
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Container(
+          decoration: const BoxDecoration(
+            color: ColorName.spentBackGround,
+          ),
+          child: SafeArea(
+            child: Stack(
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    header(),
+                    // Wrap scrollable content in Expanded + SingleChildScrollView
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(left: 16, top: 24, bottom: 16),
+                              child: Text(
+                                "Select Group",
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  color: ColorName.iconGray,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            selectGroup(ref.read(groupNotifierProvider.notifier).allGroup),
+                            (ref.read(billNotifierProvider.notifier).currentSpentGroup.uid != "")
+                                ? Container(
+                                    margin: EdgeInsets.only(left: 16, top: 16, bottom: 16),
+                                    child: Text(
+                                      "Who paid?",
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        color: ColorName.iconGray,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  )
+                                : Container(),
+                            (ref.read(billNotifierProvider.notifier).currentSpentGroup.uid != "")
+                                ? selectPerson(ref.read(billNotifierProvider.notifier).currentSpentGroup)
+                                : Container(),
+                            Container(
+                              margin: EdgeInsets.only(left: 16, top: 16, bottom: 16),
+                              child: Text(
+                                "Amount",
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  color: ColorName.iconGray,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            amount(),
+                            Container(
+                              margin: EdgeInsets.only(left: 16, top: 16, bottom: 16),
+                              child: Text(
+                                "Description",
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  color: ColorName.iconGray,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            description(),
+                            Container(
+                              margin: EdgeInsets.only(left: 16, top: 16, bottom: 16),
+                              child: Text(
+                                "Date",
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  color: ColorName.iconGray,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            dateTime(),
+                            // Add padding at bottom to ensure scrolling can reveal all content
+                            // when the button is visible
+                            SizedBox(height: isKeyboardVisible ? 20 : 100),
+                          ],
                         ),
                       ),
-                    )
-                  : Container(),
-              (ref.read(billNotifierProvider.notifier).currentSpentGroup.uid != "")
-                  ? selectPerson(ref.read(billNotifierProvider.notifier).currentSpentGroup)
-                  : Container(),
-              Container(
-                margin: EdgeInsets.only(left: 16, top: 16, bottom: 16),
-                child: Text(
-                  "Amount",
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: ColorName.iconGray,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
+                    ),
+                  ],
                 ),
-              ),
-              amount(),
-              Container(
-                margin: EdgeInsets.only(left: 16, top: 16, bottom: 16),
-                child: Text(
-                  "Desciption",
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: ColorName.iconGray,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
+                // Position the button at the bottom
+                if (!isKeyboardVisible) // Only show button when keyboard is not visible
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: spentButton(),
                   ),
-                ),
-              ),
-              description(),
-              Container(
-                margin: EdgeInsets.only(left: 16, top: 16, bottom: 16),
-                child: Text(
-                  "Desciption",
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: ColorName.iconGray,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              dateTime(),
-              // Expanded(child: Center(child: amout())),
-              // keyboard(),
-              spentButton(),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -418,7 +453,7 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
                 ),
               );
             } else {
-              return null;
+              return Container();
             }
           }),
     );
@@ -524,181 +559,78 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
     );
   }
 
-  // amount
-  Widget amout() {
-    return Container(
-      alignment: Alignment.center,
-      padding: EdgeInsets.only(top: 16),
-      child: TextField(
-        controller: amountController,
-        textAlign: TextAlign.center,
-        cursorColor: ColorName.homeBlackText,
-        style: const TextStyle(
-          color: ColorName.homeBlackText,
-          fontSize: 54,
-          fontWeight: FontWeight.w500,
-          shadows: <Shadow>[
-            Shadow(
-              offset: Offset(2.0, 2.0),
-              blurRadius: 4.0,
-              color: ColorName.homeGrayBalance,
-            ),
-          ],
-        ),
-        decoration: const InputDecoration(
-          border: InputBorder.none,
-          enabled: false,
-          hintText: 'Nhập số tiền',
-          hintStyle: TextStyle(
-            color: ColorName.loginIconColorGray,
-            fontSize: 54,
-            fontStyle: FontStyle.italic,
-            fontWeight: FontWeight.w400,
-            shadows: <Shadow>[
-              Shadow(
-                offset: Offset(2.0, 2.0),
-                blurRadius: 4.0,
-                color: ColorName.homeGrayBalance,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  // keyboard
-  Widget keyboard() {
-    final numpadData = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "000", "0", "x"];
-
-    return Container(
-      height: 308,
-      alignment: Alignment.center,
-      margin: const EdgeInsets.only(top: 16, bottom: 8, left: 16, right: 16),
-      decoration: const BoxDecoration(
-        color: ColorName.homeWhiteButtonBg,
-        borderRadius: BorderRadius.all(Radius.circular(20)),
-        boxShadow: [
-          BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
-        ],
-      ),
-      padding: const EdgeInsets.only(top: 16, bottom: 16, left: 16, right: 16),
-      child: Column(
-        children: [
-          for (int item1 in [0, 1, 2, 3])
-            Row(
-              children: [
-                for (int item2 in [1, 2, 3])
-                  Expanded(
-                    child: InkWell(
-                      onTap: () {
-                        print(numpadData[item2 + item1 * 3 - 1]);
-                        final number = numpadData[item2 + item1 * 3 - 1];
-                        if (number == "000") {
-                          currentAmount = currentAmount * 1000;
-                        } else if (isNumeric(number)) {
-                          currentAmount = currentAmount * 10 + int.parse(number);
-                        } else {
-                          currentAmount = currentAmount ~/ 10;
-                        }
-                        amountController.text = NumberFormat.currency(locale: "vi_VN", symbol: "Đ").format(currentAmount);
-                      },
-                      child: Container(
-                        height: 60,
-                        margin: const EdgeInsets.all(4),
-                        alignment: Alignment.center,
-                        decoration: const BoxDecoration(
-                          color: ColorName.spentBackGroundButton,
-                          borderRadius: const BorderRadius.all(Radius.circular(100)),
-                          boxShadow: [
-                            BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
-                          ],
-                        ),
-                        child: Text(
-                          numpadData[item2 + item1 * 3 - 1],
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: ColorName.homeBlackText,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            shadows: <Shadow>[
-                              Shadow(
-                                offset: Offset(2.0, 2.0),
-                                blurRadius: 4.0,
-                                color: ColorName.homeGrayBalance,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  )
-              ],
-            )
-        ],
-      ),
-    );
-  }
-
   // spent button
   Widget spentButton() {
-    return InkWell(
-      onTap: () async {
-        ref.read(billNotifierProvider.notifier).changeAmount(currentAmount);
+    return Container(
+      padding: EdgeInsets.only(left: 16, right: 16, bottom: 16),
+      decoration: BoxDecoration(
+        color: ColorName.spentBackGround,
+        // Add a subtle shadow at top to separate it from content
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 4,
+            offset: Offset(0, -2),
+          ),
+        ],
+      ),
+      child: InkWell(
+        onTap: () async {
+          ref.read(billNotifierProvider.notifier).changeAmount(currentAmount);
 
-        final billGroup = ref.read(billNotifierProvider.notifier).currentSpentGroup.uid;
-        final billPerson = ref.read(billNotifierProvider.notifier).currentSpentPerson.uid;
-        final billAmount = ref.read(billNotifierProvider.notifier).currentAmount;
-        if (billGroup.isEmpty || billPerson.isEmpty || billAmount == 0) {
-          toastification.show(
-            title: Text('Vui lòng điền đầy đủ thông tin'),
-            style: ToastificationStyle.fillColored,
-            autoCloseDuration: const Duration(seconds: 3),
-          );
-        } else {
-          await ref.read(billNotifierProvider.notifier).addNewBill(
-                Bill(
-                    uid: Uuid().v4(),
-                    groupId: billGroup,
-                    personId: billPerson,
-                    amount: billAmount,
-                    description: descriptionController.text,
-                    createdAt: formatDateStringMillisecondsSinceEpoch(dateController.text)),
-              );
-          toastification.show(
-            title: Text('Thành công thêm khoản chi tiêu'),
-            style: ToastificationStyle.fillColored,
-            autoCloseDuration: const Duration(seconds: 3),
-          );
-          context.pop();
-        }
-      },
-      child: Container(
-        height: 60,
-        // width: 120,
-        alignment: Alignment.center,
-        margin: EdgeInsets.only(top: 16, bottom: 16, left: 16, right: 16),
-        decoration: BoxDecoration(
-          color: ColorName.groupManagementBackGroundButton,
-          borderRadius: const BorderRadius.all(Radius.circular(100)),
-          boxShadow: [
-            BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
-          ],
-        ),
-        child: Text(
-          "Spent money",
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
-            color: ColorName.homeWhiteButtonBg,
-            fontSize: 20,
-            fontWeight: FontWeight.w400,
-            shadows: <Shadow>[
-              Shadow(
-                offset: Offset(2.0, 2.0),
-                blurRadius: 4.0,
-                color: ColorName.loginAvatarBackGround,
-              ),
+          final billGroup = ref.read(billNotifierProvider.notifier).currentSpentGroup.uid;
+          final billPerson = ref.read(billNotifierProvider.notifier).currentSpentPerson.uid;
+          final billAmount = ref.read(billNotifierProvider.notifier).currentAmount;
+          if (billGroup.isEmpty || billPerson.isEmpty || billAmount == 0) {
+            toastification.show(
+              title: Text('Please fill in all fields'),
+              style: ToastificationStyle.fillColored,
+              autoCloseDuration: const Duration(seconds: 3),
+            );
+          } else {
+            await ref.read(billNotifierProvider.notifier).addNewBill(
+                  Bill(
+                      uid: Uuid().v4(),
+                      groupId: billGroup,
+                      personId: billPerson,
+                      amount: billAmount,
+                      description: descriptionController.text,
+                      createdAt: formatDateStringMillisecondsSinceEpoch(dateController.text)),
+                );
+            toastification.show(
+              title: Text('Successfully added expense'),
+              style: ToastificationStyle.fillColored,
+              autoCloseDuration: const Duration(seconds: 3),
+            );
+            context.pop();
+          }
+        },
+        child: Container(
+          height: 60,
+          alignment: Alignment.center,
+          margin: EdgeInsets.only(top: 16),
+          decoration: BoxDecoration(
+            color: ColorName.groupManagementBackGroundButton,
+            borderRadius: const BorderRadius.all(Radius.circular(100)),
+            boxShadow: [
+              BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
             ],
+          ),
+          child: Text(
+            "Spent money",
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              color: ColorName.homeWhiteButtonBg,
+              fontSize: 20,
+              fontWeight: FontWeight.w400,
+              shadows: <Shadow>[
+                Shadow(
+                  offset: Offset(2.0, 2.0),
+                  blurRadius: 4.0,
+                  color: ColorName.loginAvatarBackGround,
+                ),
+              ],
+            ),
           ),
         ),
       ),

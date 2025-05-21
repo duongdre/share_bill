@@ -15,6 +15,7 @@ part 'group_provider.g.dart';
 class GroupNotifier extends _$GroupNotifier {
   List<Group> allGroup = [];
   Map<dynamic, dynamic> allGroupMapping = {};
+  Map<dynamic, dynamic> allGroupMappingByName = {};
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
   Group currentGroupDetail = Group(uid: "", name: "", members: {});
@@ -34,6 +35,10 @@ class GroupNotifier extends _$GroupNotifier {
     return Group.fromMap(allGroupMapping[groupId] as Map);
   }
 
+  Group? findGroupWithName(String groupName) {
+    return Group.fromMap(allGroupMappingByName[groupName]);
+  }
+
   void clearNewGroupData() {
     currentGroupDetail = Group(uid: "", name: "", members: {});
   }
@@ -45,12 +50,14 @@ class GroupNotifier extends _$GroupNotifier {
 
       allGroup.clear();
       allGroupMapping.clear();
+      allGroupMappingByName.clear();
 
       if (snapshot.exists) {
         for (final data in snapshot.children) {
           final group = Group.fromMap(data.value as Map);
           print('group data ${group.toJson()}');
           allGroup.add(group);
+          allGroupMappingByName[group.name] = data.value as Map<dynamic, dynamic>;
         }
         allGroupMapping = snapshot.value as Map<dynamic, dynamic>;
       } else {

@@ -18,7 +18,6 @@ import '../../../gen/fonts.gen.dart';
 import '../../../models/data_models/bill.dart';
 import '../../../models/data_models/group.dart';
 import '../../../utilities/utils/avatar_dialog.dart';
-import '../../../utilities/utils/dialog_choose_person.dart';
 import '../../../utilities/utils/enum.dart';
 import '../../../utilities/utils/avatar_person.dart';
 import '../../../utilities/utils/widget_list_bill.dart';
@@ -340,7 +339,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                           showDialog(
                             context: context,
                             builder: (_) => DialogAddMember(),
-                            barrierColor: ColorName.blackColor.withOpacity(0.15),
+                            barrierColor: ColorName.blackColor.withOpacity(0.55),
                           );
                         },
                         child: Container(

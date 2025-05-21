@@ -16,6 +16,10 @@
     <color name="textGray">#6B7280</color>
     <color name="textGreen">#059669</color>
 
+    <color name="borderBlack">#D1D5DB</color>
+
+    <color name="iconGray">#374151</color>
+
 
     <!--    OLD COLOR-->
     <color name="whiteColor">#fefefd</color>

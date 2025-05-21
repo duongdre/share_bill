@@ -53,7 +53,7 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
               margin: EdgeInsets.all(20.0),
               height: 260.0,
               decoration: ShapeDecoration(
-                color: ColorName.spentBackGroundReceiveDialog,
+                color: ColorName.white,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
               ),
               child: Column(
@@ -64,8 +64,8 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
                     child: const Text(
                       "Thêm người vào nhóm",
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: ColorName.homeWhiteButtonBg,
+                      style: TextStyle(
+                        color: ColorName.textBlack,
                         fontSize: 16,
                         fontWeight: FontWeight.w400,
                         shadows: <Shadow>[
@@ -96,26 +96,25 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
                               children: [
                                 Container(
                                   padding: EdgeInsets.only(top: 16, left: 10, right: 10),
-                                  child: AvatarPerson(
-                                    person: person,
-                                    size: 80,
-                                    isEditable: false,
+                                  child: Container(
+                                    width: 84,
+                                    height: 84,
+                                    decoration: (currentGroupMember[person.uid] == true)
+                                        ? BoxDecoration(
+                                            borderRadius: const BorderRadius.all(Radius.circular(100)),
+                                            boxShadow: [
+                                              BoxShadow(color: ColorName.greenColor, blurRadius: 4, offset: Offset(4, 4)),
+                                            ],
+                                            color: ColorName.greenColor,
+                                          )
+                                        : null,
+                                    child: AvatarPerson(
+                                      person: person,
+                                      size: 80,
+                                      isEditable: false,
+                                    ),
                                   ),
                                 ),
-                                (currentGroupMember[person.uid] == true)
-                                    ? Container(
-                                        margin: EdgeInsets.only(left: 30),
-                                        child: const CircleAvatar(
-                                          radius: 20,
-                                          backgroundColor: ColorName.blueColor,
-                                          child: Icon(
-                                            Icons.check_circle_outline_outlined,
-                                            size: 40,
-                                            color: ColorName.homeWhiteAdd,
-                                          ),
-                                        ),
-                                      )
-                                    : Container(),
                                 Container(
                                   width: 100,
                                   margin: EdgeInsets.only(top: 104),
@@ -166,7 +165,7 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
                       alignment: Alignment.center,
                       margin: EdgeInsets.only(bottom: 16, left: 16, right: 16),
                       decoration: BoxDecoration(
-                        color: ColorName.homeWhiteButtonBg,
+                        color: ColorName.homeGrayHold,
                         borderRadius: const BorderRadius.all(Radius.circular(100)),
                         boxShadow: [
                           BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),

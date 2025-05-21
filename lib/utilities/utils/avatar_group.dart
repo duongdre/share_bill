@@ -94,6 +94,7 @@ class AvatarGroup extends ConsumerWidget {
     return Container(
       height: size,
       width: size,
+      alignment: Alignment.center,
       child: avatarWidget,
     );
   }

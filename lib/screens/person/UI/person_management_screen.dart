@@ -80,7 +80,6 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
                             context.goNamed(PersonDetailScreen.routeName);
                           },
                         ),
-                        const SizedBox(height: 16),
                         const SizedBox(height: 32),
                       ],
                     ),

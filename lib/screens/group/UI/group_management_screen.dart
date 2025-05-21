@@ -14,6 +14,7 @@ import '../../../utilities/utils/avatar_group.dart';
 import '../../../utilities/utils/avatar_person.dart';
 import '../../../utilities/utils/enum.dart';
 import '../../../utilities/utils/widget_animated_search_bar.dart';
+import '../../bill/controller/bill_provider.dart';
 import '../../person/UI/person_detail_screen.dart';
 import '../../person/controller/person_provider.dart';
 import '../controller/group_provider.dart';
@@ -47,6 +48,7 @@ class _GroupManagementScreenState extends ConsumerState<GroupManagementScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(billNotifierProvider);
     ref.watch(groupNotifierProvider);
     final groups = ref.read(groupNotifierProvider.notifier).allGroup;
     return GestureDetector(
@@ -78,7 +80,6 @@ class _GroupManagementScreenState extends ConsumerState<GroupManagementScreen> {
                             context.goNamed(GroupDetailScreen.routeName);
                           },
                         ),
-                        const SizedBox(height: 16),
                         const SizedBox(height: 32),
                       ],
                     ),

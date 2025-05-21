@@ -28,6 +28,9 @@ class ColorName {
   /// Color: #2563EB
   static const Color blueDarkBackground = Color(0xFF2563EB);
 
+  /// Color: #D1D5DB
+  static const Color borderBlack = Color(0xFFD1D5DB);
+
   /// Color: #D1FAE5
   static const Color greenBackground = Color(0xFFD1FAE5);
 
@@ -63,6 +66,9 @@ class ColorName {
 
   /// Color: #F9F9F9
   static const Color homeWhiteButtonBg = Color(0xFFF9F9F9);
+
+  /// Color: #374151
+  static const Color iconGray = Color(0xFF374151);
 
   /// Color: #6C7098
   static const Color loginAvatarBackGround = Color(0xFF6C7098);

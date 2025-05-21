@@ -61,7 +61,7 @@ class AvatarBill extends ConsumerWidget {
                   maxLines: 1,
                 ),
                 Text(
-                  DateFormat("HH:mm - dd/MM/yy").format(DateTime.fromMillisecondsSinceEpoch(bill.createdAt ?? 0)),
+                  DateFormat("MMM dd, yyyy - HH:mm").format(DateTime.fromMillisecondsSinceEpoch(bill.createdAt ?? 0)),
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     color: ColorName.loginTextColorGray,

@@ -74,7 +74,6 @@ class _BillManagementScreenState extends ConsumerState<BillManagementScreen> {
                               scrollable: true,
                               onBillTap: (bill) {},
                             ),
-                            const SizedBox(height: 16),
                             const SizedBox(height: 32),
                           ],
                         ),

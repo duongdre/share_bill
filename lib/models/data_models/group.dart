@@ -37,12 +37,12 @@ class Group {
   // Create a Group from JSON data
   factory Group.fromJson(String id, Map<String, dynamic> json) {
     return Group(
-      uid: json['uid'],
-      name: json['name'],
+      uid: json['uid'] ?? id,
+      name: json['name'] ?? '',
       createdAt: json['createdAt'] ?? DateTime.now().millisecondsSinceEpoch,
       members: (json['members'] as Map<String, dynamic>?)?.map(
             (key, value) => MapEntry(key, value as bool),
-          ) ??
+      ) ??
           {},
     );
   }

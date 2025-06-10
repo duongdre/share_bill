@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:share_bill/screens/home/UI/home_screen.dart';
 import 'package:share_bill/screens/login/UI/login_screen.dart';
+import 'package:share_bill/services/firebase_services/user_service.dart';
 
 class AuthService {
   static String verId = "";
@@ -17,6 +18,10 @@ class AuthService {
         email: email,
         password: password,
       );
+
+      // Initialize user data structure in database
+      await UserService.initializeUserData();
+
       return 'Success';
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -40,6 +45,10 @@ class AuthService {
         email: email,
         password: password,
       );
+
+      // Initialize user data structure if it doesn't exist
+      await UserService.initializeUserData();
+
       return 'Success';
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -55,7 +64,7 @@ class AuthService {
   }
 
   static void logoutApp(BuildContext context) async {
-    await _firebaseAuth.signOut();
+    await UserService.signOut();
     // ignore: use_build_context_synchronously
     Navigator.push(
       context,
@@ -78,6 +87,10 @@ class AuthService {
       final UserCredential userCredential = await _firebaseAuth.signInWithCredential(credential);
       print(userCredential.user!.phoneNumber);
       print("Login successful");
+
+      // Initialize user data structure
+      await UserService.initializeUserData();
+
       // TODO: Navigate to home page
       Navigator.push(context, MaterialPageRoute(builder: (context) {
         return const HomeScreen();

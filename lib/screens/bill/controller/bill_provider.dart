@@ -9,6 +9,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../../models/data_models/group.dart';
 import '../../../models/data_models/person.dart';
+import '../../../services/firebase_services/user_service.dart';
 import '../../person/controller/person_provider.dart';
 
 part 'bill_provider.g.dart';
@@ -134,41 +135,83 @@ class BillNotifier extends _$BillNotifier {
     }
   }
 
-  Future<void> fetchAllBill() async {
+  Future<List<Bill>> fetchAllBill() async {
     try {
-      final databaseReference = FirebaseDatabase.instance.ref("bills");
+      if (!UserService.isUserLoggedIn()) {
+        throw Exception('User not logged in');
+      }
+
+      print('USER ID: ${UserService.getCurrentUserId()}');
+      final databaseReference = UserService.getUserCollectionRef('bills');
       final snapshot = await databaseReference.get().timeout(const Duration(seconds: 30));
 
       allBill.clear();
       allBillMapping.clear();
 
-      if (snapshot.exists) {
-        for (final data in snapshot.children) {
-          final bill = Bill.fromMap(data.value as Map);
-          print('bill data ${bill.toString()}');
-          allBill.add(bill);
-        }
-        allBillMapping = snapshot.value as Map<dynamic, dynamic>;
+      if (snapshot.exists && snapshot.value != null) {
+        final data = snapshot.value as Map<dynamic, dynamic>;
+        print('📊 Raw bills data: ${data.keys.length} items');
+
+        data.forEach((key, value) {
+          try {
+            final bill = Bill.fromMap(value as Map<dynamic, dynamic>);
+            print('✅ Successfully parsed bill: ${bill.uid} - Amount: ${bill.amount}');
+            allBill.add(bill);
+            allBillMapping[key] = value;
+          } catch (e) {
+            print('❌ Error parsing bill with key $key: $e');
+            print('❌ Bill data: $value');
+          }
+        });
       } else {
-        print('No data available.');
+        print('📭 No bills data available.');
       }
+
+      print('📊 Final bills count: ${allBill.length}');
+
+      // Force state update to trigger UI rebuild
+      state = state + 1;
+
+      // Return the data directly
+      return List.from(allBill);
+
     } catch (error) {
-      print('Error fetching data: $error');
+      print('❌ Error fetching bills data: $error');
+      return [];
     }
-    state = state + 1;
   }
 
   Bill? findBillWithPersonUid(String userId) {
-    return Bill.fromMap(allBillMapping[userId] as Map);
+    try {
+      if (allBillMapping.containsKey(userId)) {
+        return Bill.fromMap(allBillMapping[userId] as Map<dynamic, dynamic>);
+      }
+      return null;
+    } catch (e) {
+      print('❌ Error finding bill with person uid $userId: $e');
+      return null;
+    }
   }
 
   Bill? findBillWithGroupUid(String userId) {
-    return Bill.fromMap(allBillMapping[userId] as Map);
+    try {
+      if (allBillMapping.containsKey(userId)) {
+        return Bill.fromMap(allBillMapping[userId] as Map<dynamic, dynamic>);
+      }
+      return null;
+    } catch (e) {
+      print('❌ Error finding bill with group uid $userId: $e');
+      return null;
+    }
   }
 
   Future<void> addNewBill(Bill newBill) async {
     try {
-      final databaseReference = FirebaseDatabase.instance.ref("bills");
+      if (!UserService.isUserLoggedIn()) {
+        throw Exception('User not logged in');
+      }
+
+      final databaseReference = UserService.getUserCollectionRef('bills');
       await databaseReference.child(newBill.uid).set(newBill.toJson());
       // Refresh the list
       await fetchAllBill();
@@ -180,7 +223,11 @@ class BillNotifier extends _$BillNotifier {
 
   Future<void> updateBillDetails(String billId, Map<String, dynamic> updates) async {
     try {
-      final databaseReference = FirebaseDatabase.instance.ref("bills");
+      if (!UserService.isUserLoggedIn()) {
+        throw Exception('User not logged in');
+      }
+
+      final databaseReference = UserService.getUserCollectionRef('bills');
       await databaseReference.child(billId).update(updates);
       // Refresh the list
       await fetchAllBill();
@@ -192,7 +239,11 @@ class BillNotifier extends _$BillNotifier {
 
   Future<void> deleteBill(String billID) async {
     try {
-      final databaseReference = FirebaseDatabase.instance.ref("bills");
+      if (!UserService.isUserLoggedIn()) {
+        throw Exception('User not logged in');
+      }
+
+      final databaseReference = UserService.getUserCollectionRef('bills');
       await databaseReference.child(billID).remove();
       // Refresh the list
       await fetchAllBill();
@@ -204,14 +255,17 @@ class BillNotifier extends _$BillNotifier {
 
   Future<void> deleteAPersonFromAllBill(String personId) async {
     try {
+      if (!UserService.isUserLoggedIn()) {
+        throw Exception('User not logged in');
+      }
+
       List<Bill> billsToDelete = allBill.where((bill) => bill.personId == personId).toList();
 
-      // Step 3: Delete from Firebase
-      final DatabaseReference database = FirebaseDatabase.instance.ref();
+      // Delete from Firebase
+      final DatabaseReference database = UserService.getUserCollectionRef('bills');
 
       for (Bill bill in billsToDelete) {
-        // Assuming each bill has an id field
-        database.child('bills/${bill.uid}').remove().then((_) {
+        database.child(bill.uid).remove().then((_) {
           print('Bill ${bill.uid} deleted successfully');
         }).catchError((error) {
           print('Failed to delete bill: $error');
@@ -223,20 +277,23 @@ class BillNotifier extends _$BillNotifier {
       await fetchAllBill();
       state = state + 1;
     } catch (e) {
-      print("Error deleting person from all group: $e");
+      print("Error deleting person from all bills: $e");
     }
   }
 
   Future<void> deleteAGroupFromAllBill(String groupId) async {
     try {
+      if (!UserService.isUserLoggedIn()) {
+        throw Exception('User not logged in');
+      }
+
       List<Bill> billsToDelete = allBill.where((bill) => bill.groupId == groupId).toList();
 
-      // Step 3: Delete from Firebase
-      final DatabaseReference database = FirebaseDatabase.instance.ref();
+      // Delete from Firebase
+      final DatabaseReference database = UserService.getUserCollectionRef('bills');
 
       for (Bill bill in billsToDelete) {
-        // Assuming each bill has an id field
-        database.child('bills/${bill.uid}').remove().then((_) {
+        database.child(bill.uid).remove().then((_) {
           print('Bill ${bill.uid} deleted successfully');
         }).catchError((error) {
           print('Failed to delete bill: $error');
@@ -248,7 +305,7 @@ class BillNotifier extends _$BillNotifier {
       await fetchAllBill();
       state = state + 1;
     } catch (e) {
-      print("Error deleting person from all group: $e");
+      print("Error deleting group from all bills: $e");
     }
   }
 }

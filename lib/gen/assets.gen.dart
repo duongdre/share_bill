@@ -56,12 +56,6 @@ class $AssetsIconsGen {
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
-  /// File path: assets/images/acbOneColors.png
-  AssetGenImage get acbOneColors => const AssetGenImage('assets/images/acbOneColors.png');
-
-  /// File path: assets/images/acbOneWhite.png
-  AssetGenImage get acbOneWhite => const AssetGenImage('assets/images/acbOneWhite.png');
-
   /// File path: assets/images/avtFemale.png
   AssetGenImage get avtFemale => const AssetGenImage('assets/images/avtFemale.png');
 
@@ -77,27 +71,14 @@ class $AssetsImagesGen {
   /// File path: assets/images/grid_bg.png
   AssetGenImage get gridBg => const AssetGenImage('assets/images/grid_bg.png');
 
-  /// File path: assets/images/homeFake.png
-  AssetGenImage get homeFake => const AssetGenImage('assets/images/homeFake.png');
-
-  /// File path: assets/images/loginCard1.png
-  AssetGenImage get loginCard1 => const AssetGenImage('assets/images/loginCard1.png');
-
-  /// File path: assets/images/loginCard2.png
-  AssetGenImage get loginCard2 => const AssetGenImage('assets/images/loginCard2.png');
-
-  /// File path: assets/images/loginCard3.png
-  AssetGenImage get loginCard3 => const AssetGenImage('assets/images/loginCard3.png');
-
   /// File path: assets/images/logo.png
   AssetGenImage get logo => const AssetGenImage('assets/images/logo.png');
 
-  /// File path: assets/images/splashAcb.png
-  AssetGenImage get splashAcb => const AssetGenImage('assets/images/splashAcb.png');
+  /// File path: assets/images/splash.png
+  AssetGenImage get splash => const AssetGenImage('assets/images/splash.png');
 
   /// List of all assets
-  List<AssetGenImage> get values =>
-      [acbOneColors, acbOneWhite, avtFemale, avtMale, bgLogin, faceId, gridBg, homeFake, loginCard1, loginCard2, loginCard3, logo, splashAcb];
+  List<AssetGenImage> get values => [avtFemale, avtMale, bgLogin, faceId, gridBg, logo, splash];
 }
 
 class Assets {

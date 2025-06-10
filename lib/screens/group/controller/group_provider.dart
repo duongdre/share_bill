@@ -8,6 +8,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../../models/data_models/bill.dart';
 import '../../../models/data_models/group.dart';
+import '../../../services/firebase_services/user_service.dart';
 
 part 'group_provider.g.dart';
 
@@ -32,41 +33,95 @@ class GroupNotifier extends _$GroupNotifier {
   }
 
   Group? findGroupWithUid(String groupId) {
-    return Group.fromMap(allGroupMapping[groupId] as Map);
+    try {
+      if (allGroupMapping.containsKey(groupId)) {
+        return Group.fromMap(allGroupMapping[groupId] as Map<dynamic, dynamic>);
+      }
+
+      // Also search in the allGroup list as backup
+      for (final group in allGroup) {
+        if (group.uid == groupId) {
+          return group;
+        }
+      }
+
+      return null;
+    } catch (e) {
+      print('❌ Error finding group with uid $groupId: $e');
+      return null;
+    }
   }
 
   Group? findGroupWithName(String groupName) {
-    return Group.fromMap(allGroupMappingByName[groupName]);
+    try {
+      if (allGroupMappingByName.containsKey(groupName)) {
+        return Group.fromMap(allGroupMappingByName[groupName] as Map<dynamic, dynamic>);
+      }
+
+      // Also search in the allGroup list as backup
+      for (final group in allGroup) {
+        if (group.name == groupName) {
+          return group;
+        }
+      }
+
+      return null;
+    } catch (e) {
+      print('❌ Error finding group with name $groupName: $e');
+      return null;
+    }
   }
 
   void clearNewGroupData() {
     currentGroupDetail = Group(uid: "", name: "", members: {});
   }
 
-  Future<void> fetchAllGroup() async {
+  Future<List<Group>> fetchAllGroup() async {
     try {
-      final databaseReference = FirebaseDatabase.instance.ref("groups");
+      if (!UserService.isUserLoggedIn()) {
+        throw Exception('User not logged in');
+      }
+
+      print('USER ID: ${UserService.getCurrentUserId()}');
+      final databaseReference = UserService.getUserCollectionRef('groups');
       final snapshot = await databaseReference.get().timeout(const Duration(seconds: 30));
 
       allGroup.clear();
       allGroupMapping.clear();
       allGroupMappingByName.clear();
 
-      if (snapshot.exists) {
-        for (final data in snapshot.children) {
-          final group = Group.fromMap(data.value as Map);
-          print('group data ${group.toJson()}');
-          allGroup.add(group);
-          allGroupMappingByName[group.name] = data.value as Map<dynamic, dynamic>;
-        }
-        allGroupMapping = snapshot.value as Map<dynamic, dynamic>;
+      if (snapshot.exists && snapshot.value != null) {
+        final data = snapshot.value as Map<dynamic, dynamic>;
+        print('📊 Raw groups data: ${data.keys.length} items');
+
+        data.forEach((key, value) {
+          try {
+            final group = Group.fromMap(value as Map<dynamic, dynamic>);
+            print('✅ Successfully parsed group: ${group.name} (${group.uid})');
+            allGroup.add(group);
+            allGroupMapping[key] = value;
+            allGroupMappingByName[group.name] = value;
+          } catch (e) {
+            print('❌ Error parsing group with key $key: $e');
+            print('❌ Group data: $value');
+          }
+        });
       } else {
-        print('No data available.');
+        print('📭 No groups data available.');
       }
+
+      print('📊 Final groups count: ${allGroup.length}');
+
+      // Force state update to trigger UI rebuild
+      state = state + 1;
+
+      // Return the data directly
+      return List.from(allGroup);
+
     } catch (error) {
-      print('Error fetching data: $error');
+      print('❌ Error fetching groups data: $error');
+      return [];
     }
-    state = state + 1;
   }
 
   Future<void> updateGroupMemberOffline(Map<String, bool> newGroupMember) async {
@@ -77,6 +132,10 @@ class GroupNotifier extends _$GroupNotifier {
   // Update group's member
   Future<void> updateGroupMember(String groupId, Map<String, dynamic> updates) async {
     try {
+      if (!UserService.isUserLoggedIn()) {
+        throw Exception('User not logged in');
+      }
+
       // Do not push the mapItem to firebase if the value is false
       // Format the updates-input data to remove all the false-value
       Map<String, dynamic> formatedUpdates = {};
@@ -86,7 +145,7 @@ class GroupNotifier extends _$GroupNotifier {
         }
       });
 
-      final databaseReference = FirebaseDatabase.instance.ref("groups");
+      final databaseReference = UserService.getUserCollectionRef('groups');
       // Because of only update true value. Needed to use set instead of update
       await databaseReference.child(groupId).child("members").set(formatedUpdates);
       // Refresh the list
@@ -99,7 +158,11 @@ class GroupNotifier extends _$GroupNotifier {
 
   Future<void> updateGroupName(String groupId, String name) async {
     try {
-      final databaseReference = FirebaseDatabase.instance.ref("groups");
+      if (!UserService.isUserLoggedIn()) {
+        throw Exception('User not logged in');
+      }
+
+      final databaseReference = UserService.getUserCollectionRef('groups');
       await databaseReference.child(groupId).update({"name": name});
       // Refresh the list
       await fetchAllGroup();
@@ -108,11 +171,16 @@ class GroupNotifier extends _$GroupNotifier {
       print("Error updating group member: $e");
     }
   }
-  
+
   Future<void> addNewGroup(Group newGroup) async {
     try {
+      if (!UserService.isUserLoggedIn()) {
+        throw Exception('User not logged in');
+      }
+
       if (currentGroupDetail.uid.isEmpty) return;
-      final databaseReference = FirebaseDatabase.instance.ref("groups");
+
+      final databaseReference = UserService.getUserCollectionRef('groups');
       await databaseReference.child(newGroup.uid).set(newGroup.toJson());
       // Refresh the list
       await fetchAllGroup();
@@ -124,8 +192,13 @@ class GroupNotifier extends _$GroupNotifier {
 
   Future<void> updateGroupDetails(String groupId, Map<String, dynamic> updates) async {
     try {
+      if (!UserService.isUserLoggedIn()) {
+        throw Exception('User not logged in');
+      }
+
       if (currentGroupDetail.uid.isEmpty) return;
-      final databaseReference = FirebaseDatabase.instance.ref("groups");
+
+      final databaseReference = UserService.getUserCollectionRef('groups');
       await databaseReference.child(groupId).update(updates);
       // Refresh the list
       await fetchAllGroup();
@@ -137,7 +210,11 @@ class GroupNotifier extends _$GroupNotifier {
 
   Future<void> deleteGroup(String groupId) async {
     try {
-      final databaseReference = FirebaseDatabase.instance.ref("groups");
+      if (!UserService.isUserLoggedIn()) {
+        throw Exception('User not logged in');
+      }
+
+      final databaseReference = UserService.getUserCollectionRef('groups');
       await databaseReference.child(groupId).remove();
       // Refresh the list
       await fetchAllGroup();
@@ -149,6 +226,10 @@ class GroupNotifier extends _$GroupNotifier {
 
   Future<void> deleteAPersonFromAllGroup(String personId) async {
     try {
+      if (!UserService.isUserLoggedIn()) {
+        throw Exception('User not logged in');
+      }
+
       for (final group in allGroup) {
         group.members[personId] = false;
         updateGroupMember(group.uid, group.members);

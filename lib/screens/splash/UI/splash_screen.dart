@@ -28,7 +28,7 @@ class SplashScreen extends ConsumerWidget {
         width: double.infinity,
         color: Colors.black,
         child: Image(
-          image: Assets.images.splashAcb.provider(),
+          image: Assets.images.splash.provider(),
           fit: BoxFit.fill,
         ),
       ),

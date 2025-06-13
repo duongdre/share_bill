@@ -55,6 +55,7 @@ dependencies:
   toastification: 2.3.0
   firebase_auth: ^5.5.1
   dropdown_button2: ^2.3.9
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:

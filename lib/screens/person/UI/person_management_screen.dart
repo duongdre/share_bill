@@ -14,8 +14,10 @@ import 'package:share_bill/utilities/utils/widget_list_person.dart';
 import '../../../gen/colors.gen.dart';
 import '../../../utilities/utils/avatar_person.dart';
 import '../../../utilities/utils/widget_animated_search_bar.dart';
+import '../../../utilities/utils/widget_manegement_header.dart';
 import '../../bill/controller/bill_provider.dart';
 import '../controller/person_provider.dart';
+import 'dialog_add_person.dart';
 
 class PersonManagementScreen extends ConsumerStatefulWidget {
   static const routeName = 'person_management';
@@ -65,7 +67,7 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
           child: SafeArea(
             child: Column(
               children: [
-                header(),
+                const WidgetManagementHeader(title: 'Person manager',),
                 searchBar(),
                 Expanded(
                   child: SingleChildScrollView(
@@ -105,48 +107,6 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
   //   },
   // );
   // }
-
-  Widget header() {
-    return Container(
-      height: 56,
-      padding: EdgeInsets.all(12.0),
-      decoration: BoxDecoration(
-        color: ColorName.white,
-        boxShadow: [
-          BoxShadow(color: ColorName.groupManagementBackground, blurRadius: 2, offset: Offset(2, 2)),
-        ],
-      ),
-      child: Stack(
-        children: [
-          Align(
-            alignment: Alignment.center,
-            child: Text(
-              "Person manager",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Icon(
-                Icons.notifications_none_sharp,
-                size: 20,
-              ),
-              Container(
-                height: 32,
-                width: 32,
-                margin: EdgeInsets.only(left: 8, right: 16),
-                decoration: BoxDecoration(
-                  color: ColorName.blackColor,
-                  borderRadius: const BorderRadius.all(Radius.circular(100)),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget searchBar() {
     return AnimatedSearchBar(

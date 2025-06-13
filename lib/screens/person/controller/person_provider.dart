@@ -7,6 +7,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:share_bill/models/data_models/person.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../services/firebase_services/user_service.dart';
+
 part 'person_provider.g.dart';
 
 @riverpod
@@ -27,7 +29,11 @@ class PersonNotifier extends _$PersonNotifier {
 
   Future<void> fetchAllPerson() async {
     try {
-      final databaseReference = FirebaseDatabase.instance.ref("persons");
+      if (!UserService.isUserLoggedIn()) {
+        throw Exception('User not logged in');
+      }
+
+      final databaseReference = UserService.getUserCollectionRef('persons');
       final snapshot = await databaseReference.get().timeout(const Duration(seconds: 30));
 
       allPerson.clear();
@@ -36,16 +42,17 @@ class PersonNotifier extends _$PersonNotifier {
       if (snapshot.exists) {
         for (final data in snapshot.children) {
           final person = Person.fromMap(data.value as Map);
-          print('person data ${person.toJson()}');
+          print('✅ Successfully parsed person: ${person.name} (${person.uid})');
           allPerson.add(person);
         }
         allPersonMapping = snapshot.value as Map<dynamic, dynamic>;
       } else {
-        print('No data available.');
+        print('📭 No persons data available.');
       }
     } catch (error) {
-      print('Error fetching data: $error');
+      print('📭 Error fetching data: $error');
     }
+    print('📊 Final persons count: ${allPerson.length}');
     state = state + 1;
   }
 
@@ -64,6 +71,10 @@ class PersonNotifier extends _$PersonNotifier {
 
   Future<void> uploadAvatarForUser_NewOrExisted() async {
     try {
+      if (!UserService.isUserLoggedIn()) {
+        throw Exception('User not logged in');
+      }
+
       // Pick image from gallery
       final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (pickedFile == null) return;
@@ -77,7 +88,9 @@ class PersonNotifier extends _$PersonNotifier {
       }
 
       // Create a unique filename using UUID
-      final fileName = '${currentPersonDetail.uid}_${DateTime.now().millisecondsSinceEpoch}';
+      final userId = UserService.getCurrentUserId()!;
+      // Create a unique filename using UUID and user ID
+      final fileName = '${userId}_${currentPersonDetail.uid}_${DateTime.now().millisecondsSinceEpoch}';
       final storageRef = _storage.ref().child("avatars/$fileName");
 
       // Upload the file
@@ -97,6 +110,10 @@ class PersonNotifier extends _$PersonNotifier {
   // Update user's avatar
   Future<void> updateUserAvatar(String userId) async {
     try {
+      if (!UserService.isUserLoggedIn()) {
+        throw Exception('User not logged in');
+      }
+
       // Pick image from gallery
       final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (pickedFile == null) return;
@@ -105,8 +122,9 @@ class PersonNotifier extends _$PersonNotifier {
 
       final File imageFile = File(pickedFile.path);
 
+      final currentUserId = UserService.getCurrentUserId()!;
       // Create a unique filename using UUID
-      final fileName = '${userId}_${DateTime.now().millisecondsSinceEpoch}';
+      final fileName = '${currentUserId}_${userId}_${DateTime.now().millisecondsSinceEpoch}';
       final storageRef = _storage.ref().child("avatars/$fileName");
 
       // Upload the file
@@ -117,7 +135,7 @@ class PersonNotifier extends _$PersonNotifier {
       final downloadUrl = await storageRef.getDownloadURL();
 
       // Update the user's avatar URL in the database
-      final databaseReference = FirebaseDatabase.instance.ref("persons");
+      final databaseReference = UserService.getUserCollectionRef('persons');
       await databaseReference.child(userId).update({'avtUrl': downloadUrl});
 
       // Refresh the person list to reflect the changes
@@ -131,8 +149,13 @@ class PersonNotifier extends _$PersonNotifier {
 
   Future<void> addNewPerson(Person newPerson) async {
     try {
+      if (!UserService.isUserLoggedIn()) {
+        throw Exception('User not logged in');
+      }
+
       if (currentPersonDetail.uid.isEmpty) return;
-      final databaseReference = FirebaseDatabase.instance.ref("persons");
+
+      final databaseReference = UserService.getUserCollectionRef('persons');
       await databaseReference.child(newPerson.uid).set(newPerson.toJson());
       clearNewPersonData();
       // Refresh the list
@@ -145,8 +168,12 @@ class PersonNotifier extends _$PersonNotifier {
 
   Future<void> updatePersonDetails(String userId, Map<String, dynamic> updates) async {
     try {
+      if (!UserService.isUserLoggedIn()) {
+        throw Exception('User not logged in');
+      }
+
       if (currentPersonDetail.uid.isEmpty) return;
-      final databaseReference = FirebaseDatabase.instance.ref("persons");
+      final databaseReference = UserService.getUserCollectionRef('persons');
       await databaseReference.child(userId).update(updates);
       // Refresh the list
       await fetchAllPerson();
@@ -158,7 +185,11 @@ class PersonNotifier extends _$PersonNotifier {
 
   Future<void> deletePerson(String userId) async {
     try {
-      final databaseReference = FirebaseDatabase.instance.ref("persons");
+      if (!UserService.isUserLoggedIn()) {
+        throw Exception('User not logged in');
+      }
+
+      final databaseReference = UserService.getUserCollectionRef('persons');
       await databaseReference.child(userId).remove();
       // Refresh the list
       await fetchAllPerson();

@@ -23,13 +23,18 @@ import 'package:share_bill/screens/spent/UI/spent_screen.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../gen/colors.gen.dart';
+import '../../../services/firebase_services/user_service.dart';
 import '../../../utilities/utils/avatar_dialog.dart';
 import '../../../utilities/utils/avatar_group.dart';
 import '../../../utilities/utils/avatar_person.dart';
 import '../../../utilities/utils/widget_list_bill.dart';
 import '../../../utilities/utils/widget_list_group.dart';
+import '../../../utilities/utils/widget_manegement_header.dart';
 import '../../bill/UI/bill_management_screen.dart';
+import '../../group/UI/dialog_add_group.dart';
 import '../../group/UI/group_detail_screen.dart';
+import '../../login/UI/login_screen.dart';
+import '../../person/UI/dialog_add_person.dart';
 import '../../person/UI/person_detail_screen.dart';
 import '../../person/controller/person_provider.dart';
 
@@ -45,12 +50,51 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool _isLoading = true;
+  String? _error;
 
   @override
   void initState() {
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
-    _loadInitialData();
+    _checkAuthAndLoadData();
     super.initState();
+  }
+
+  Future<void> _checkAuthAndLoadData() async {
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
+    try {
+      // Check if user is logged in
+      if (!UserService.isUserLoggedIn()) {
+        _navigateToLogin();
+        return;
+      }
+
+      // Initialize user data if needed
+      await UserService.initializeUserData();
+
+      // Load all data
+      await _loadInitialData();
+    } catch (e) {
+      print('Error in auth check and data loading: $e');
+      setState(() {
+        _error = e.toString();
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  void _navigateToLogin() {
+    if (mounted) {
+      context.goNamed(LoginScreen.routeName);
+    }
   }
 
   Future<void> _loadInitialData() async {
@@ -95,7 +139,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   onRefresh: _loadInitialData,
                   child: Column(
                     children: [
-                      header(),
+                      const WidgetManagementHeader(title: 'Home',),
                       Expanded(
                         child: SingleChildScrollView(
                           child: Column(
@@ -161,79 +205,71 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Widget header() {
-    return InkWell(
-      onTap: () {
-        // ref.read(billNotifierProvider.notifier).addNewBill(
-        //       Bill(
-        //         uid: Uuid().v4(),
-        //         groupId: "7f6fc0e2-dc64-48bd-a332-855aa0e45f4d",
-        //         personId: "77ad1052-8407-4d0d-baf7-6ae4a8c4ac54",
-        //         amount: 2500000,
-        //         description: "",
-        //         createdAt: DateTime.now().millisecondsSinceEpoch,
-        //       ),
-        //     );
-      },
-      child: Container(
-        height: 56,
-        padding: EdgeInsets.all(12.0),
-        decoration: BoxDecoration(
-          color: ColorName.white,
-          boxShadow: [
-            BoxShadow(color: ColorName.groupManagementBackground, blurRadius: 2, offset: Offset(2, 2)),
-          ],
-        ),
-        child: Row(
-          children: [
-            //Logo
-            // Image(
-            //   image: Assets.images.logo.provider(),
-            //   fit: BoxFit.fill,
-            // ),
-            const Spacer(),
-            Icon(
-              Icons.notifications_none_sharp,
-              size: 20,
-            ),
-            Container(
-              height: 32,
-              width: 32,
-              margin: EdgeInsets.only(left: 8, right: 16),
-              decoration: BoxDecoration(
-                color: ColorName.blackColor,
-                borderRadius: const BorderRadius.all(Radius.circular(100)),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget homeAddSection() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Row(
         children: [
           Expanded(
-            child: Container(
-              height: 68,
-              decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(12)), color: ColorName.blueBackground),
+            child: InkWell(
+              onTap: () => _showAddPersonDialog(),
+              child: Container(
+                height: 68,
+                decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                    color: ColorName.blueBackground
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.person_add, color: Colors.white),
+                    SizedBox(height: 4),
+                    Text('Add Person', style: TextStyle(color: Colors.white, fontSize: 12)),
+                  ],
+                ),
+              ),
             ),
           ),
           const SizedBox(width: 16),
           Expanded(
-            child: Container(
-              height: 68,
-              decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(12)), color: ColorName.purpleBackground),
+            child: InkWell(
+              onTap: () => _showAddGroupDialog(),
+              child: Container(
+                height: 68,
+                decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                    color: ColorName.purpleBackground
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.group_add, color: Colors.white),
+                    SizedBox(height: 4),
+                    Text('Add Group', style: TextStyle(color: Colors.white, fontSize: 12)),
+                  ],
+                ),
+              ),
             ),
           ),
           const SizedBox(width: 16),
           Expanded(
-            child: Container(
-              height: 68,
-              decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(12)), color: ColorName.greenBackground),
+            child: InkWell(
+              onTap: () => context.goNamed(SpentScreen.routeNameFromHome),
+              child: Container(
+                height: 68,
+                decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                    color: ColorName.greenBackground
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.payment, color: Colors.white),
+                    SizedBox(height: 4),
+                    Text('Add Expense', style: TextStyle(color: Colors.white, fontSize: 12)),
+                  ],
+                ),
+              ),
             ),
           ),
         ],
@@ -284,6 +320,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ],
             );
           }),
+    );
+  }
+
+  void _showAddPersonDialog() {
+    // Clear any existing person data
+    ref.read(personNotifierProvider.notifier).clearNewPersonData();
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) => const DialogAddPerson(),
+    );
+  }
+
+  void _showAddGroupDialog() {
+    // Clear any existing group data
+    ref.read(groupNotifierProvider.notifier).clearNewGroupData();
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) => const DialogAddGroup(),
     );
   }
 }

@@ -1,0 +1,123 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:share_bill/models/data_models/person.dart';
+import '../../gen/colors.gen.dart';
+import '../../screens/person/controller/person_provider.dart';
+
+class AvatarPerson extends ConsumerWidget {
+  final Person? person;
+  final double size;
+  final bool isEditable;
+
+  const AvatarPerson({
+    super.key,
+    required this.person,
+    this.size = 50.0,
+    this.isEditable = false,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(personNotifierProvider);
+    final homeScreenNotifier = ref.read(personNotifierProvider.notifier);
+
+    Widget avatarWidget;
+
+    if (person == null) {
+      if (homeScreenNotifier.currentPersonDetail != null && homeScreenNotifier.currentPersonDetail!.avtUrl.isNotEmpty) {
+        // Use CachedNetworkImage to load and cache the avatar
+        avatarWidget = ClipRRect(
+          borderRadius: BorderRadius.circular(size / 2),
+          child: CachedNetworkImage(
+            imageUrl: homeScreenNotifier.currentPersonDetail!.avtUrl,
+            width: size,
+            height: size,
+            fit: BoxFit.cover,
+            placeholder: (context, url) => const CircularProgressIndicator(),
+            errorWidget: (context, url, error) => _buildPlaceholderAvatar(),
+          ),
+        );
+      } else {
+        // Show placeholder avatar
+        avatarWidget = _buildPlaceholderAvatar();
+      }
+    } else if (person!.avtUrl.isEmpty) {
+      // Show placeholder avatar
+      avatarWidget = _buildPlaceholderAvatar();
+    } else {
+      // Use CachedNetworkImage to load and cache the avatar
+      avatarWidget = Stack(
+        alignment: AlignmentDirectional.center,
+        children: [
+          Container(
+            width: size,
+            height: size,
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(100)),
+              color: ColorName.white,
+            ),
+          ),
+          Container(
+            width: size-2,
+            height: size-2,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(size / 2),
+              child: CachedNetworkImage(
+                imageUrl: person!.avtUrl,
+                width: size-2,
+                height: size-2,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => const CircularProgressIndicator(),
+                errorWidget: (context, url, error) => _buildPlaceholderAvatar(),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
+    if (isEditable) {
+      return Stack(
+        children: [
+          avatarWidget,
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: GestureDetector(
+              onTap: () {
+                homeScreenNotifier.uploadAvatarForUser_NewOrExisted();
+              },
+              child: Container(
+                padding: EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.edit,
+                  size: size / 4,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    } else {
+      return avatarWidget;
+    }
+  }
+
+  Widget _buildPlaceholderAvatar() {
+    return CircleAvatar(
+      radius: size / 2,
+      backgroundColor: ColorName.homeGrayHold,
+      child: Icon(
+        Icons.person,
+        size: size / 1.5,
+        color: Colors.grey[600],
+      ),
+    );
+  }
+}

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--    NEW COLOR-->
+    <color name="white">#FFFFFF</color>
+    <color name="whiteShadow">#C3C5C9</color>
+    <color name="whiteLightShadow">#DEE0EFFF</color>
+    <color name="background">#F9FAFB</color>
+    <color name="blueBackground">#DBEAFE</color>
+    <color name="blueDarkBackground">#2563EB</color>
+    <color name="purpleBackground">#DAD2FF</color>
+    <color name="purpleDarkBackground">#7C3AED</color>
+    <color name="greenBackground">#D1FAE5</color>
+    <color name="greenDarkBackground">#059669</color>
+
+    <color name="textBlack">#000000</color>
+    <color name="textGray">#6B7280</color>
+    <color name="textGreen">#059669</color>
+
+    <color name="borderBlack">#D1D5DB</color>
+
+    <color name="iconGray">#374151</color>
+
+
+    <!--    OLD COLOR-->
+    <color name="whiteColor">#fefefd</color>
+    <color name="blueColor">#2c74fe</color>
+    <color name="greenColor">#A231E514</color>
+    <color name="blackColor">#000000</color>
+
+    <color name="loginIconColorGray">#636268</color>
+    <color name="loginAvatarBackGround">#6C7098</color>
+    <color name="loginTextColorBlue">#192E87</color>
+    <color name="loginTextColorGray">#787882</color>
+    <color name="loginIconColor">#145FDB</color>
+    <color name="loginButtonDisable">#EEF0FF</color>
+
+    <color name="homeGrayBalance">#A2A2A2</color>
+    <color name="homeGrayHold">#E2E2E2</color>
+    <color name="homeWhiteAdd">#F2F2F2</color>
+    <color name="homeWhiteButtonBg">#F9F9F9</color>
+    <color name="homeBlackText">#2A2A2A</color>
+    <color name="homeRedText">#923631</color>
+    <color name="homeCyanText">#D1DE91</color>
+
+    <color name="groupManagementBackground">#ECEEF0</color>
+    <color name="groupManagementBackGroundButton">#111111</color>
+
+    <color name="spentBackGround">#EEF0F2</color>
+    <color name="spentBackGroundButton">#EFF1F3</color>
+    <color name="spentBackGroundSpentDialog">#F76766</color>
+    <color name="spentBackGroundReceiveDialog">#B3DE00</color>
+</resources>

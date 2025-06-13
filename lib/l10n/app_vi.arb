@@ -1,0 +1,8 @@
+{
+  "login": "Đăng nhập",
+  "loginGetOtp": "Lấy OTP",
+  "loginGetRegister": "Đăng ký",
+  "loginGetQr": "Mã QR",
+
+  "homeTotalSpent": "Tổng chi tiêu"
+}

@@ -15,6 +15,7 @@ import 'package:share_bill/utilities/utils/widget_list_bill.dart';
 import '../../../gen/colors.gen.dart';
 import '../../../utilities/utils/avatar_dialog.dart';
 import '../../../utilities/utils/widget_animated_search_bar.dart';
+import '../../../utilities/utils/widget_manegement_header.dart';
 
 class BillManagementScreen extends ConsumerStatefulWidget {
   static const routeName = 'bill_management';
@@ -62,7 +63,7 @@ class _BillManagementScreenState extends ConsumerState<BillManagementScreen> {
               children: [
                 Column(
                   children: [
-                    header(),
+                    const WidgetManagementHeader(title: 'Group manager',),
                     searchBar(),
                     Expanded(
                       child: SingleChildScrollView(
@@ -85,48 +86,6 @@ class _BillManagementScreenState extends ConsumerState<BillManagementScreen> {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget header() {
-    return Container(
-      height: 56,
-      padding: EdgeInsets.all(12.0),
-      decoration: BoxDecoration(
-        color: ColorName.white,
-        boxShadow: [
-          BoxShadow(color: ColorName.groupManagementBackground, blurRadius: 2, offset: Offset(2, 2)),
-        ],
-      ),
-      child: Stack(
-        children: [
-          Align(
-            alignment: Alignment.center,
-            child: Text(
-              "Payment manager",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Icon(
-                Icons.notifications_none_sharp,
-                size: 20,
-              ),
-              Container(
-                height: 32,
-                width: 32,
-                margin: EdgeInsets.only(left: 8, right: 16),
-                decoration: BoxDecoration(
-                  color: ColorName.blackColor,
-                  borderRadius: const BorderRadius.all(Radius.circular(100)),
-                ),
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }

@@ -112,7 +112,7 @@ class AppScaffold extends ConsumerWidget {
                   index: 3,
                   currentIndex: navigationShell.currentIndex,
                   icon: Icons.person,
-                  label: "Profile",
+                  label: "Persons",
                   onTap: () {
                     navigationShell.goBranch(3);
                     ref.read(homeNotifierProvider.notifier).setValue(3);

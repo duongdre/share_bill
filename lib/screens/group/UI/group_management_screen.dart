@@ -14,10 +14,12 @@ import '../../../utilities/utils/avatar_group.dart';
 import '../../../utilities/utils/avatar_person.dart';
 import '../../../utilities/utils/enum.dart';
 import '../../../utilities/utils/widget_animated_search_bar.dart';
+import '../../../utilities/utils/widget_manegement_header.dart';
 import '../../bill/controller/bill_provider.dart';
 import '../../person/UI/person_detail_screen.dart';
 import '../../person/controller/person_provider.dart';
 import '../controller/group_provider.dart';
+import 'dialog_add_group.dart';
 import 'group_detail_screen.dart';
 
 class GroupManagementScreen extends ConsumerStatefulWidget {
@@ -65,7 +67,7 @@ class _GroupManagementScreenState extends ConsumerState<GroupManagementScreen> {
           child: SafeArea(
             child: Column(
               children: [
-                header(),
+                const WidgetManagementHeader(title: 'Group manager',),
                 searchBar(),
                 Expanded(
                   child: SingleChildScrollView(
@@ -89,48 +91,6 @@ class _GroupManagementScreenState extends ConsumerState<GroupManagementScreen> {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget header() {
-    return Container(
-      height: 56,
-      padding: EdgeInsets.all(12.0),
-      decoration: BoxDecoration(
-        color: ColorName.white,
-        boxShadow: [
-          BoxShadow(color: ColorName.groupManagementBackground, blurRadius: 2, offset: Offset(2, 2)),
-        ],
-      ),
-      child: Stack(
-        children: [
-          Align(
-            alignment: Alignment.center,
-            child: Text(
-              "Group manager",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Icon(
-                Icons.notifications_none_sharp,
-                size: 20,
-              ),
-              Container(
-                height: 32,
-                width: 32,
-                margin: EdgeInsets.only(left: 8, right: 16),
-                decoration: BoxDecoration(
-                  color: ColorName.blackColor,
-                  borderRadius: const BorderRadius.all(Radius.circular(100)),
-                ),
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }

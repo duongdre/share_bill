@@ -1,28 +1,20 @@
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:share_bill/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_bill/screens/bill/controller/bill_provider.dart';
-import 'package:share_bill/screens/home/UI/home_screen.dart';
-import 'package:share_bill/screens/spent/UI/spent_screen.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:share_bill/utilities/utils/dialog_add_member.dart';
-import 'package:share_bill/utilities/utils/widget_list_person.dart';
 import 'package:toastification/toastification.dart';
 import 'package:uuid/uuid.dart';
-
 import '../../../gen/colors.gen.dart';
 import '../../../gen/fonts.gen.dart';
 import '../../../models/data_models/bill.dart';
 import '../../../models/data_models/group.dart';
-import '../../../utilities/utils/avatar_dialog.dart';
-import '../../../utilities/utils/enum.dart';
 import '../../../utilities/utils/avatar_person.dart';
 import '../../../utilities/utils/widget_list_bill.dart';
 import '../../person/controller/person_provider.dart';
 import '../controller/group_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class GroupDetailScreen extends ConsumerStatefulWidget {
   const GroupDetailScreen({super.key});
@@ -84,6 +76,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
     final currentGroupDetail = ref.read(groupNotifierProvider.notifier).currentGroupDetail;
     return GestureDetector(
       onTap: () {
@@ -99,7 +92,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
               children: [
                 Column(
                   children: [
-                    header(currentGroupDetail),
+                    header(currentGroupDetail, localizations),
                     teamList(),
                     Expanded(
                       child: SingleChildScrollView(
@@ -108,9 +101,9 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                              margin: EdgeInsets.only(left: 16, top: 24, bottom: 16),
+                              margin: const EdgeInsets.only(left: 16, top: 24, bottom: 16),
                               child: Text(
-                                "Recent Payments",
+                                localizations.recentExpenses,
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                   color: ColorName.homeBlackText,
@@ -120,7 +113,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                               ),
                             ),
                             recentPayments(),
-                            SizedBox(height: 120)
+                            const SizedBox(height: 120)
                           ],
                         ),
                       ),
@@ -139,11 +132,11 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
     );
   }
 
-  Widget header(Group currentGroupDetail) {
+  Widget header(Group currentGroupDetail, AppLocalizations localizations) {
     return Container(
       height: 56,
-      padding: EdgeInsets.all(12.0),
-      decoration: BoxDecoration(
+      padding: const EdgeInsets.all(12.0),
+      decoration: const BoxDecoration(
         color: ColorName.white,
         boxShadow: [
           BoxShadow(color: ColorName.groupManagementBackground, blurRadius: 2, offset: Offset(2, 2)),
@@ -155,13 +148,13 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
             onTap: () {
               context.pop();
             },
-            child: Icon(
+            child: const Icon(
               Icons.arrow_back,
               size: 25,
             ),
           ),
-          Spacer(),
-          Container(
+          const Spacer(),
+          SizedBox(
             height: 56,
             width: 200,
             child: TextField(
@@ -186,11 +179,11 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
               ),
-              decoration: const InputDecoration(
-                  contentPadding: EdgeInsets.symmetric(vertical: -22.0),
+              decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.symmetric(vertical: -22.0),
                   border: InputBorder.none,
-                  hintText: 'Nhập tên nhóm',
-                  hintStyle: TextStyle(
+                  hintText: localizations.enterGroupName,
+                  hintStyle: const TextStyle(
                     color: ColorName.loginIconColorGray,
                     fontSize: 20,
                     fontStyle: FontStyle.italic,
@@ -198,19 +191,19 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                   )),
             ),
           ),
-          Spacer(),
+          const Spacer(),
           InkWell(
             onTap: () async {
               if (isNewGroup) {
                 if (nameController.text.isEmpty) return;
                 //Only call add New Group
-                currentGroupDetail.uid = Uuid().v4();
+                currentGroupDetail.uid = const Uuid().v4();
                 currentGroupDetail.name = nameController.text;
                 await ref.read(groupNotifierProvider.notifier).addNewGroup(
                       currentGroupDetail,
                     );
                 toastification.show(
-                  title: Text('Thành công thêm mới'),
+                  title: Text(localizations.addNewGroupSuccessfully),
                   style: ToastificationStyle.fillColored,
                   autoCloseDuration: const Duration(seconds: 3),
                 );
@@ -222,7 +215,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                         nameController.text,
                       );
                   toastification.show(
-                    title: Text('Thành công cập nhật thông tin'),
+                    title: Text(localizations.updateInformationSuccessfully),
                     style: ToastificationStyle.fillColored,
                     autoCloseDuration: const Duration(seconds: 3),
                   );
@@ -261,7 +254,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
       child: Column(
         children: [
           Container(
-            padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+            padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
             child: groupWidget(
               ref.read(groupNotifierProvider.notifier).currentGroupDetail,
             ),
@@ -272,6 +265,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
   }
 
   Widget groupWidget(Group group) {
+    final localizations = AppLocalizations.of(context);
     return Column(
       children: [
         const SizedBox(height: 18),
@@ -291,7 +285,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                         return Stack(
                           children: [
                             Container(
-                              padding: EdgeInsets.only(left: 20, right: 20),
+                              padding: const EdgeInsets.only(left: 20, right: 20),
                               child: AvatarPerson(
                                 person: ref.read(personNotifierProvider.notifier).findPersonWithUid(eachPerson[index]),
                                 size: 60,
@@ -300,7 +294,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                             ),
                             Container(
                               width: 100,
-                              margin: EdgeInsets.only(top: 76),
+                              margin: const EdgeInsets.only(top: 76),
                               alignment: Alignment.topCenter,
                               child: Text(
                                 ref.read(personNotifierProvider.notifier).findPersonWithUid(eachPerson[index])?.name ?? "",
@@ -315,10 +309,10 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                             ),
                             Container(
                               width: 100,
-                              margin: EdgeInsets.only(top: 100),
+                              margin: const EdgeInsets.only(top: 100),
                               alignment: Alignment.topCenter,
                               child: Text(
-                                NumberFormat.currency(locale: "vi_VN", symbol: "VNĐ").format(groupWithTotalPaidByPerson[eachPerson[index]] ?? 0),
+                                NumberFormat.currency(locale: "vi_VN", symbol: localizations.currency).format(groupWithTotalPaidByPerson[eachPerson[index]] ?? 0),
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                   color: ColorName.blackColor,
@@ -338,14 +332,14 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                         onTap: () {
                           showDialog(
                             context: context,
-                            builder: (_) => DialogAddMember(),
+                            builder: (_) => const DialogAddMember(),
                             barrierColor: ColorName.blackColor.withOpacity(0.55),
                           );
                         },
                         child: Container(
-                          padding: EdgeInsets.only(left: 16, right: 10),
+                          padding: const EdgeInsets.only(left: 16, right: 10),
                           alignment: Alignment.topCenter,
-                          child: CircleAvatar(
+                          child: const CircleAvatar(
                             radius: 31,
                             backgroundColor: ColorName.homeGrayHold,
                             child: Text(

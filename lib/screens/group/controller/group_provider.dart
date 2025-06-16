@@ -1,15 +1,7 @@
-import 'dart:io';
-
-import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:uuid/uuid.dart';
-
-import '../../../models/data_models/bill.dart';
 import '../../../models/data_models/group.dart';
 import '../../../services/firebase_services/user_service.dart';
-
 part 'group_provider.g.dart';
 
 @riverpod
@@ -149,7 +141,6 @@ class GroupNotifier extends _$GroupNotifier {
       }
 
       if (currentGroupDetail.uid.isEmpty) return;
-
 
       final databaseReference = UserService.getUserCollectionRef('groups');
       await databaseReference.child(groupId).update(updates);

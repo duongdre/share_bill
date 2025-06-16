@@ -1,8 +1,48 @@
 {
-  "login": "Đăng nhập",
-  "loginGetOtp": "Lấy OTP",
-  "loginGetRegister": "Đăng ký",
-  "loginGetQr": "Mã QR",
+  "@@locale": "vi",
+  "@@version": "1.0.0",
 
-  "homeTotalSpent": "Tổng chi tiêu"
+  "menuProfile": "Hồ sơ",
+  "menuLanguage": "Ngôn ngữ",
+  "menuSettings": "Cài đặt",
+  "menuHelp": "Trợ giúp & Hỗ trợ",
+  "menuLogout": "Đăng xuất",
+
+  "settingsLanguage": "Cài đặt ngôn ngữ",
+  "settingsLanguageInfo": "Thay đổi ngôn ngữ sẽ có hiệu lực ngay lập tức. Ứng dụng sẽ cập nhật tất cả văn bản sang ngôn ngữ bạn đã chọn.",
+
+  "welcomeBack": "Chào mừng trở lại",
+  "addPerson": "Thêm người",
+  "addGroup": "Thêm nhóm",
+  "addExpense": "Thêm chi phí",
+  "favoritePersons": "Người yêu thích",
+  "recentGroups": "Nhóm gần đây",
+  "recentExpenses": "Thanh toán gần đây",
+
+  "personManager": "Quản lý người dùng",
+  "groupManager": "Quản lý nhóm",
+  "paymentManager": "Quản lý thanh toán",
+  "personDetails": "Chi tiết người dùng",
+  "groupDetails": "Chi tiết nhóm",
+
+  "newPayment": "Thanh toán mới",
+  "selectGroup": "Chọn nhóm",
+  "whoPaid": "Ai đã trả?",
+  "amount": "Số tiền",
+  "description": "Mô tả",
+  "date": "Ngày",
+  "spentMoney": "Chi tiền",
+
+  "addMemberToGroup": "Thêm thành viên vào nhóm",
+  "update": "Cập nhật",
+  "add": "Thêm",
+
+  "logout": "Đăng xuất",
+  "logoutConfirmation": "Bạn có chắc chắn muốn đăng xuất?",
+  "cancel": "Hủy",
+
+  "success": "Thành công",
+  "error": "Lỗi",
+  "pleaseWait": "Vui lòng đợi...",
+  "loading": "Đang tải..."
 }

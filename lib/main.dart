@@ -1,3 +1,5 @@
+// main.dart (Updated)
+import 'package:share_bill/screens/setting/controller/language_provider.dart';
 import 'package:share_bill/utilities/app_routes/app_route_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,31 +21,35 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final currentLocale = ref.watch(languageNotifierProvider);
+
     return ToastificationWrapper(
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
         routerConfig: ref.read(routerProvider),
-        // Use these imports instead of the below one since The AppLocalizations class
-        // also provides auto-generated localizationsDelegates and supportedLocales lists
+
+        // Language configuration
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        locale: const Locale('vi'),
-        /*localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
+        locale: currentLocale, // Use the locale from the provider
+
+        // Fallback to Vietnamese if the selected locale is not supported
+        localeResolutionCallback: (locale, supportedLocales) {
+          // Check if the current locale is supported
+          for (var supportedLocale in supportedLocales) {
+            if (supportedLocale.languageCode == locale?.languageCode) {
+              return supportedLocale;
+            }
+          }
+          // Return Vietnamese as default
+          return const Locale('vi');
+        },
+
+        // Theme configuration (optional)
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
+          useMaterial3: true,
         ),
-        supportedLocales: const [
-          Locale('en'), // English
-          Locale('vi'), // Vietnamese
-        ],*/
-
-        // Comment this one since GoRouter is implemented
-        // home: Login(),
       ),
     );
   }

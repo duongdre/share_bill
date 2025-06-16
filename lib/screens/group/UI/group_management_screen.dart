@@ -1,26 +1,14 @@
 import 'package:go_router/go_router.dart';
-import 'package:share_bill/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:share_bill/models/data_models/group.dart';
-import 'package:share_bill/screens/home/UI/home_screen.dart';
-import 'package:share_bill/screens/spent/UI/spent_screen.dart';
 import 'package:share_bill/utilities/utils/widget_list_group.dart';
-
 import '../../../gen/colors.gen.dart';
-import '../../../models/data_models/person.dart';
-import '../../../utilities/utils/avatar_group.dart';
-import '../../../utilities/utils/avatar_person.dart';
-import '../../../utilities/utils/enum.dart';
 import '../../../utilities/utils/widget_animated_search_bar.dart';
 import '../../../utilities/utils/widget_manegement_header.dart';
 import '../../bill/controller/bill_provider.dart';
-import '../../person/UI/person_detail_screen.dart';
-import '../../person/controller/person_provider.dart';
 import '../controller/group_provider.dart';
-import 'dialog_add_group.dart';
 import 'group_detail_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class GroupManagementScreen extends ConsumerStatefulWidget {
   const GroupManagementScreen({super.key});
@@ -50,6 +38,7 @@ class _GroupManagementScreenState extends ConsumerState<GroupManagementScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
     ref.watch(billNotifierProvider);
     ref.watch(groupNotifierProvider);
     final groups = ref.read(groupNotifierProvider.notifier).allGroup;
@@ -61,13 +50,13 @@ class _GroupManagementScreenState extends ConsumerState<GroupManagementScreen> {
       },
       child: Scaffold(
         body: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: ColorName.background,
           ),
           child: SafeArea(
             child: Column(
               children: [
-                const WidgetManagementHeader(title: 'Group manager',),
+                WidgetManagementHeader(title: localizations.groupManager,),
                 searchBar(),
                 Expanded(
                   child: SingleChildScrollView(

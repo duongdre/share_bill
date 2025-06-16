@@ -13,6 +13,7 @@ import '../../screens/bill/UI/bill_management_screen.dart';
 import '../../screens/home/UI/app_scaffold.dart';
 import '../../screens/home/UI/home_screen.dart';
 import '../../screens/person/UI/person_detail_screen.dart';
+import '../../screens/setting/UI/language_setting_screen.dart';
 import '../../screens/splash/UI/onboarding_screen.dart';
 import '../../screens/splash/UI/splash_screen.dart';
 import '../../services/firebase_services/user_service.dart';
@@ -111,6 +112,15 @@ final routerProvider = Provider<GoRouter>(
         builder: (context, state) {
           print('📝 Building CreateAccountScreen');
           return const CreateAccountScreen();
+        },
+      ),
+
+      GoRoute(
+        path: LanguageSettingsScreen.routePath,
+        name: LanguageSettingsScreen.routeName,
+        builder: (context, state) {
+          print('🌐 Building LanguageSettingsScreen');
+          return const LanguageSettingsScreen();
         },
       ),
 

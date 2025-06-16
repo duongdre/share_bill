@@ -1,26 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:share_bill/screens/bill/UI/bill_management_screen.dart';
-import 'package:share_bill/screens/group/UI/group_management_screen.dart';
-import 'package:share_bill/screens/home/UI/home_screen.dart';
 import 'package:share_bill/screens/home/controller/home_provider.dart';
-import 'package:share_bill/screens/person/UI/person_management_screen.dart';
 import 'package:share_bill/screens/spent/UI/spent_screen.dart';
-
 import '../../../gen/colors.gen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AppScaffold extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
 
   const AppScaffold({
-    Key? key,
+    super.key,
     required this.navigationShell,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final localizations = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: navigationShell, // This displays the current tab's content
@@ -28,7 +24,7 @@ class AppScaffold extends ConsumerWidget {
       floatingActionButton: Container(
         height: 56,
         width: 56,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           shape: BoxShape.circle,
           color: Colors.blue,
         ),
@@ -39,7 +35,7 @@ class AppScaffold extends ConsumerWidget {
           },
           backgroundColor: Colors.blue,
           elevation: 2,
-          shape: CircleBorder(),
+          shape: const CircleBorder(),
           child: const Icon(Icons.add, color: Colors.white, size: 28),
         ),
       ),
@@ -48,7 +44,7 @@ class AppScaffold extends ConsumerWidget {
       bottomNavigationBar: MediaQuery.of(context).viewInsets.bottom > 0
           ? null  // Hide bottom navigation when keyboard is visible
           : Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           boxShadow: <BoxShadow>[
             BoxShadow(
               color: ColorName.whiteLightShadow,
@@ -74,7 +70,7 @@ class AppScaffold extends ConsumerWidget {
                   index: 0,
                   currentIndex: navigationShell.currentIndex,
                   icon: Icons.home,
-                  label: "Home",
+                  label: localizations.home,
                   onTap: () {
                     navigationShell.goBranch(0);
                     ref.read(homeNotifierProvider.notifier).setValue(0);
@@ -86,7 +82,7 @@ class AppScaffold extends ConsumerWidget {
                   index: 1,
                   currentIndex: navigationShell.currentIndex,
                   icon: Icons.payment,
-                  label: "Payments",
+                  label: localizations.expenses,
                   onTap: () {
                     navigationShell.goBranch(1);
                     ref.read(homeNotifierProvider.notifier).setValue(1);
@@ -100,7 +96,7 @@ class AppScaffold extends ConsumerWidget {
                   index: 2,
                   currentIndex: navigationShell.currentIndex,
                   icon: Icons.group,
-                  label: "Groups",
+                  label: localizations.groups,
                   onTap: () {
                     navigationShell.goBranch(2);
                     ref.read(homeNotifierProvider.notifier).setValue(2);
@@ -112,7 +108,7 @@ class AppScaffold extends ConsumerWidget {
                   index: 3,
                   currentIndex: navigationShell.currentIndex,
                   icon: Icons.person,
-                  label: "Persons",
+                  label: localizations.persons,
                   onTap: () {
                     navigationShell.goBranch(3);
                     ref.read(homeNotifierProvider.notifier).setValue(3);

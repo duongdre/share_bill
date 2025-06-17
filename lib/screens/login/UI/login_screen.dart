@@ -5,6 +5,8 @@ import 'package:share_bill/screens/login/UI/create_account_screen.dart';
 import '../../../services/firebase_services/auth_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../../../utilities/utils/string_utils.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -51,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
       if (mounted) {
-        if (message!.contains(localizations.success)) {
+        if (message!.contains(StringUtils.success)) {
           context.goNamed(HomeScreen.routeName);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(

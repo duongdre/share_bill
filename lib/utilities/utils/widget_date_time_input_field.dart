@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DateTimeInputField extends StatefulWidget {
   final TextEditingController controller;
@@ -9,13 +10,13 @@ class DateTimeInputField extends StatefulWidget {
   final bool isRequired;
 
   const DateTimeInputField({
-    Key? key,
+    super.key,
     required this.controller,
     this.onDateTimeSelected,
     this.hintText = 'MMM dd, yyyy - HH:mm',
     this.validator,
     this.isRequired = false,
-  }) : super(key: key);
+  });
 
   @override
   State<DateTimeInputField> createState() => _DateTimeInputFieldState();
@@ -108,6 +109,8 @@ class _DateTimeInputFieldState extends State<DateTimeInputField> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+
     return TextFormField(
       controller: widget.controller,
       readOnly: true,
@@ -147,7 +150,7 @@ class _DateTimeInputFieldState extends State<DateTimeInputField> {
         ),
       ),
       validator: widget.validator ?? (widget.isRequired
-          ? (value) => (value == null || value.isEmpty) ? 'Date and time are required' : null
+          ? (value) => (value == null || value.isEmpty) ? localizations.dateAndTimeRequired : null
           : null),
       onTap: () => _selectDateTime(context),
     );

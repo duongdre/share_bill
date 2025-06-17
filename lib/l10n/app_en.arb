@@ -119,6 +119,12 @@
 
   "pleaseFillInAllFields": "Please fill in all fields",
   "successfullyAddedExpense": "Successfully added expense",
+  "successfullyUpdatedGroupMembers": "Successfully updated group members",
+  "errorUpdatingMembers": "Error updating members",
+
+  "search": "Search...",
+  "dateAndTimeRequired": "Date and time are required",
+  "unknownUser": "Unknown User",
   "b": "b",
   "a": "a"
 }

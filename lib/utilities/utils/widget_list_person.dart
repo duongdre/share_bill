@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../gen/colors.gen.dart';
-import '../../models/data_models/group.dart';
 import '../../models/data_models/person.dart';
-import '../../screens/group/controller/group_provider.dart';
-import '../../screens/person/controller/person_provider.dart';
-import 'avatar_group.dart';
 import 'avatar_person.dart';
-import 'enum.dart';
 
 class ListPerson extends ConsumerWidget {
   final List<Person> persons;
@@ -32,7 +25,7 @@ class ListPerson extends ConsumerWidget {
     // Calculate height for list view
     final double calculatedHeight = height ?? (6 + 6 + 76) * persons.length * 1.0;
 
-    return Container(
+    return SizedBox(
       height: scrollable ? null : calculatedHeight,
       child: ListView.builder(
         physics: scrollable ? const ClampingScrollPhysics() : const NeverScrollableScrollPhysics(),
@@ -162,12 +155,12 @@ class PersonListItem extends ConsumerWidget {
               ],
             ),
           ),
-          Icon(
+          const Icon(
             Icons.star_border,
             color: ColorName.textGray,
           ),
           const SizedBox(width: 8),
-          Icon(
+          const Icon(
             Icons.delete,
             color: ColorName.textGray,
           ),

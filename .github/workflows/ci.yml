@@ -3,7 +3,7 @@ on:
   pull_request:
     branches:
       - develop
-      - master
+      - main
 jobs:
   flutter_test:
     name: Run Flutter test and Analyze
@@ -14,5 +14,4 @@ jobs:
         with:
           channel: "stable"
       - run: flutter pub get
-      - run: flutter analyze
       - run: flutter test

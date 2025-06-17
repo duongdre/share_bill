@@ -124,7 +124,5 @@
 
   "search": "Search...",
   "dateAndTimeRequired": "Date and time are required",
-  "unknownUser": "Unknown User",
-  "b": "b",
-  "a": "a"
+  "unknownUser": "Unknown User"
 }

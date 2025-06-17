@@ -27,7 +27,7 @@ A modern, intuitive Flutter app for splitting bills and managing shared expenses
 - Automatic calculation of group totals
 
 ### 📊 **Smart Analytics**
-- View recent payments and transactions
+- View recent expenses and transactions
 - See who owes what in each group
 - Track individual spending patterns
 - Real-time expense calculations
@@ -112,14 +112,14 @@ A modern, intuitive Flutter app for splitting bills and managing shared expenses
     - **Select Group**: Choose which group this expense belongs to
     - **Who Paid**: Select the person who paid from group members
     - **Amount**: Enter the expense amount in VND
-    - **Description**: Add what the payment was for
+    - **Description**: Add what the expense was for
     - **Date & Time**: Set when the expense occurred
 
 3. **Submit**: Tap "Spent money" to save the expense
 
 ### 📊 **Viewing Reports**
-- **Home Screen**: See recent payments and group summaries
-- **Payment Manager**: View all transactions with filtering options
+- **Home Screen**: See recent expenses and group summaries
+- **Expense Manager**: View all transactions with filtering options
 - **Group Details**: See who paid what in each group
 - **Person Details**: View individual spending history
 
@@ -130,10 +130,10 @@ A modern, intuitive Flutter app for splitting bills and managing shared expenses
 - **Quick Actions**: Add Person, Add Group, Add Expense buttons
 - **Favorite Persons**: Horizontal scroll of your frequent contacts
 - **Recent Groups**: Your active groups with spending totals
-- **Recent Payments**: Latest transactions across all groups
+- **Recent Expenses**: Latest transactions across all groups
 
 ### 🔍 **Navigation**
-- **Bottom Navigation**: Easy access to Home, Payments, Groups, and Persons
+- **Bottom Navigation**: Easy access to Home, Expenses, Groups, and Persons
 - **Search Functionality**: Find people, groups, or transactions quickly
 - **Pull to Refresh**: Update data by pulling down on lists
 
@@ -192,7 +192,7 @@ A modern, intuitive Flutter app for splitting bills and managing shared expenses
 - Split rent and utilities
 - Share grocery costs
 - Manage household supplies
-- Track cleaning service payments
+- Track cleaning service expenses
 
 ### 👫 **Friends**
 - Split restaurant bills
@@ -231,14 +231,14 @@ Have ideas for improvement? We'd love to hear them!
 - **Receipt Scanning**: OCR for automatic expense entry
 - **Bill Splitting Calculator**: Smart split by percentage or custom amounts
 - **Export Data**: PDF and CSV export options
-- **Notifications**: Reminders for pending payments
+- **Notifications**: Reminders for pending expenses
 - **Multiple Currencies**: Support for different currencies
 - **Dark Mode**: Alternative theme option
 
 ### 🎯 **Roadmap**
 - **Web Version**: Access from any browser
 - **Advanced Analytics**: Detailed spending insights and charts
-- **Integration**: Connect with banking apps and payment services
+- **Integration**: Connect with banking apps and expense services
 - **Social Features**: Share expenses and settle debts
 - **Backup & Sync**: Multiple device synchronization
 

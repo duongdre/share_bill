@@ -112,7 +112,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                                 ),
                               ),
                             ),
-                            recentPayments(),
+                            recentExpenses(),
                             const SizedBox(height: 120)
                           ],
                         ),
@@ -312,7 +312,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                               margin: const EdgeInsets.only(top: 100),
                               alignment: Alignment.topCenter,
                               child: Text(
-                                NumberFormat.currency(locale: "vi_VN", symbol: localizations.currency).format(groupWithTotalPaidByPerson[eachPerson[index]] ?? 0),
+                                NumberFormat.currency(locale: "vi_VN", symbol: "₫").format(groupWithTotalPaidByPerson[eachPerson[index]] ?? 0),
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                   color: ColorName.blackColor,
@@ -363,7 +363,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
     );
   }
 
-  Widget recentPayments() {
+  Widget recentExpenses() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

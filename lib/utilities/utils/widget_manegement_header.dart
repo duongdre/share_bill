@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_bill/gen/colors.gen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../screens/login/UI/login_screen.dart';
 import '../../screens/setting/UI/language_setting_screen.dart';
 import '../../screens/setting/controller/language_provider.dart';
 import '../../services/firebase_services/user_service.dart';
@@ -14,23 +15,23 @@ class WidgetManagementHeader extends ConsumerWidget {
   final bool showUserSection;
 
   const WidgetManagementHeader({
-    Key? key,
+    super.key,
     required this.title,
     this.leadingWidget,
     this.customActions,
     this.showUserSection = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userEmail = UserService.getCurrentUserEmail() ?? 'Unknown User';
-    final userName = userEmail.split('@')[0];
     final localizations = AppLocalizations.of(context);
+    final userEmail = UserService.getCurrentUserEmail() ?? localizations.unknownUser;
+    final userName = userEmail.split('@')[0];
 
     return Container(
       height: 56,
-      padding: EdgeInsets.all(12.0),
-      decoration: BoxDecoration(
+      padding: const EdgeInsets.all(12.0),
+      decoration: const BoxDecoration(
         color: ColorName.white,
         boxShadow: [
           BoxShadow(color: ColorName.groupManagementBackground, blurRadius: 2, offset: Offset(2, 2)),
@@ -38,7 +39,7 @@ class WidgetManagementHeader extends ConsumerWidget {
       ),
       child: Stack(
         children: [
-          (title == "Home")
+          (title == localizations.home)
               ? Align(
             alignment: Alignment.centerLeft,
             child: RichText(
@@ -49,7 +50,7 @@ class WidgetManagementHeader extends ConsumerWidget {
                 children: [
                   TextSpan(
                     text: userName,
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: ColorName.homeBlackText),
+                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: ColorName.homeBlackText),
                   ),
                 ],
               ),
@@ -59,13 +60,13 @@ class WidgetManagementHeader extends ConsumerWidget {
             alignment: Alignment.center,
             child: Text(
               title,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Icon(
+              const Icon(
                 Icons.notifications_none_sharp,
                 size: 20,
               ),
@@ -74,12 +75,12 @@ class WidgetManagementHeader extends ConsumerWidget {
                 child: Container(
                   height: 32,
                   width: 32,
-                  margin: EdgeInsets.only(left: 8, right: 16),
-                  decoration: BoxDecoration(
+                  margin: const EdgeInsets.only(left: 8, right: 16),
+                  decoration: const BoxDecoration(
                     color: ColorName.blackColor,
-                    borderRadius: const BorderRadius.all(Radius.circular(100)),
+                    borderRadius: BorderRadius.all(Radius.circular(100)),
                   ),
-                  child: Icon(
+                  child: const Icon(
                     Icons.person,
                     color: Colors.white,
                     size: 16,
@@ -108,7 +109,7 @@ class WidgetManagementHeader extends ConsumerWidget {
           ),
           decoration: BoxDecoration(
             color: ColorName.white,
-            borderRadius: BorderRadius.only(
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(20),
               topRight: Radius.circular(20),
             ),
@@ -116,7 +117,7 @@ class WidgetManagementHeader extends ConsumerWidget {
               BoxShadow(
                 color: ColorName.homeGrayBalance.withOpacity(0.3),
                 blurRadius: 10,
-                offset: Offset(0, -2),
+                offset: const Offset(0, -2),
               ),
             ],
           ),
@@ -129,7 +130,7 @@ class WidgetManagementHeader extends ConsumerWidget {
                   Container(
                     width: 40,
                     height: 4,
-                    margin: EdgeInsets.symmetric(vertical: 12),
+                    margin: const EdgeInsets.symmetric(vertical: 12),
                     decoration: BoxDecoration(
                       color: ColorName.homeGrayBalance,
                       borderRadius: BorderRadius.circular(2),
@@ -138,7 +139,7 @@ class WidgetManagementHeader extends ConsumerWidget {
 
                   // User info section
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                     child: Row(
                       children: [
                         Container(
@@ -147,7 +148,7 @@ class WidgetManagementHeader extends ConsumerWidget {
                           decoration: BoxDecoration(
                             color: ColorName.blackColor,
                             borderRadius: BorderRadius.circular(25),
-                            boxShadow: [
+                            boxShadow: const [
                               BoxShadow(
                                 color: ColorName.homeGrayBalance,
                                 blurRadius: 4,
@@ -155,13 +156,13 @@ class WidgetManagementHeader extends ConsumerWidget {
                               ),
                             ],
                           ),
-                          child: Icon(
+                          child: const Icon(
                             Icons.person,
                             color: Colors.white,
                             size: 24,
                           ),
                         ),
-                        SizedBox(width: 16),
+                        const SizedBox(width: 16),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -169,7 +170,7 @@ class WidgetManagementHeader extends ConsumerWidget {
                             children: [
                               Text(
                                 UserService.getCurrentUserEmail()?.split('@')[0] ?? 'User',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w600,
                                   color: ColorName.homeBlackText,
@@ -177,10 +178,10 @@ class WidgetManagementHeader extends ConsumerWidget {
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
-                              SizedBox(height: 2),
+                              const SizedBox(height: 2),
                               Text(
                                 UserService.getCurrentUserEmail() ?? '',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 13,
                                   color: ColorName.loginTextColorGray,
                                 ),
@@ -196,7 +197,7 @@ class WidgetManagementHeader extends ConsumerWidget {
 
                   // Menu items
                   Container(
-                    margin: EdgeInsets.symmetric(horizontal: 20),
+                    margin: const EdgeInsets.symmetric(horizontal: 20),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -237,7 +238,7 @@ class WidgetManagementHeader extends ConsumerWidget {
                           },
                         ),
                         Container(
-                          margin: EdgeInsets.symmetric(vertical: 8),
+                          margin: const EdgeInsets.symmetric(vertical: 8),
                           height: 1,
                           color: ColorName.homeGrayHold,
                         ),
@@ -255,7 +256,7 @@ class WidgetManagementHeader extends ConsumerWidget {
                     ),
                   ),
 
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                 ],
               ),
             ),
@@ -276,8 +277,8 @@ class WidgetManagementHeader extends ConsumerWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-        margin: EdgeInsets.symmetric(vertical: 1),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        margin: const EdgeInsets.symmetric(vertical: 1),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
         ),
@@ -296,7 +297,7 @@ class WidgetManagementHeader extends ConsumerWidget {
                 color: isDestructive ? ColorName.homeRedText : ColorName.homeBlackText,
               ),
             ),
-            SizedBox(width: 14),
+            const SizedBox(width: 14),
             Expanded(
               child: Text(
                 title,
@@ -307,7 +308,7 @@ class WidgetManagementHeader extends ConsumerWidget {
                 ),
               ),
             ),
-            Icon(
+            const Icon(
               Icons.chevron_right,
               size: 18,
               color: ColorName.homeGrayBalance,
@@ -332,7 +333,7 @@ class WidgetManagementHeader extends ConsumerWidget {
             child: Dialog(
               backgroundColor: Colors.transparent,
               child: Container(
-                padding: EdgeInsets.all(20),
+                padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: ColorName.white,
                   borderRadius: BorderRadius.circular(16),
@@ -340,20 +341,20 @@ class WidgetManagementHeader extends ConsumerWidget {
                     BoxShadow(
                       color: ColorName.homeGrayBalance.withOpacity(0.3),
                       blurRadius: 10,
-                      offset: Offset(0, 4),
+                      offset: const Offset(0, 4),
                     ),
                   ],
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    CircularProgressIndicator(
+                    const CircularProgressIndicator(
                       valueColor: AlwaysStoppedAnimation<Color>(ColorName.homeBlackText),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     Text(
                       localizations.pleaseWait,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                         color: ColorName.homeBlackText,
@@ -368,10 +369,10 @@ class WidgetManagementHeader extends ConsumerWidget {
       );
 
       await UserService.signOut();
-      await Future.delayed(Duration(milliseconds: 300));
+      await Future.delayed(const Duration(milliseconds: 300));
 
       if (context.mounted) {
-        context.goNamed('login');
+        context.goNamed(LoginScreen.routeName);
       }
     } catch (e) {
       if (context.mounted) {
@@ -398,7 +399,7 @@ class WidgetManagementHeader extends ConsumerWidget {
           ),
           title: Text(
             localizations.logout,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
               color: ColorName.homeBlackText,
@@ -406,7 +407,7 @@ class WidgetManagementHeader extends ConsumerWidget {
           ),
           content: Text(
             localizations.logoutConfirmation,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 16,
               color: ColorName.loginTextColorGray,
             ),
@@ -416,24 +417,24 @@ class WidgetManagementHeader extends ConsumerWidget {
               onPressed: () => Navigator.of(context).pop(false),
               style: TextButton.styleFrom(
                 foregroundColor: ColorName.homeGrayBalance,
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               ),
               child: Text(
                 localizations.cancel,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                 ),
               ),
             ),
             Container(
-              margin: EdgeInsets.only(left: 8),
+              margin: const EdgeInsets.only(left: 8),
               child: ElevatedButton(
                 onPressed: () => Navigator.of(context).pop(true),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: ColorName.homeRedText,
                   foregroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),

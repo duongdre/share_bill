@@ -21,11 +21,11 @@
 
   "personManager": "Person Manager",
   "groupManager": "Group Manager",
-  "paymentManager": "Payment Manager",
+  "expenseManager": "Expense Manager",
   "personDetails": "Person Details",
   "groupDetails": "Group Details",
 
-  "newPayment": "New Payment",
+  "newExpense": "New Expense",
   "selectGroup": "Select Group",
   "whoPaid": "Who paid?",
   "amount": "Amount",
@@ -61,7 +61,6 @@
   "errorCreatingGroup": "Error creating group:",
   "addNewGroupSuccessfully": "Add new group successfully",
   "updateInformationSuccessfully": "Update information successfully",
-  "currency": "$",
 
   "home": "Home",
   "expenses": "Expenses",
@@ -105,6 +104,25 @@
   "pleaseEnterYourPassword": "Please enter your password",
   "createNewAccount": "Create New Account",
   "youAgreeToOurTermsOfService": "By signing in, you agree to our Terms of Service",
-  "b": "b",
-  "a": "a"
+
+  "tapToAddPhoto": "Tap to add photo",
+  "fullNameStar": "Full Name *",
+  "pleaseEnterAName": "Please enter a name",
+  "nameMustBeAtLeast2Characters": "Name must be at least 2 characters",
+  "enterPersonName": "Enter person name",
+  "descriptionOptional": "Description (Optional)",
+  "addANoteAboutPerson": "Add a note about this person...",
+  "personAddedSuccessfully": "Person added successfully",
+  "errorAddingPerson": "Error adding person: ",
+
+  "featureComingSoon": "Feature coming soon",
+
+  "pleaseFillInAllFields": "Please fill in all fields",
+  "successfullyAddedExpense": "Successfully added expense",
+  "successfullyUpdatedGroupMembers": "Successfully updated group members",
+  "errorUpdatingMembers": "Error updating members",
+
+  "search": "Search...",
+  "dateAndTimeRequired": "Date and time are required",
+  "unknownUser": "Unknown User"
 }

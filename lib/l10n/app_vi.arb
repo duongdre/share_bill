@@ -21,11 +21,11 @@
 
   "personManager": "Quản lý người dùng",
   "groupManager": "Quản lý nhóm",
-  "paymentManager": "Quản lý thanh toán",
+  "expenseManager": "Quản lý thanh toán",
   "personDetails": "Chi tiết người dùng",
   "groupDetails": "Chi tiết nhóm",
 
-  "newPayment": "Thanh toán mới",
+  "newExpense": "Thanh toán mới",
   "selectGroup": "Chọn nhóm",
   "whoPaid": "Ai đã trả?",
   "amount": "Số tiền",
@@ -61,7 +61,6 @@
   "errorCreatingGroup": "Lỗi khi tạo nhóm:",
   "addNewGroupSuccessfully": "Thêm nhóm mới thành công",
   "updateInformationSuccessfully": "Cập nhật thông tin thành công",
-  "currency": "₫",
 
   "home": "Trang chủ",
   "expenses": "Chi phí",
@@ -105,6 +104,25 @@
   "pleaseEnterYourPassword": "Vui lòng nhập mật khẩu",
   "createNewAccount": "Tạo tài khoản mới",
   "youAgreeToOurTermsOfService": "Bằng cách đăng nhập, bạn đồng ý với Điều khoản dịch vụ của chúng tôi",
-  "b": "b",
-  "a": "a"
+
+  "tapToAddPhoto": "Nhấn để thêm ảnh",
+  "fullNameStar": "Họ và tên *",
+  "pleaseEnterAName": "Vui lòng nhập tên",
+  "nameMustBeAtLeast2Characters": "Tên phải có ít nhất 2 ký tự",
+  "enterPersonName": "Nhập tên người",
+  "descriptionOptional": "Mô tả (Tùy chọn)",
+  "addANoteAboutPerson": "Thêm ghi chú về người này...",
+  "personAddedSuccessfully": "Thêm người thành công",
+  "errorAddingPerson": "Lỗi khi thêm người: ",
+
+  "featureComingSoon": "Tính năng sắp ra mắt",
+
+  "pleaseFillInAllFields": "Vui lòng điền đầy đủ thông tin",
+  "successfullyAddedExpense": "Thêm chi phí thành công",
+  "successfullyUpdatedGroupMembers": "Cập nhật thành viên nhóm thành công",
+  "errorUpdatingMembers": "Lỗi khi cập nhật thành viên",
+
+  "search": "Tìm kiếm...",
+  "dateAndTimeRequired": "Ngày và giờ là bắt buộc",
+  "unknownUser": "Người dùng không xác định"
 }

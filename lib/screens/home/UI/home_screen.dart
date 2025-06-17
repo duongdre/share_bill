@@ -158,7 +158,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               ),
                               const SizedBox(height: 16),
 
-                              /// Recent Payments
+                              /// Recent Expenses
                               Padding(
                                 padding: const EdgeInsets.only(left: 16, right: 16),
                                 child: Text(

@@ -46,7 +46,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     ),
     OnboardingData(
       title: "Track Expenses",
-      subtitle: "Record every payment",
+      subtitle: "Record every expense",
       description: "Quickly add expenses with amount, description, and who paid. See real-time calculations and group totals.",
       icon: Icons.payment,
       color: ColorName.homeRedText,
@@ -55,7 +55,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     OnboardingData(
       title: "Stay Organized",
       subtitle: "View analytics & history",
-      description: "See who owes what, track spending patterns, and view detailed payment history. Never lose track of shared expenses again!",
+      description: "See who owes what, track spending patterns, and view detailed expense history. Never lose track of shared expenses again!",
       icon: Icons.analytics,
       color: ColorName.blackColor,
       gradient: [Colors.indigo.shade400, Colors.indigo.shade600],
@@ -80,7 +80,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   void _nextPage() {
     if (_currentPage < _onboardingData.length - 1) {
       _pageController.nextPage(
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
     } else {
@@ -109,14 +109,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               // Skip button
               Container(
                 alignment: Alignment.centerRight,
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 child: TextButton(
                   onPressed: _skipOnboarding,
                   style: TextButton.styleFrom(
                     foregroundColor: Colors.white.withOpacity(0.8),
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Skip',
                     style: TextStyle(
                       fontSize: 16,
@@ -144,7 +144,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
               // Bottom section with dots and button
               Container(
-                padding: EdgeInsets.all(20),
+                padding: const EdgeInsets.all(20),
                 child: Column(
                   children: [
                     // Page indicators
@@ -155,7 +155,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                             (index) => _buildDot(index),
                       ),
                     ),
-                    SizedBox(height: 30),
+                    const SizedBox(height: 30),
 
                     // Next/Get Started button
                     SizedBox(
@@ -176,14 +176,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           _currentPage == _onboardingData.length - 1
                               ? 'Get Started'
                               : 'Next',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                   ],
                 ),
               ),
@@ -196,13 +196,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   Widget _buildOnboardingPage(OnboardingData data) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 40),
+      padding: const EdgeInsets.symmetric(horizontal: 40),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // Icon with animated container
           TweenAnimationBuilder<double>(
-            duration: Duration(milliseconds: 600),
+            duration: const Duration(milliseconds: 600),
             tween: Tween(begin: 0.0, end: 1.0),
             builder: (context, value, child) {
               return Transform.scale(
@@ -217,7 +217,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       BoxShadow(
                         color: Colors.black.withOpacity(0.1),
                         blurRadius: 20,
-                        offset: Offset(0, 10),
+                        offset: const Offset(0, 10),
                       ),
                     ],
                   ),
@@ -230,12 +230,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               );
             },
           ),
-          SizedBox(height: 50),
+          const SizedBox(height: 50),
 
           // Title
           TweenAnimationBuilder<Offset>(
-            duration: Duration(milliseconds: 800),
-            tween: Tween(begin: Offset(0, 50), end: Offset.zero),
+            duration: const Duration(milliseconds: 800),
+            tween: Tween(begin: const Offset(0, 50), end: Offset.zero),
             builder: (context, value, child) {
               return Transform.translate(
                 offset: value,
@@ -243,7 +243,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   opacity: 1 - (value.dy / 50),
                   child: Text(
                     data.title,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -255,12 +255,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               );
             },
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
 
           // Subtitle
           TweenAnimationBuilder<Offset>(
-            duration: Duration(milliseconds: 1000),
-            tween: Tween(begin: Offset(0, 30), end: Offset.zero),
+            duration: const Duration(milliseconds: 1000),
+            tween: Tween(begin: const Offset(0, 30), end: Offset.zero),
             builder: (context, value, child) {
               return Transform.translate(
                 offset: value,
@@ -280,12 +280,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               );
             },
           ),
-          SizedBox(height: 30),
+          const SizedBox(height: 30),
 
           // Description
           TweenAnimationBuilder<Offset>(
-            duration: Duration(milliseconds: 1200),
-            tween: Tween(begin: Offset(0, 20), end: Offset.zero),
+            duration: const Duration(milliseconds: 1200),
+            tween: Tween(begin: const Offset(0, 20), end: Offset.zero),
             builder: (context, value, child) {
               return Transform.translate(
                 offset: value,
@@ -311,8 +311,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   Widget _buildDot(int index) {
     return AnimatedContainer(
-      duration: Duration(milliseconds: 300),
-      margin: EdgeInsets.symmetric(horizontal: 4),
+      duration: const Duration(milliseconds: 300),
+      margin: const EdgeInsets.symmetric(horizontal: 4),
       width: _currentPage == index ? 24 : 8,
       height: 8,
       decoration: BoxDecoration(

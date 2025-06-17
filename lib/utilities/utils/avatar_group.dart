@@ -1,8 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:share_bill/gen/fonts.gen.dart';
-import 'package:share_bill/models/data_models/person.dart';
 import 'package:share_bill/utilities/utils/avatar_person.dart';
 import '../../gen/colors.gen.dart';
 import '../../models/data_models/group.dart';
@@ -40,12 +37,10 @@ class AvatarGroup extends ConsumerWidget {
       // Use CachedNetworkImage to load and cache the avatar
       avatarWidget = Stack(
         children: [
-          Container(
-            child: AvatarPerson(
-              person: personNotifier.findPersonWithUid(group.members.keys.toList()[1]),
-              size: size / 1.75,
-              isEditable: false,
-            ),
+          AvatarPerson(
+            person: personNotifier.findPersonWithUid(group.members.keys.toList()[1]),
+            size: size / 1.75,
+            isEditable: false,
           ),
           Container(
             margin: EdgeInsets.only(top: size*0.23, left: size*0.23),

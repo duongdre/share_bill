@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:share_bill/screens/home/UI/home_screen.dart';
 import 'package:share_bill/screens/login/UI/login_screen.dart';
 import 'package:share_bill/services/firebase_services/user_service.dart';
+import '../../utilities/utils/string_utils.dart';
 
 class AuthService {
   static String verId = "";
@@ -22,7 +22,7 @@ class AuthService {
       // Initialize user data structure in database
       await UserService.initializeUserData();
 
-      return 'Success';
+      return StringUtils.success;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         return 'The password provided is too weak.';
@@ -49,7 +49,7 @@ class AuthService {
       // Initialize user data structure if it doesn't exist
       await UserService.initializeUserData();
 
-      return 'Success';
+      return StringUtils.success;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         return 'No user found for that email.';

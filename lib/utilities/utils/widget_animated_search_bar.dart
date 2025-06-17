@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
 import '../../gen/colors.gen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AnimatedSearchBar extends StatefulWidget {
   final Function(String) onSearch;
@@ -74,6 +74,8 @@ class AnimatedSearchBarState extends State<AnimatedSearchBar> with SingleTickerP
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
@@ -95,7 +97,7 @@ class AnimatedSearchBarState extends State<AnimatedSearchBar> with SingleTickerP
             controller: _textController,
             focusNode: _focusNode,
             decoration: InputDecoration(
-              hintText: 'Search...',
+              hintText: localizations.search,
               hintStyle: const TextStyle(
                 color: ColorName.homeGrayBalance,
                 fontSize: 14,

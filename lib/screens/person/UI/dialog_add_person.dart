@@ -7,6 +7,7 @@ import 'package:toastification/toastification.dart';
 import 'package:uuid/uuid.dart';
 import '../../../models/data_models/person.dart';
 import '../controller/person_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DialogAddPerson extends ConsumerStatefulWidget {
   const DialogAddPerson({super.key});
@@ -27,7 +28,7 @@ class _DialogAddPersonState extends ConsumerState<DialogAddPerson> with SingleTi
   @override
   void initState() {
     super.initState();
-    controller = AnimationController(vsync: this, duration: Duration(milliseconds: 450));
+    controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 450));
     scaleAnimation = CurvedAnimation(parent: controller, curve: Curves.elasticInOut);
     controller.addListener(() {
       setState(() {});
@@ -45,6 +46,7 @@ class _DialogAddPersonState extends ConsumerState<DialogAddPerson> with SingleTi
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
     ref.watch(personNotifierProvider);
 
     return GestureDetector(
@@ -60,7 +62,7 @@ class _DialogAddPersonState extends ConsumerState<DialogAddPerson> with SingleTi
             scale: scaleAnimation,
             child: Container(
               alignment: Alignment.center,
-              margin: EdgeInsets.all(20.0),
+              margin: const EdgeInsets.all(20.0),
               constraints: BoxConstraints(
                 maxHeight: MediaQuery.of(context).size.height * 0.8,
               ),
@@ -71,7 +73,7 @@ class _DialogAddPersonState extends ConsumerState<DialogAddPerson> with SingleTi
                   BoxShadow(
                     color: ColorName.homeGrayBalance.withOpacity(0.3),
                     blurRadius: 10,
-                    offset: Offset(0, 4),
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
@@ -89,8 +91,8 @@ class _DialogAddPersonState extends ConsumerState<DialogAddPerson> with SingleTi
                           children: [
                             Expanded(
                               child: Text(
-                                "Add New Person",
-                                style: TextStyle(
+                                localizations.addPerson,
+                                style: const TextStyle(
                                   color: ColorName.textBlack,
                                   fontSize: 20,
                                   fontWeight: FontWeight.w600,
@@ -100,12 +102,12 @@ class _DialogAddPersonState extends ConsumerState<DialogAddPerson> with SingleTi
                             InkWell(
                               onTap: () => context.pop(),
                               child: Container(
-                                padding: EdgeInsets.all(8),
+                                padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
                                   color: ColorName.homeGrayHold,
                                   borderRadius: BorderRadius.circular(8),
                                 ),
-                                child: Icon(
+                                child: const Icon(
                                   Icons.close,
                                   size: 20,
                                   color: ColorName.iconGray,
@@ -125,7 +127,7 @@ class _DialogAddPersonState extends ConsumerState<DialogAddPerson> with SingleTi
                                 height: 100,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(50),
-                                  boxShadow: [
+                                  boxShadow: const [
                                     BoxShadow(
                                       color: ColorName.homeGrayBalance,
                                       blurRadius: 4,
@@ -148,7 +150,7 @@ class _DialogAddPersonState extends ConsumerState<DialogAddPerson> with SingleTi
                                     color: Colors.black.withOpacity(0.5),
                                     borderRadius: BorderRadius.circular(50),
                                   ),
-                                  child: CircularProgressIndicator(
+                                  child: const CircularProgressIndicator(
                                     strokeWidth: 3,
                                     valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                                   ),
@@ -159,8 +161,8 @@ class _DialogAddPersonState extends ConsumerState<DialogAddPerson> with SingleTi
                         const SizedBox(height: 8),
                         Center(
                           child: Text(
-                            "Tap to add photo",
-                            style: TextStyle(
+                            localizations.tapToAddPhoto,
+                            style: const TextStyle(
                               color: ColorName.loginTextColorGray,
                               fontSize: 12,
                               fontWeight: FontWeight.w400,
@@ -171,8 +173,8 @@ class _DialogAddPersonState extends ConsumerState<DialogAddPerson> with SingleTi
 
                         // Name Field
                         Text(
-                          "Full Name *",
-                          style: TextStyle(
+                          localizations.fullNameStar,
+                          style: const TextStyle(
                             color: ColorName.iconGray,
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
@@ -183,37 +185,37 @@ class _DialogAddPersonState extends ConsumerState<DialogAddPerson> with SingleTi
                           controller: nameController,
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
-                              return 'Please enter a name';
+                              return localizations.pleaseEnterAName;
                             }
                             if (value.trim().length < 2) {
-                              return 'Name must be at least 2 characters';
+                              return localizations.nameMustBeAtLeast2Characters;
                             }
                             return null;
                           },
                           decoration: InputDecoration(
-                            hintText: 'Enter person name',
-                            hintStyle: TextStyle(
+                            hintText: localizations.enterPersonName,
+                            hintStyle: const TextStyle(
                               color: ColorName.loginTextColorGray,
                               fontSize: 14,
                             ),
                             filled: true,
                             fillColor: Colors.white,
-                            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(color: ColorName.borderBlack),
+                              borderSide: const BorderSide(color: ColorName.borderBlack),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(color: ColorName.borderBlack),
+                              borderSide: const BorderSide(color: ColorName.borderBlack),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(color: ColorName.borderBlack, width: 2),
+                              borderSide: const BorderSide(color: ColorName.borderBlack, width: 2),
                             ),
                             errorBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(color: Colors.red),
+                              borderSide: const BorderSide(color: Colors.red),
                             ),
                           ),
                         ),
@@ -221,8 +223,8 @@ class _DialogAddPersonState extends ConsumerState<DialogAddPerson> with SingleTi
 
                         // Description Field
                         Text(
-                          "Description (Optional)",
-                          style: TextStyle(
+                          localizations.descriptionOptional,
+                          style: const TextStyle(
                             color: ColorName.iconGray,
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
@@ -233,25 +235,25 @@ class _DialogAddPersonState extends ConsumerState<DialogAddPerson> with SingleTi
                           controller: describeController,
                           maxLines: 3,
                           decoration: InputDecoration(
-                            hintText: 'Add a note about this person...',
-                            hintStyle: TextStyle(
+                            hintText: localizations.addANoteAboutPerson,
+                            hintStyle: const TextStyle(
                               color: ColorName.loginTextColorGray,
                               fontSize: 14,
                             ),
                             filled: true,
                             fillColor: Colors.white,
-                            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(color: ColorName.borderBlack),
+                              borderSide: const BorderSide(color: ColorName.borderBlack),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(color: ColorName.borderBlack),
+                              borderSide: const BorderSide(color: ColorName.borderBlack),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(color: ColorName.borderBlack, width: 2),
+                              borderSide: const BorderSide(color: ColorName.borderBlack, width: 2),
                             ),
                           ),
                         ),
@@ -272,8 +274,8 @@ class _DialogAddPersonState extends ConsumerState<DialogAddPerson> with SingleTi
                                     border: Border.all(color: ColorName.homeGrayBalance),
                                   ),
                                   child: Text(
-                                    "Cancel",
-                                    style: TextStyle(
+                                    localizations.cancel,
+                                    style: const TextStyle(
                                       color: ColorName.textGray,
                                       fontSize: 16,
                                       fontWeight: FontWeight.w500,
@@ -290,11 +292,9 @@ class _DialogAddPersonState extends ConsumerState<DialogAddPerson> with SingleTi
                                   height: 50,
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
-                                    color: _isLoading
-                                        ? ColorName.homeGrayBalance
-                                        : ColorName.groupManagementBackGroundButton,
+                                    color: _isLoading ? ColorName.homeGrayBalance : ColorName.groupManagementBackGroundButton,
                                     borderRadius: BorderRadius.circular(8),
-                                    boxShadow: [
+                                    boxShadow: const [
                                       BoxShadow(
                                         color: ColorName.homeGrayBalance,
                                         blurRadius: 4,
@@ -303,22 +303,22 @@ class _DialogAddPersonState extends ConsumerState<DialogAddPerson> with SingleTi
                                     ],
                                   ),
                                   child: _isLoading
-                                      ? SizedBox(
-                                    width: 20,
-                                    height: 20,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                    ),
-                                  )
+                                      ? const SizedBox(
+                                          width: 20,
+                                          height: 20,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                          ),
+                                        )
                                       : Text(
-                                    "Add Person",
-                                    style: TextStyle(
-                                      color: ColorName.homeWhiteButtonBg,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
+                                          localizations.addPerson,
+                                          style: const TextStyle(
+                                            color: ColorName.homeWhiteButtonBg,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
                                 ),
                               ),
                             ),
@@ -337,6 +337,8 @@ class _DialogAddPersonState extends ConsumerState<DialogAddPerson> with SingleTi
   }
 
   Future<void> _handleAddPerson() async {
+    final localizations = AppLocalizations.of(context);
+
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isLoading = true);
@@ -344,7 +346,7 @@ class _DialogAddPersonState extends ConsumerState<DialogAddPerson> with SingleTi
     try {
       // Create new person
       final newPerson = Person(
-        uid: Uuid().v4(),
+        uid: const Uuid().v4(),
         name: nameController.text.trim(),
         avtUrl: ref.read(personNotifierProvider.notifier).currentPersonDetail.avtUrl,
         groups: {},
@@ -360,7 +362,7 @@ class _DialogAddPersonState extends ConsumerState<DialogAddPerson> with SingleTi
       if (mounted) {
         context.pop();
         toastification.show(
-          title: Text('Person added successfully'),
+          title: Text(localizations.personAddedSuccessfully),
           style: ToastificationStyle.fillColored,
           autoCloseDuration: const Duration(seconds: 3),
         );
@@ -368,7 +370,7 @@ class _DialogAddPersonState extends ConsumerState<DialogAddPerson> with SingleTi
     } catch (e) {
       if (mounted) {
         toastification.show(
-          title: Text('Error adding person: ${e.toString()}'),
+          title: Text('${localizations.errorAddingPerson} ${e.toString()}'),
           style: ToastificationStyle.fillColored,
           type: ToastificationType.error,
           autoCloseDuration: const Duration(seconds: 3),

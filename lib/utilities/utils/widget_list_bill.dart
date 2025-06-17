@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../gen/colors.gen.dart';
 import '../../models/data_models/bill.dart';
-import '../../models/data_models/group.dart';
-import '../../models/data_models/person.dart';
-import '../../screens/bill/controller/bill_provider.dart';
 import '../../screens/group/controller/group_provider.dart';
 import '../../screens/person/controller/person_provider.dart';
-import 'avatar_group.dart';
 import 'avatar_person.dart';
 
 class ListBill extends ConsumerWidget {
@@ -32,7 +27,7 @@ class ListBill extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final double calculatedHeight = height ?? (6 + 6 + 76) * bills.length * 1.0;
 
-    return Container(
+    return SizedBox(
       height: scrollable ? null : calculatedHeight,
       child: ListView.builder(
         physics: scrollable
@@ -89,7 +84,7 @@ class BillListItem extends ConsumerWidget {
             width: 76,
             height: 76,
             alignment: Alignment.centerLeft,
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             child: AvatarPerson(
               person: recentPerson,
               size: 56,

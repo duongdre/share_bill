@@ -1,13 +1,9 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:share_bill/gen/fonts.gen.dart';
-import 'package:share_bill/models/data_models/person.dart';
 import 'package:share_bill/screens/bill/controller/bill_provider.dart';
 import 'package:share_bill/screens/group/controller/group_provider.dart';
 import 'package:share_bill/utilities/utils/avatar_group.dart';
-import 'package:share_bill/utilities/utils/avatar_person.dart';
 import '../../gen/colors.gen.dart';
 import '../../models/data_models/bill.dart';
 import '../../models/data_models/group.dart';
@@ -41,11 +37,11 @@ class AvatarBill extends ConsumerWidget {
     }
 
     return Container(
-      margin: EdgeInsets.only(bottom: 20, right: 4),
+      margin: const EdgeInsets.only(bottom: 20, right: 4),
       child: Row(
         children: [
           avatarWidget,
-          SizedBox(width: 16),
+          const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,12 +69,12 @@ class AvatarBill extends ConsumerWidget {
               ],
             ),
           ),
-          SizedBox(width: 16),
+          const SizedBox(width: 16),
           Container(
             width: 100,
             alignment: Alignment.centerRight,
             child: Text(
-              NumberFormat.currency(locale: "vi_VN", symbol: "Đ").format(bill.amount),
+              NumberFormat.currency(locale: "vi_VN", symbol: "₫").format(bill.amount),
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
                 color: ColorName.homeRedText,

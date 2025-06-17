@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../gen/colors.gen.dart';
 import '../../models/data_models/group.dart';
 import '../../screens/bill/controller/bill_provider.dart';
@@ -27,7 +26,7 @@ class ListGroup extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final double calculatedHeight = height ?? (6 + 6 + 76) * groups.length * 1.0;
 
-    return Container(
+    return SizedBox(
       height: scrollable ? null : calculatedHeight,
       child: ListView.builder(
         physics: scrollable
@@ -56,11 +55,11 @@ class GroupListItem extends ConsumerWidget {
   final EdgeInsets margin;
 
   const GroupListItem({
-    Key? key,
+    super.key,
     required this.group,
     required this.margin,
     required this.ref,
-  }) : super(key: key);
+  });
 
   final WidgetRef ref;
 
@@ -81,7 +80,7 @@ class GroupListItem extends ConsumerWidget {
             width: 76,
             height: 76,
             alignment: Alignment.centerLeft,
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             child: AvatarGroup(
               group: group,
               size: 56,
@@ -125,7 +124,7 @@ class GroupListItem extends ConsumerWidget {
             maxLines: 1,
           ),
           const SizedBox(width: 8),
-          Icon(
+          const Icon(
             Icons.star_border,
             color: ColorName.textGray,
           ),

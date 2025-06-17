@@ -1,16 +1,14 @@
-import 'dart:convert';
-
 class Group {
   Group({
     required this.uid,
     required this.name,
-    this.createdAt,
+    num? createdAt,
     required this.members,
-  });
+  }) : createdAt = createdAt ?? DateTime.now().millisecondsSinceEpoch;
 
   String uid;
   String name;
-  num? createdAt = DateTime.now().millisecondsSinceEpoch;
+  num createdAt;
   Map<String, bool> members;
 
   int countMember() {
@@ -37,13 +35,13 @@ class Group {
   // Create a Group from JSON data
   factory Group.fromJson(String id, Map<String, dynamic> json) {
     return Group(
-      uid: json['uid'],
-      name: json['name'],
-      createdAt: json['createdAt'] ?? DateTime.now().millisecondsSinceEpoch,
-      members: (json['members'] as Map<String, dynamic>?)?.map(
-            (key, value) => MapEntry(key, value as bool),
-          ) ??
-          {},
+        uid: json['uid'],
+        name: json['name'],
+        createdAt: json['createdAt'],
+        members: (json['members'] as Map<String, dynamic>?)?.map(
+          (key, value) => MapEntry(key, value as bool),
+    ) ??
+        {},
     );
   }
 
@@ -52,12 +50,11 @@ class Group {
     return {
       'uid': uid,
       'name': name,
-      'createdAt': createdAt ?? DateTime.now().millisecondsSinceEpoch,
+      'createdAt': createdAt,
       'members': members,
     };
   }
 
-  // Create a copy of Group with some changes
   Group copyWith({
     String? uid,
     String? name,
@@ -65,9 +62,9 @@ class Group {
     Map<String, bool>? members,
   }) {
     return Group(
-      uid: this.uid,
+      uid: uid ?? this.uid,
       name: name ?? this.name,
-      createdAt: createdAt ?? this.createdAt ?? DateTime.now().millisecondsSinceEpoch,
+      createdAt: createdAt ?? this.createdAt,
       members: members ?? this.members,
     );
   }
@@ -81,7 +78,7 @@ class Group {
   int get memberCount => members.length;
 
   String getNameForSpent() {
-    if (name.isEmpty) name = "NaN";
+    if (name.isEmpty) return "NaN";
     return name;
   }
 
@@ -95,11 +92,21 @@ class Group {
     return Group(
       uid: map['uid'] ?? '',
       name: map['name'] ?? '',
-      createdAt: map['createdAt'] ?? DateTime.now().millisecondsSinceEpoch,
+      createdAt: map['createdAt'],
       members: (map['members'] as Map<dynamic, dynamic>?)?.map(
-            (key, value) => MapEntry(key, value as bool),
-          ) ??
+            (key, value) => MapEntry(key.toString(), value as bool),
+      ) ??
           {},
     );
+  }
+
+  // Convert Group to a map for Firebase
+  Map<String, dynamic> toMap() {
+    return {
+      'uid': uid,
+      'name': name,
+      'createdAt': createdAt,
+      'members': members,
+    };
   }
 }

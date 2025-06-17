@@ -5,15 +5,15 @@ class Bill {
     required this.personId,
     required this.amount,
     this.description,
-    this.createdAt,
-  });
+    int? createdAt,
+  }) : createdAt = createdAt ?? DateTime.now().millisecondsSinceEpoch; // ✅ Set default in initializer list
 
   String uid;
   String groupId;
   String personId;
   int amount;
   String? description;
-  int? createdAt = DateTime.now().millisecondsSinceEpoch;
+  int createdAt;
 
   String getDescribe() {
     var result = description ?? "Không ghi chú";
@@ -41,12 +41,12 @@ class Bill {
     int? createdAt,
   }) {
     return Bill(
-      uid: this.uid,
-      groupId: this.groupId,
-      personId: this.personId,
-      amount: this.amount,
-      description: this.description,
-      createdAt: this.createdAt ?? DateTime.now().millisecondsSinceEpoch,
+      uid: uid ?? this.uid,
+      groupId: groupId ?? this.groupId,
+      personId: personId ?? this.personId,
+      amount: amount ?? this.amount,
+      description: description ?? this.description,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 
@@ -55,13 +55,12 @@ class Bill {
       uid: map['uid'] ?? '',
       groupId: map['groupId'] ?? '',
       personId: map['personId'] ?? '',
-      amount: map['amount'] ?? '',
+      amount: map['amount'] ?? 0,
       description: map['description'],
-      createdAt: map['createdAt'].toInt() ?? DateTime.now().millisecondsSinceEpoch,
+      createdAt: map['createdAt']?.toInt(),
     );
   }
 
-  // Convert Transaction to a map for Firebase
   Map<String, dynamic> toMap() {
     return {
       'uid': uid,
@@ -69,7 +68,7 @@ class Bill {
       'personId': personId,
       'amount': amount,
       'description': description,
-      'createdAt': createdAt ?? DateTime.now().millisecondsSinceEpoch,
+      'createdAt': createdAt,
     };
   }
 
@@ -80,12 +79,12 @@ class Bill {
       'personId': personId,
       'amount': amount,
       'description': description,
-      'createdAt': createdAt ?? DateTime.now().millisecondsSinceEpoch,
+      'createdAt': createdAt,
     };
   }
 
   @override
   String toString() {
-    return 'Transaction{id: $uid, groupId: $groupId, personId: $personId, amount: $amount, description: $description, createdAt: $createdAt}';
+    return 'Bill{id: $uid, groupId: $groupId, personId: $personId, amount: $amount, description: $description, createdAt: $createdAt}';
   }
 }

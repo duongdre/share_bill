@@ -86,7 +86,7 @@ class AvatarPerson extends ConsumerWidget {
             right: 0,
             child: GestureDetector(
               onTap: () {
-                homeScreenNotifier.uploadAvatarForUser_NewOrExisted();
+                homeScreenNotifier.uploadAvatarForUserForNewOrExisted();
               },
               child: Container(
                 padding: EdgeInsets.all(4),

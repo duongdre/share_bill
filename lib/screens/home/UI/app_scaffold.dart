@@ -17,6 +17,7 @@ class AppScaffold extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final localizations = AppLocalizations.of(context);
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: navigationShell, // This displays the current tab's content
@@ -90,7 +91,7 @@ class AppScaffold extends ConsumerWidget {
                 ),
                 // Empty space for the FAB
                 const SizedBox(width: 60),
-                // Payments tab
+                // Expenses tab
                 _buildNavItem(
                   context: context,
                   index: 2,

@@ -1,4 +1,3 @@
-// utilities/providers/language_provider.dart
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,7 +10,6 @@ class LanguageNotifier extends _$LanguageNotifier {
 
   @override
   Locale build() {
-    // Default to Vietnamese as per your current setup
     _loadSavedLanguage();
     return const Locale('vi');
   }

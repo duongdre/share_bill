@@ -1,23 +1,15 @@
 import 'package:go_router/go_router.dart';
-import 'package:share_bill/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:share_bill/models/data_models/person.dart';
 import 'package:share_bill/screens/group/controller/group_provider.dart';
-import 'package:share_bill/screens/home/UI/home_screen.dart';
 import 'package:share_bill/screens/person/UI/person_detail_screen.dart';
-import 'package:share_bill/screens/spent/UI/spent_screen.dart';
-import 'package:share_bill/utilities/utils/enum.dart';
 import 'package:share_bill/utilities/utils/widget_list_person.dart';
-
 import '../../../gen/colors.gen.dart';
-import '../../../utilities/utils/avatar_person.dart';
 import '../../../utilities/utils/widget_animated_search_bar.dart';
 import '../../../utilities/utils/widget_manegement_header.dart';
 import '../../bill/controller/bill_provider.dart';
 import '../controller/person_provider.dart';
-import 'dialog_add_person.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PersonManagementScreen extends ConsumerStatefulWidget {
   static const routeName = 'person_management';
@@ -47,12 +39,12 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
     ref.watch(personNotifierProvider);
     ref.watch(groupNotifierProvider);
     ref.watch(billNotifierProvider);
     final persons = ref.read(personNotifierProvider.notifier).allPerson;
-    final groups = ref.read(groupNotifierProvider.notifier).allGroup;
-    final bills = ref.read(billNotifierProvider.notifier).getFirst5Bills();
+
     return GestureDetector(
       behavior: HitTestBehavior.translucent, // Ensures taps are detected even on empty areas
       onTap: () {
@@ -67,7 +59,7 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
           child: SafeArea(
             child: Column(
               children: [
-                const WidgetManagementHeader(title: 'Person manager',),
+                WidgetManagementHeader(title: localizations.personManager,),
                 searchBar(),
                 Expanded(
                   child: SingleChildScrollView(

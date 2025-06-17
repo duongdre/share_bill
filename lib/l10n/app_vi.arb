@@ -21,11 +21,11 @@
 
   "personManager": "Quản lý người dùng",
   "groupManager": "Quản lý nhóm",
-  "paymentManager": "Quản lý thanh toán",
+  "expenseManager": "Quản lý thanh toán",
   "personDetails": "Chi tiết người dùng",
   "groupDetails": "Chi tiết nhóm",
 
-  "newPayment": "Thanh toán mới",
+  "newExpense": "Thanh toán mới",
   "selectGroup": "Chọn nhóm",
   "whoPaid": "Ai đã trả?",
   "amount": "Số tiền",
@@ -61,7 +61,6 @@
   "errorCreatingGroup": "Lỗi khi tạo nhóm:",
   "addNewGroupSuccessfully": "Thêm nhóm mới thành công",
   "updateInformationSuccessfully": "Cập nhật thông tin thành công",
-  "currency": "₫",
 
   "home": "Trang chủ",
   "expenses": "Chi phí",

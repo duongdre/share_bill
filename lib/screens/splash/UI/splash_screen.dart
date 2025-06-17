@@ -1,16 +1,13 @@
 import 'dart:async';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:share_bill/screens/login/UI/login_screen.dart';
-
-import '../../../gen/assets.gen.dart';
 import '../../home/UI/home_screen.dart';
 import '../../../services/firebase_services/user_service.dart';
 import 'onboarding_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -71,6 +68,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+
     return Scaffold(
       body: Container(
         height: double.infinity,
@@ -90,7 +89,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           children: [
             // App Logo
             TweenAnimationBuilder<double>(
-              duration: Duration(milliseconds: 1500),
+              duration: const Duration(milliseconds: 1500),
               tween: Tween(begin: 0.0, end: 1.0),
               builder: (context, value, child) {
                 return Transform.scale(
@@ -105,7 +104,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
                         BoxShadow(
                           color: Colors.black.withOpacity(0.2),
                           blurRadius: 20,
-                          offset: Offset(0, 10),
+                          offset: const Offset(0, 10),
                         ),
                       ],
                     ),
@@ -118,20 +117,20 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
                 );
               },
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
 
             // App Name
             TweenAnimationBuilder<Offset>(
-              duration: Duration(milliseconds: 1000),
-              tween: Tween(begin: Offset(0, 50), end: Offset.zero),
+              duration: const Duration(milliseconds: 1000),
+              tween: Tween(begin: const Offset(0, 50), end: Offset.zero),
               builder: (context, value, child) {
                 return Transform.translate(
                   offset: value,
                   child: Opacity(
                     opacity: 1 - (value.dy / 50),
                     child: Text(
-                      'Share Bill',
-                      style: TextStyle(
+                      localizations.shareBill,
+                      style: const TextStyle(
                         fontSize: 36,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
@@ -142,19 +141,19 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
                 );
               },
             ),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
 
             // Tagline
             TweenAnimationBuilder<Offset>(
-              duration: Duration(milliseconds: 1200),
-              tween: Tween(begin: Offset(0, 30), end: Offset.zero),
+              duration: const Duration(milliseconds: 1200),
+              tween: Tween(begin: const Offset(0, 30), end: Offset.zero),
               builder: (context, value, child) {
                 return Transform.translate(
                   offset: value,
                   child: Opacity(
                     opacity: 1 - (value.dy / 30),
                     child: Text(
-                      'Split expenses with friends',
+                      localizations.splitExpensesWithFriends,
                       style: TextStyle(
                         fontSize: 18,
                         color: Colors.white.withOpacity(0.9),
@@ -165,16 +164,16 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
                 );
               },
             ),
-            SizedBox(height: 60),
+            const SizedBox(height: 60),
 
             // Loading indicator
             TweenAnimationBuilder<double>(
-              duration: Duration(milliseconds: 2000),
+              duration: const Duration(milliseconds: 2000),
               tween: Tween(begin: 0.0, end: 1.0),
               builder: (context, value, child) {
                 return Opacity(
                   opacity: value,
-                  child: CircularProgressIndicator(
+                  child: const CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                     strokeWidth: 3,
                   ),

@@ -78,7 +78,7 @@ class AvatarBill extends ConsumerWidget {
             width: 100,
             alignment: Alignment.centerRight,
             child: Text(
-              NumberFormat.currency(locale: "vi_VN", symbol: "Đ").format(bill.amount),
+              NumberFormat.currency(locale: "vi_VN", symbol: "₫").format(bill.amount),
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
                 color: ColorName.homeRedText,

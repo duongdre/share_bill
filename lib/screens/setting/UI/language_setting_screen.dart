@@ -1,10 +1,9 @@
-// screens/settings/UI/language_settings_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../gen/colors.gen.dart';
 import '../controller/language_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LanguageSettingsScreen extends ConsumerWidget {
   const LanguageSettingsScreen({super.key});
@@ -14,9 +13,9 @@ class LanguageSettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final localizations = AppLocalizations.of(context);
     final currentLocale = ref.watch(languageNotifierProvider);
     final languageNotifier = ref.read(languageNotifierProvider.notifier);
-    final localizations = AppLocalizations.of(context);
 
     return Scaffold(
       body: Container(
@@ -70,7 +69,7 @@ class LanguageSettingsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context, AppLocalizations? localizations) {
+  Widget _buildHeader(BuildContext context, AppLocalizations localizations) {
     return Container(
       height: 56,
       padding: const EdgeInsets.all(12.0),
@@ -96,7 +95,7 @@ class LanguageSettingsScreen extends ConsumerWidget {
           ),
           const Spacer(),
           Text(
-            localizations?.settingsLanguage ?? 'Language Settings',
+            localizations.settingsLanguage,
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -172,7 +171,7 @@ class LanguageSettingsScreen extends ConsumerWidget {
                     const SizedBox(height: 2),
                     Text(
                       subtitle,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 14,
                         color: ColorName.loginTextColorGray,
                       ),
@@ -201,7 +200,7 @@ class LanguageSettingsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildInfoCard(BuildContext context, AppLocalizations? localizations) {
+  Widget _buildInfoCard(BuildContext context, AppLocalizations localizations) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -214,7 +213,7 @@ class LanguageSettingsScreen extends ConsumerWidget {
       ),
       child: Row(
         children: [
-          Icon(
+          const Icon(
             Icons.info_outline,
             color: Colors.blue,
             size: 20,
@@ -222,8 +221,7 @@ class LanguageSettingsScreen extends ConsumerWidget {
           const SizedBox(width: 12),
           Expanded(
             child: Text(
-              localizations?.settingsLanguageInfo ??
-                  'Language changes will take effect immediately. The app will update all text to your selected language.',
+              localizations.settingsLanguageInfo,
               style: TextStyle(
                 fontSize: 14,
                 color: Colors.blue.shade700,

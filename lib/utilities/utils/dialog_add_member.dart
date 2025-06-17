@@ -7,7 +7,7 @@ import 'package:toastification/toastification.dart';
 import '../../models/data_models/person.dart';
 import '../../screens/group/controller/group_provider.dart';
 import '../../screens/person/controller/person_provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:share_bill/gen/l10n/app_localizations.dart';
 
 class DialogAddMember extends ConsumerStatefulWidget {
   const DialogAddMember({super.key});

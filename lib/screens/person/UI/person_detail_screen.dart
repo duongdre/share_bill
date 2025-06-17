@@ -13,7 +13,7 @@ import '../../bill/controller/bill_provider.dart';
 import '../../group/UI/group_detail_screen.dart';
 import '../../group/controller/group_provider.dart';
 import '../controller/person_provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:share_bill/gen/l10n/app_localizations.dart';
 
 class PersonDetailScreen extends ConsumerStatefulWidget {
   static const routeName = 'person_detail';

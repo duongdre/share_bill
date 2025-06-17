@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../gen/colors.gen.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:share_bill/gen/l10n/app_localizations.dart';
 
 class AnimatedSearchBar extends StatefulWidget {
   final Function(String) onSearch;

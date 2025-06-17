@@ -14,7 +14,7 @@ import '../../../utilities/utils/avatar_person.dart';
 import '../../../utilities/utils/widget_list_bill.dart';
 import '../../person/controller/person_provider.dart';
 import '../controller/group_provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:share_bill/gen/l10n/app_localizations.dart';
 
 class GroupDetailScreen extends ConsumerStatefulWidget {
   const GroupDetailScreen({super.key});

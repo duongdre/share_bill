@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:share_bill/gen/l10n/app_localizations.dart';
 
 class DateTimeInputField extends StatefulWidget {
   final TextEditingController controller;

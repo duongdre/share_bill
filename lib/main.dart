@@ -1,9 +1,8 @@
-// main.dart (Updated)
 import 'package:share_bill/screens/setting/controller/language_provider.dart';
 import 'package:share_bill/utilities/app_routes/app_route_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'gen/l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:toastification/toastification.dart';
 import 'firebase_options.dart';

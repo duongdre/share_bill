@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_bill/gen/colors.gen.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:share_bill/gen/l10n/app_localizations.dart';
 import '../../screens/login/UI/login_screen.dart';
 import '../../screens/setting/UI/language_setting_screen.dart';
 import '../../screens/setting/controller/language_provider.dart';

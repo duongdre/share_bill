@@ -5,7 +5,7 @@ import 'package:share_bill/utilities/utils/widget_list_bill.dart';
 import '../../../gen/colors.gen.dart';
 import '../../../utilities/utils/widget_animated_search_bar.dart';
 import '../../../utilities/utils/widget_manegement_header.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:share_bill/gen/l10n/app_localizations.dart';
 
 class BillManagementScreen extends ConsumerStatefulWidget {
   static const routeName = 'bill_management';

@@ -16,7 +16,7 @@ import '../../login/UI/login_screen.dart';
 import '../../person/UI/dialog_add_person.dart';
 import '../../person/UI/person_detail_screen.dart';
 import '../../person/controller/person_provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:share_bill/gen/l10n/app_localizations.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});

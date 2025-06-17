@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_bill/screens/home/UI/home_screen.dart';
 import '../../../services/firebase_services/auth_service.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
+import 'package:share_bill/gen/l10n/app_localizations.dart';
 import '../../../utilities/utils/string_utils.dart';
 
 class CreateAccountScreen extends StatefulWidget {

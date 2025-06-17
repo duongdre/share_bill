@@ -9,7 +9,7 @@ import '../../../models/data_models/group.dart';
 import '../../../models/data_models/person.dart';
 import '../../person/controller/person_provider.dart';
 import '../controller/group_provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:share_bill/gen/l10n/app_localizations.dart';
 
 class DialogAddGroup extends ConsumerStatefulWidget {
   const DialogAddGroup({super.key});

@@ -17,7 +17,7 @@ import '../../../utilities/utils/utils.dart';
 import '../../../utilities/utils/widget_date_time_input_field.dart';
 import '../../bill/UI/bill_management_screen.dart';
 import '../../bill/controller/bill_provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:share_bill/gen/l10n/app_localizations.dart';
 
 class SpentScreen extends ConsumerStatefulWidget {
   const SpentScreen({super.key});

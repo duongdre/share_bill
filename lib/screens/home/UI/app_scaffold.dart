@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:share_bill/screens/home/controller/home_provider.dart';
 import 'package:share_bill/screens/spent/UI/spent_screen.dart';
 import '../../../gen/colors.gen.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:share_bill/gen/l10n/app_localizations.dart';
 
 class AppScaffold extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;

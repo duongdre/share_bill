@@ -7,7 +7,7 @@ import 'package:share_bill/screens/login/UI/login_screen.dart';
 import '../../home/UI/home_screen.dart';
 import '../../../services/firebase_services/user_service.dart';
 import 'onboarding_screen.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:share_bill/gen/l10n/app_localizations.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});

@@ -8,7 +8,7 @@ import '../../../utilities/utils/widget_manegement_header.dart';
 import '../../bill/controller/bill_provider.dart';
 import '../controller/group_provider.dart';
 import 'group_detail_screen.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:share_bill/gen/l10n/app_localizations.dart';
 
 class GroupManagementScreen extends ConsumerStatefulWidget {
   const GroupManagementScreen({super.key});

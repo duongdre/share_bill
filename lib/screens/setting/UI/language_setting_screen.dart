@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../gen/colors.gen.dart';
 import '../controller/language_provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:share_bill/gen/l10n/app_localizations.dart';
 
 class LanguageSettingsScreen extends ConsumerWidget {
   const LanguageSettingsScreen({super.key});

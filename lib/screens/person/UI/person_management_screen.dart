@@ -9,7 +9,7 @@ import '../../../utilities/utils/widget_animated_search_bar.dart';
 import '../../../utilities/utils/widget_manegement_header.dart';
 import '../../bill/controller/bill_provider.dart';
 import '../controller/person_provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:share_bill/gen/l10n/app_localizations.dart';
 
 class PersonManagementScreen extends ConsumerStatefulWidget {
   static const routeName = 'person_management';

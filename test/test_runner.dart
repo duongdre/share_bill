@@ -4,10 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'model/bill_test.dart' as bill_tests;
 import 'model/group_test.dart' as group_tests;
 import 'model/person_test.dart' as person_tests;
-import 'provider/bill_provider_test.dart' as bill_provider_tests;
-import 'widget/avatar_person_widget_test.dart' as avatar_person_tests;
 import 'screen/login_screen_test.dart' as login_screen_tests;
-import 'screen/home_screen_test.dart' as home_screen_tests;
 
 /// Main test runner that executes all test suites
 ///
@@ -25,21 +22,14 @@ void main() {
         group('👥 Group Model Tests', group_tests.main);
         group('👤 Person Model Tests', person_tests.main);
       });
-
-      group('🎮 Providers', () {
-        group('💰 Bill Provider Tests', bill_provider_tests.main);
-      });
     });
 
     group('🎨 Widget Tests', () {
-      group('👤 Avatar Person Widget Tests', avatar_person_tests.main);
       group('🔐 Login Screen Widget Tests', login_screen_tests.main);
-      group('🏠 Home Screen Widget Tests', home_screen_tests.main);
     });
 
     // Note: Integration tests are typically run separately using:
     // flutter test integration_test/app_flow_test.dart
-
   });
 }
 

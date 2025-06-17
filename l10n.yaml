@@ -4,4 +4,4 @@ output-localization-file: app_localizations.dart
 nullable-getter: false
 output-class: AppLocalizations
 output-dir: lib/gen/l10n
-synthetic-package: true # This is important
+synthetic-package: false # This is important

@@ -3,6 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:share_bill/models/data_models/bill.dart';
 import '../../../models/data_models/group.dart';
 import '../../../models/data_models/person.dart';
+import '../../../services/app_services/ad_service.dart';
 import '../../../services/firebase_services/user_service.dart';
 import '../../person/controller/person_provider.dart';
 part 'bill_provider.g.dart';
@@ -177,6 +178,9 @@ class BillNotifier extends _$BillNotifier {
       // Refresh the list
       await fetchAllBill();
       state = state + 1;
+
+      // Show ad after successful bill addition
+      AdService().onBillAdded();
     } catch (e) {
       print("Error adding new bill: $e");
     }

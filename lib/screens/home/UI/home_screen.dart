@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_bill/models/data_models/person.dart';
 import 'package:share_bill/screens/bill/controller/bill_provider.dart';
@@ -7,6 +8,7 @@ import 'package:share_bill/screens/group/controller/group_provider.dart';
 import 'package:share_bill/screens/spent/UI/spent_screen.dart';
 import '../../../gen/colors.gen.dart';
 import '../../../services/firebase_services/user_service.dart';
+import '../../../utilities/utils/ad_status_widget.dart';
 import '../../../utilities/utils/avatar_person.dart';
 import '../../../utilities/utils/widget_list_bill.dart';
 import '../../../utilities/utils/widget_list_group.dart';
@@ -121,6 +123,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   child: Column(
                     children: [
                       WidgetManagementHeader(title: localizations.home),
+                      // const DebugAdWidget(), // TODO: This is for development test ads
                       Expanded(
                         child: SingleChildScrollView(
                           child: Column(
@@ -177,7 +180,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             ],
                           ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),

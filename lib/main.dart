@@ -1,4 +1,5 @@
 import 'package:share_bill/screens/setting/controller/language_provider.dart';
+import 'package:share_bill/services/app_services/ad_service.dart';
 import 'package:share_bill/utilities/app_routes/app_route_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,6 +13,9 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  await AdService.initialize();
+
   runApp(const ProviderScope(child: MyApp()));
 }
 

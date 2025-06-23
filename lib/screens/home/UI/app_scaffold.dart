@@ -6,7 +6,9 @@ import 'package:share_bill/screens/spent/UI/spent_screen.dart';
 import '../../../gen/colors.gen.dart';
 import 'package:share_bill/gen/l10n/app_localizations.dart';
 
-class AppScaffold extends ConsumerWidget {
+import '../../../services/app_services/ad_service.dart';
+
+class AppScaffold extends ConsumerStatefulWidget {
   final StatefulNavigationShell navigationShell;
 
   const AppScaffold({
@@ -15,12 +17,25 @@ class AppScaffold extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AppScaffold> createState() => _AppScaffoldState();
+}
+
+class _AppScaffoldState extends ConsumerState<AppScaffold> {
+  int _previousIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _previousIndex = widget.navigationShell.currentIndex;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: navigationShell, // This displays the current tab's content
+      body: widget.navigationShell, // This displays the current tab's content
       resizeToAvoidBottomInset: false, // This prevents the scaffold from resizing when keyboard appears
       floatingActionButton: Container(
         height: 56,
@@ -69,25 +84,19 @@ class AppScaffold extends ConsumerWidget {
                 _buildNavItem(
                   context: context,
                   index: 0,
-                  currentIndex: navigationShell.currentIndex,
+                  currentIndex: widget.navigationShell.currentIndex,
                   icon: Icons.home,
                   label: localizations.home,
-                  onTap: () {
-                    navigationShell.goBranch(0);
-                    ref.read(homeNotifierProvider.notifier).setValue(0);
-                  },
+                  onTap: () => _handleNavigation(0),
                 ),
                 // Groups tab
                 _buildNavItem(
                   context: context,
                   index: 1,
-                  currentIndex: navigationShell.currentIndex,
+                  currentIndex: widget.navigationShell.currentIndex,
                   icon: Icons.payment,
                   label: localizations.expenses,
-                  onTap: () {
-                    navigationShell.goBranch(1);
-                    ref.read(homeNotifierProvider.notifier).setValue(1);
-                  },
+                  onTap: () => _handleNavigation(1),
                 ),
                 // Empty space for the FAB
                 const SizedBox(width: 60),
@@ -95,25 +104,19 @@ class AppScaffold extends ConsumerWidget {
                 _buildNavItem(
                   context: context,
                   index: 2,
-                  currentIndex: navigationShell.currentIndex,
+                  currentIndex: widget.navigationShell.currentIndex,
                   icon: Icons.group,
                   label: localizations.groups,
-                  onTap: () {
-                    navigationShell.goBranch(2);
-                    ref.read(homeNotifierProvider.notifier).setValue(2);
-                  },
+                  onTap: () => _handleNavigation(2),
                 ),
                 // Profile tab
                 _buildNavItem(
                   context: context,
                   index: 3,
-                  currentIndex: navigationShell.currentIndex,
+                  currentIndex: widget.navigationShell.currentIndex,
                   icon: Icons.person,
                   label: localizations.persons,
-                  onTap: () {
-                    navigationShell.goBranch(3);
-                    ref.read(homeNotifierProvider.notifier).setValue(3);
-                  },
+                  onTap: () => _handleNavigation(3),
                 ),
               ],
             ),
@@ -121,6 +124,24 @@ class AppScaffold extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  /// Handle navigation with ad tracking
+  void _handleNavigation(int index) {
+    // Only trigger ad logic if actually changing tabs
+    if (_previousIndex != index) {
+      print('🔄 Navigation: Tab $_previousIndex → Tab $index');
+
+      // Track screen navigation for ads
+      AdService().onScreenNavigation();
+
+      // Update previous index
+      _previousIndex = index;
+    }
+
+    // Perform the actual navigation
+    widget.navigationShell.goBranch(index);
+    ref.read(homeNotifierProvider.notifier).setValue(index);
   }
 
   Widget _buildNavItem({

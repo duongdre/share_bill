@@ -5,6 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:share_bill/gen/colors.gen.dart';
 import 'package:share_bill/screens/login/UI/login_screen.dart';
 
+import '../../../gen/l10n/app_localizations.dart';
+
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
 
@@ -19,48 +21,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
-  final List<OnboardingData> _onboardingData = [
-    OnboardingData(
-      title: "Welcome to Share Bill",
-      subtitle: "Split expenses effortlessly",
-      description: "The easiest way to split bills and manage shared expenses with friends, family, and colleagues.",
-      icon: Icons.receipt_long,
-      color: ColorName.blueBackground,
-      gradient: [Colors.blue.shade400, Colors.blue.shade600],
-    ),
-    OnboardingData(
-      title: "Manage Your People",
-      subtitle: "Keep track of everyone",
-      description: "Add friends, family, and colleagues to your network. Upload photos and add notes to remember everyone easily.",
-      icon: Icons.people,
-      color: ColorName.purpleBackground,
-      gradient: [Colors.purple.shade400, Colors.purple.shade600],
-    ),
-    OnboardingData(
-      title: "Create Groups",
-      subtitle: "Organize your expenses",
-      description: "Create groups for different occasions - family dinners, roommate expenses, or work lunches. Add members and start tracking!",
-      icon: Icons.group_add,
-      color: ColorName.greenBackground,
-      gradient: [Colors.green.shade400, Colors.green.shade600],
-    ),
-    OnboardingData(
-      title: "Track Expenses",
-      subtitle: "Record every expense",
-      description: "Quickly add expenses with amount, description, and who paid. See real-time calculations and group totals.",
-      icon: Icons.payment,
-      color: ColorName.homeRedText,
-      gradient: [Colors.orange.shade400, Colors.red.shade500],
-    ),
-    OnboardingData(
-      title: "Stay Organized",
-      subtitle: "View analytics & history",
-      description: "See who owes what, track spending patterns, and view detailed expense history. Never lose track of shared expenses again!",
-      icon: Icons.analytics,
-      color: ColorName.blackColor,
-      gradient: [Colors.indigo.shade400, Colors.indigo.shade600],
-    ),
-  ];
+  List<OnboardingData> _onboardingData = [];
 
   @override
   void dispose() {
@@ -94,6 +55,50 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+    _onboardingData = [
+      OnboardingData(
+        title: localizations.welcomeToShareBill,
+        subtitle: localizations.onB02,
+        description: localizations.onB03,
+        icon: Icons.receipt_long,
+        color: ColorName.blueBackground,
+        gradient: [Colors.blue.shade400, Colors.blue.shade600],
+      ),
+      OnboardingData(
+        title: localizations.onB04,
+        subtitle: localizations.onB05,
+        description: localizations.onB06,
+        icon: Icons.people,
+        color: ColorName.purpleBackground,
+        gradient: [Colors.purple.shade400, Colors.purple.shade600],
+      ),
+      OnboardingData(
+        title: localizations.onB07,
+        subtitle: localizations.onB08,
+        description: localizations.onB09,
+        icon: Icons.group_add,
+        color: ColorName.greenBackground,
+        gradient: [Colors.green.shade400, Colors.green.shade600],
+      ),
+      OnboardingData(
+        title: localizations.onB10,
+        subtitle: localizations.onB11,
+        description: localizations.onB12,
+        icon: Icons.payment,
+        color: ColorName.homeRedText,
+        gradient: [Colors.orange.shade400, Colors.red.shade500],
+      ),
+      OnboardingData(
+        title: localizations.onB13,
+        subtitle: localizations.onB14,
+        description: localizations.onB15,
+        icon: Icons.analytics,
+        color: ColorName.blackColor,
+        gradient: [Colors.indigo.shade400, Colors.indigo.shade600],
+      ),
+    ];
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -116,9 +121,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     foregroundColor: Colors.white.withOpacity(0.8),
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   ),
-                  child: const Text(
-                    'Skip',
-                    style: TextStyle(
+                  child: Text(
+                    localizations.skip,
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),
@@ -152,7 +157,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: List.generate(
                         _onboardingData.length,
-                            (index) => _buildDot(index),
+                        (index) => _buildDot(index),
                       ),
                     ),
                     const SizedBox(height: 30),
@@ -173,9 +178,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           ),
                         ),
                         child: Text(
-                          _currentPage == _onboardingData.length - 1
-                              ? 'Get Started'
-                              : 'Next',
+                          _currentPage == _onboardingData.length - 1 ? localizations.getStarted : localizations.next,
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
@@ -316,9 +319,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       width: _currentPage == index ? 24 : 8,
       height: 8,
       decoration: BoxDecoration(
-        color: _currentPage == index
-            ? Colors.white
-            : Colors.white.withOpacity(0.5),
+        color: _currentPage == index ? Colors.white : Colors.white.withOpacity(0.5),
         borderRadius: BorderRadius.circular(4),
       ),
     );

@@ -124,5 +124,23 @@
 
   "search": "Tìm kiếm...",
   "dateAndTimeRequired": "Ngày và giờ là bắt buộc",
-  "unknownUser": "Người dùng không xác định"
+  "unknownUser": "Người dùng không xác định",
+
+  "onB02": "Chia sẻ chi phí một cách dễ dàng",
+  "onB03": "Cách dễ nhất để chia hóa đơn và quản lý chi phí chung với bạn bè, gia đình và đồng nghiệp.",
+  "onB04": "Quản Lý Mọi Người",
+  "onB05": "Theo dõi tất cả mọi người",
+  "onB06": "Thêm bạn bè, gia đình và đồng nghiệp vào mạng lưới của bạn. Tải lên ảnh và thêm ghi chú để dễ dàng ghi nhớ mọi người.",
+  "onB07": "Tạo Nhóm",
+  "onB08": "Tổ chức chi phí của bạn",
+  "onB09": "Tạo nhóm cho các dịp khác nhau - bữa tối gia đình, chi phí phòng trọ, hoặc bữa trưa công việc. Thêm thành viên và bắt đầu theo dõi!",
+  "onB10": "Theo Dõi Chi Phí",
+  "onB11": "Ghi lại mọi khoản chi",
+  "onB12": "Nhanh chóng thêm chi phí với số tiền, mô tả và ai đã trả. Xem tính toán thời gian thực và tổng nhóm.",
+  "onB13": "Luôn Có Tổ Chức",
+  "onB14": "Xem phân tích & lịch sử",
+  "onB15": "Xem ai nợ gì, theo dõi mô hình chi tiêu và xem lịch sử chi phí chi tiết. Không bao giờ mất dấu các khoản chi phí chung nữa!",
+  "skip": "Bỏ qua",
+  "next": "Tiếp theo",
+  "getStarted": "Bắt Đầu"
 }

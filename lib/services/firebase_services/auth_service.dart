@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:share_bill/screens/home/UI/home_screen.dart';
 import 'package:share_bill/screens/login/UI/login_screen.dart';
 import 'package:share_bill/services/firebase_services/user_service.dart';
@@ -61,17 +62,6 @@ class AuthService {
     } catch (e) {
       return e.toString();
     }
-  }
-
-  static void logoutApp(BuildContext context) async {
-    await UserService.signOut();
-    // ignore: use_build_context_synchronously
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (ctx) => const LoginScreen(),
-      ),
-    );
   }
 
   static void submitOtp(BuildContext context, String otp) {

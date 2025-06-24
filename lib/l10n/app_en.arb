@@ -124,5 +124,23 @@
 
   "search": "Search...",
   "dateAndTimeRequired": "Date and time are required",
-  "unknownUser": "Unknown User"
+  "unknownUser": "Unknown User",
+
+  "onB02": "Split expenses effortlessly",
+  "onB03": "The easiest way to split bills and manage shared expenses with friends, family, and colleagues.",
+  "onB04": "Manage Your People",
+  "onB05": "Keep track of everyone",
+  "onB06": "Add friends, family, and colleagues to your network. Upload photos and add notes to remember everyone easily.",
+  "onB07": "Create Groups",
+  "onB08": "Organize your expenses",
+  "onB09": "Create groups for different occasions - family dinners, roommate expenses, or work lunches. Add members and start tracking!",
+  "onB10": "Track Expenses",
+  "onB11": "Record every expense",
+  "onB12": "Quickly add expenses with amount, description, and who paid. See real-time calculations and group totals.",
+  "onB13": "Stay Organized",
+  "onB14": "View analytics & history",
+  "onB15": "See who owes what, track spending patterns, and view detailed expense history. Never lose track of shared expenses again!",
+  "skip": "Skip",
+  "next": "Next",
+  "getStarted": "Get Started"
 }

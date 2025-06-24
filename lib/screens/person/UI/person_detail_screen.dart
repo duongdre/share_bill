@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -35,6 +36,7 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
 
   @override
   void initState() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
     ref.read(personNotifierProvider.notifier).isLoadingImage = false;
     final currentPersonDetail = ref.read(personNotifierProvider.notifier).currentPersonDetail;
     if (currentPersonDetail.uid.isEmpty) {
@@ -47,7 +49,6 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
     nameController = TextEditingController(text: currentPersonDetail.name ?? "");
     ageController = TextEditingController(text: "");
     describeController = TextEditingController(text: currentPersonDetail.describe.toString() ?? "");
-    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
     super.initState();
   }
 

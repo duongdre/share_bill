@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_bill/gen/colors.gen.dart';
 import 'package:share_bill/gen/l10n/app_localizations.dart';
+import 'package:share_bill/services/firebase_services/auth_service.dart';
 import '../../screens/login/UI/login_screen.dart';
 import '../../screens/setting/UI/language_setting_screen.dart';
 import '../../screens/setting/controller/language_provider.dart';
@@ -248,7 +249,6 @@ class WidgetManagementHeader extends ConsumerWidget {
                           title: localizations.menuLogout,
                           isDestructive: true,
                           onTap: () {
-                            Navigator.pop(context);
                             _handleLogout(context, localizations);
                           },
                         ),
@@ -320,72 +320,19 @@ class WidgetManagementHeader extends ConsumerWidget {
   }
 
   Future<void> _handleLogout(BuildContext context, AppLocalizations localizations) async {
-    try {
-      final shouldLogout = await _showLogoutConfirmation(context, localizations);
-      if (!shouldLogout) return;
+    final shouldLogout = await _showLogoutConfirmation(context, localizations);
+    if (!shouldLogout) return;
 
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext dialogContext) {
-          return WillPopScope(
-            onWillPop: () async => false,
-            child: Dialog(
-              backgroundColor: Colors.transparent,
-              child: Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: ColorName.white,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: ColorName.homeGrayBalance.withOpacity(0.3),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(ColorName.homeBlackText),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      localizations.pleaseWait,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: ColorName.homeBlackText,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
-      );
-
-      await UserService.signOut();
-      await Future.delayed(const Duration(milliseconds: 300));
-
-      if (context.mounted) {
-        context.goNamed(LoginScreen.routeName);
-      }
-    } catch (e) {
-      if (context.mounted) {
-        Navigator.of(context).popUntil((route) => route.isFirst);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${localizations.error}: $e'),
-            backgroundColor: ColorName.homeRedText,
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      }
-    }
+    // ✅ Logout in the background (fire and forget)
+    UserService.signOut().then((_) {
+      print('✅ Logout successful');
+      // ✅ Navigate first, logout second
+      context.goNamed(LoginScreen.routeName);
+    }).catchError((e) {
+      print('❌ Logout error: $e');
+      // ✅ Navigate first, logout second
+      context.goNamed(LoginScreen.routeName);
+    });
   }
 
   Future<bool> _showLogoutConfirmation(BuildContext context, AppLocalizations localizations) async {

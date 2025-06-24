@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_bill/screens/bill/controller/bill_provider.dart';
 import 'package:share_bill/utilities/utils/widget_list_bill.dart';
@@ -22,7 +23,7 @@ class _BillManagementScreenState extends ConsumerState<BillManagementScreen> {
 
   @override
   void initState() {
-    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
     super.initState();
   }
 

@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
@@ -47,7 +48,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
     }
     nameController = TextEditingController(text: groupData.name);
     nameFocus.addListener(onFocusChange);
-    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
     super.initState();
   }
 

@@ -4,6 +4,7 @@ import 'package:share_bill/screens/home/UI/home_screen.dart';
 import '../../../services/firebase_services/auth_service.dart';
 import 'package:share_bill/gen/l10n/app_localizations.dart';
 import '../../../utilities/utils/string_utils.dart';
+import 'login_screen.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({super.key});
@@ -117,7 +118,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     Align(
                       alignment: Alignment.topLeft,
                       child: IconButton(
-                        onPressed: () => context.pop(),
+                        onPressed: () {
+                          context.goNamed(LoginScreen.routeName);
+                        },
                         icon: Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
@@ -156,7 +159,11 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                             children: [
                               Text(
                                 localizations.createAccount,
-                                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                style: Theme
+                                    .of(context)
+                                    .textTheme
+                                    .headlineSmall
+                                    ?.copyWith(
                                   fontWeight: FontWeight.w600,
                                   color: Colors.grey.shade800,
                                 ),
@@ -165,7 +172,11 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                               const SizedBox(height: 8),
                               Text(
                                 localizations.startSplittingBillsWithFriends,
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                style: Theme
+                                    .of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
                                   color: Colors.grey.shade600,
                                 ),
                                 textAlign: TextAlign.center,
@@ -178,10 +189,14 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                 textCapitalization: TextCapitalization.words,
                                 textInputAction: TextInputAction.next,
                                 validator: (value) {
-                                  if (value == null || value.trim().isEmpty) {
+                                  if (value == null || value
+                                      .trim()
+                                      .isEmpty) {
                                     return localizations.pleaseEnterYourFullName;
                                   }
-                                  if (value.trim().length < 2) {
+                                  if (value
+                                      .trim()
+                                      .length < 2) {
                                     return localizations.nameMustBeAtLeast2Char;
                                   }
                                   return null;
@@ -471,7 +486,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                           style: TextStyle(color: Colors.grey.shade600),
                         ),
                         GestureDetector(
-                          onTap: () => context.pop(),
+                          onTap: () {
+                            context.goNamed(LoginScreen.routeName);
+                          },
                           child: Text(
                             localizations.signIn,
                             style: TextStyle(

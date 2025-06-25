@@ -1,42 +1,25 @@
-import 'dart:io';
-import 'dart:math';
-
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
-import 'package:share_bill/gen/assets.gen.dart';
-import 'package:share_bill/models/data_models/bill.dart';
-import 'package:share_bill/models/data_models/group.dart';
 import 'package:share_bill/models/data_models/person.dart';
 import 'package:share_bill/screens/bill/controller/bill_provider.dart';
-import 'package:share_bill/screens/group/UI/group_management_screen.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:share_bill/screens/group/controller/group_provider.dart';
-import 'package:share_bill/screens/person/UI/person_management_screen.dart';
 import 'package:share_bill/screens/spent/UI/spent_screen.dart';
-import 'package:uuid/uuid.dart';
-
 import '../../../gen/colors.gen.dart';
 import '../../../services/firebase_services/user_service.dart';
-import '../../../utilities/utils/avatar_dialog.dart';
-import '../../../utilities/utils/avatar_group.dart';
+import '../../../utilities/utils/ad_status_widget.dart';
 import '../../../utilities/utils/avatar_person.dart';
 import '../../../utilities/utils/widget_list_bill.dart';
 import '../../../utilities/utils/widget_list_group.dart';
 import '../../../utilities/utils/widget_manegement_header.dart';
-import '../../bill/UI/bill_management_screen.dart';
 import '../../group/UI/dialog_add_group.dart';
-import '../../group/UI/group_detail_screen.dart';
 import '../../login/UI/login_screen.dart';
 import '../../person/UI/dialog_add_person.dart';
 import '../../person/UI/person_detail_screen.dart';
 import '../../person/controller/person_provider.dart';
+import 'package:share_bill/gen/l10n/app_localizations.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -54,7 +37,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   void initState() {
-    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
     _checkAuthAndLoadData();
     super.initState();
   }
@@ -121,6 +104,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
     ref.watch(personNotifierProvider);
     ref.watch(groupNotifierProvider);
     ref.watch(billNotifierProvider);
@@ -139,21 +123,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   onRefresh: _loadInitialData,
                   child: Column(
                     children: [
-                      const WidgetManagementHeader(title: 'Home',),
+                      WidgetManagementHeader(title: localizations.home),
+                      // const DebugAdWidget(), // TODO: This is for development test ads
                       Expanded(
                         child: SingleChildScrollView(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              homeAddSection(),
+                              homeAddSection(localizations),
                               const SizedBox(height: 16),
 
                               /// Favorite person
                               Padding(
-                                padding: EdgeInsets.only(left: 16, right: 16),
+                                padding: const EdgeInsets.only(left: 16, right: 16),
                                 child: Text(
-                                  "Favorite Persons",
-                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                  localizations.favoritePersons,
+                                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                                 ),
                               ),
                               const SizedBox(height: 6),
@@ -162,10 +147,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
                               /// Recent Groups
                               Padding(
-                                padding: EdgeInsets.only(left: 16, right: 16),
+                                padding: const EdgeInsets.only(left: 16, right: 16),
                                 child: Text(
-                                  "Recent Groups",
-                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                  localizations.recentGroups,
+                                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                                 ),
                               ),
                               ListGroup(
@@ -177,12 +162,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               ),
                               const SizedBox(height: 16),
 
-                              /// Recent Payments
+                              /// Recent Expenses
                               Padding(
-                                padding: EdgeInsets.only(left: 16, right: 16),
+                                padding: const EdgeInsets.only(left: 16, right: 16),
                                 child: Text(
-                                  "Recent Payments",
-                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                  localizations.expenses,
+                                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                                 ),
                               ),
                               ListBill(
@@ -196,7 +181,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             ],
                           ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -205,7 +190,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Widget homeAddSection() {
+  Widget homeAddSection(AppLocalizations localizations) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Row(
@@ -222,9 +207,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.person_add, color: Colors.white),
-                    SizedBox(height: 4),
-                    Text('Add Person', style: TextStyle(color: Colors.white, fontSize: 12)),
+                    const Icon(Icons.person_add, color: Colors.white),
+                    const SizedBox(height: 4),
+                    Text(localizations.addPerson, style: const TextStyle(color: Colors.white, fontSize: 12)),
                   ],
                 ),
               ),
@@ -243,9 +228,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.group_add, color: Colors.white),
-                    SizedBox(height: 4),
-                    Text('Add Group', style: TextStyle(color: Colors.white, fontSize: 12)),
+                    const Icon(Icons.group_add, color: Colors.white),
+                    const SizedBox(height: 4),
+                    Text(localizations.addGroup, style: const TextStyle(color: Colors.white, fontSize: 12)),
                   ],
                 ),
               ),
@@ -264,9 +249,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.payment, color: Colors.white),
-                    SizedBox(height: 4),
-                    Text('Add Expense', style: TextStyle(color: Colors.white, fontSize: 12)),
+                    const Icon(Icons.payment, color: Colors.white),
+                    const SizedBox(height: 4),
+                    Text(localizations.addExpense, style: const TextStyle(color: Colors.white, fontSize: 12)),
                   ],
                 ),
               ),
@@ -294,7 +279,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     context.goNamed(PersonDetailScreen.routeName);
                   },
                   child: Container(
-                    padding: EdgeInsets.only(left: 14, right: 14),
+                    padding: const EdgeInsets.only(left: 14, right: 14),
                     child: AvatarPerson(
                       person: person,
                       size: 56,
@@ -304,7 +289,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
                 Container(
                   width: 80,
-                  margin: EdgeInsets.only(top: 62),
+                  margin: const EdgeInsets.only(top: 62),
                   alignment: Alignment.topCenter,
                   child: Text(
                     person.name,

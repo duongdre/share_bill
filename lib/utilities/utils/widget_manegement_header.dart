@@ -1,32 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_bill/gen/colors.gen.dart';
-import '../../services/firebase_services/user_service.dart';
+import 'package:share_bill/gen/l10n/app_localizations.dart';
+import 'package:share_bill/services/firebase_services/auth_service.dart';
 import '../../screens/login/UI/login_screen.dart';
+import '../../screens/setting/UI/language_setting_screen.dart';
+import '../../screens/setting/controller/language_provider.dart';
+import '../../services/firebase_services/user_service.dart';
 import 'package:go_router/go_router.dart';
 
-class WidgetManagementHeader extends StatelessWidget {
+class WidgetManagementHeader extends ConsumerWidget {
   final String title;
   final Widget? leadingWidget;
   final List<Widget>? customActions;
   final bool showUserSection;
 
   const WidgetManagementHeader({
-    Key? key,
+    super.key,
     required this.title,
     this.leadingWidget,
     this.customActions,
     this.showUserSection = true,
-  }) : super(key: key);
+  });
 
   @override
-  Widget build(BuildContext context) {
-    final userEmail = UserService.getCurrentUserEmail() ?? 'Unknown User';
+  Widget build(BuildContext context, WidgetRef ref) {
+    final localizations = AppLocalizations.of(context);
+    final userEmail = UserService.getCurrentUserEmail() ?? localizations.unknownUser;
     final userName = userEmail.split('@')[0];
 
     return Container(
       height: 56,
-      padding: EdgeInsets.all(12.0),
-      decoration: BoxDecoration(
+      padding: const EdgeInsets.all(12.0),
+      decoration: const BoxDecoration(
         color: ColorName.white,
         boxShadow: [
           BoxShadow(color: ColorName.groupManagementBackground, blurRadius: 2, offset: Offset(2, 2)),
@@ -34,46 +40,51 @@ class WidgetManagementHeader extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          (title == "Home")
+          (title == localizations.home)
               ? Align(
-                  alignment: Alignment.centerLeft,
-                  child: RichText(
-                    overflow: TextOverflow.ellipsis,
-                    text: TextSpan(
-                      text: 'Welcome back, ',
-                      style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                      children: [
-                        TextSpan(
-                          text: userName,
-                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: ColorName.homeBlackText),
-                        ),
-                      ],
-                    ),
+            alignment: Alignment.centerLeft,
+            child: RichText(
+              overflow: TextOverflow.ellipsis,
+              text: TextSpan(
+                text: '${localizations.welcomeBack}, ',
+                style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                children: [
+                  TextSpan(
+                    text: userName,
+                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: ColorName.homeBlackText),
                   ),
-                )
+                ],
+              ),
+            ),
+          )
               : Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    title,
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                ),
+            alignment: Alignment.center,
+            child: Text(
+              title,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Icon(
+              const Icon(
                 Icons.notifications_none_sharp,
                 size: 20,
               ),
               InkWell(
-                onTap: () => _showUserMenu(context),
+                onTap: () => _showUserMenu(context, ref),
                 child: Container(
                   height: 32,
                   width: 32,
-                  margin: EdgeInsets.only(left: 8, right: 16),
-                  decoration: BoxDecoration(
+                  margin: const EdgeInsets.only(left: 8, right: 16),
+                  decoration: const BoxDecoration(
                     color: ColorName.blackColor,
-                    borderRadius: const BorderRadius.all(Radius.circular(100)),
+                    borderRadius: BorderRadius.all(Radius.circular(100)),
+                  ),
+                  child: const Icon(
+                    Icons.person,
+                    color: Colors.white,
+                    size: 16,
                   ),
                 ),
               ),
@@ -84,7 +95,10 @@ class WidgetManagementHeader extends StatelessWidget {
     );
   }
 
-  void _showUserMenu(BuildContext context) {
+  void _showUserMenu(BuildContext context, WidgetRef ref) {
+    final localizations = AppLocalizations.of(context);
+    final currentLanguage = ref.read(languageNotifierProvider.notifier).currentLanguageName;
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -96,7 +110,7 @@ class WidgetManagementHeader extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             color: ColorName.white,
-            borderRadius: BorderRadius.only(
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(20),
               topRight: Radius.circular(20),
             ),
@@ -104,7 +118,7 @@ class WidgetManagementHeader extends StatelessWidget {
               BoxShadow(
                 color: ColorName.homeGrayBalance.withOpacity(0.3),
                 blurRadius: 10,
-                offset: Offset(0, -2),
+                offset: const Offset(0, -2),
               ),
             ],
           ),
@@ -117,7 +131,7 @@ class WidgetManagementHeader extends StatelessWidget {
                   Container(
                     width: 40,
                     height: 4,
-                    margin: EdgeInsets.symmetric(vertical: 12),
+                    margin: const EdgeInsets.symmetric(vertical: 12),
                     decoration: BoxDecoration(
                       color: ColorName.homeGrayBalance,
                       borderRadius: BorderRadius.circular(2),
@@ -126,7 +140,7 @@ class WidgetManagementHeader extends StatelessWidget {
 
                   // User info section
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                     child: Row(
                       children: [
                         Container(
@@ -135,7 +149,7 @@ class WidgetManagementHeader extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: ColorName.blackColor,
                             borderRadius: BorderRadius.circular(25),
-                            boxShadow: [
+                            boxShadow: const [
                               BoxShadow(
                                 color: ColorName.homeGrayBalance,
                                 blurRadius: 4,
@@ -143,13 +157,13 @@ class WidgetManagementHeader extends StatelessWidget {
                               ),
                             ],
                           ),
-                          child: Icon(
+                          child: const Icon(
                             Icons.person,
                             color: Colors.white,
                             size: 24,
                           ),
                         ),
-                        SizedBox(width: 16),
+                        const SizedBox(width: 16),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -157,7 +171,7 @@ class WidgetManagementHeader extends StatelessWidget {
                             children: [
                               Text(
                                 UserService.getCurrentUserEmail()?.split('@')[0] ?? 'User',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w600,
                                   color: ColorName.homeBlackText,
@@ -165,10 +179,10 @@ class WidgetManagementHeader extends StatelessWidget {
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
-                              SizedBox(height: 2),
+                              const SizedBox(height: 2),
                               Text(
                                 UserService.getCurrentUserEmail() ?? '',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 13,
                                   color: ColorName.loginTextColorGray,
                                 ),
@@ -184,14 +198,14 @@ class WidgetManagementHeader extends StatelessWidget {
 
                   // Menu items
                   Container(
-                    margin: EdgeInsets.symmetric(horizontal: 20),
+                    margin: const EdgeInsets.symmetric(horizontal: 20),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         _buildMenuItem(
                           context: context,
                           icon: Icons.person_outline,
-                          title: 'Profile',
+                          title: localizations.menuProfile,
                           onTap: () {
                             Navigator.pop(context);
                             // TODO: Navigate to profile screen
@@ -199,8 +213,17 @@ class WidgetManagementHeader extends StatelessWidget {
                         ),
                         _buildMenuItem(
                           context: context,
+                          icon: Icons.language,
+                          title: '${localizations.menuLanguage} ($currentLanguage)',
+                          onTap: () {
+                            Navigator.pop(context);
+                            context.pushNamed(LanguageSettingsScreen.routeName);
+                          },
+                        ),
+                        _buildMenuItem(
+                          context: context,
                           icon: Icons.settings_outlined,
-                          title: 'Settings',
+                          title: localizations.menuSettings,
                           onTap: () {
                             Navigator.pop(context);
                             // TODO: Navigate to settings screen
@@ -209,32 +232,31 @@ class WidgetManagementHeader extends StatelessWidget {
                         _buildMenuItem(
                           context: context,
                           icon: Icons.help_outline,
-                          title: 'Help & Support',
+                          title: localizations.menuHelp,
                           onTap: () {
                             Navigator.pop(context);
                             // TODO: Navigate to help screen
                           },
                         ),
                         Container(
-                          margin: EdgeInsets.symmetric(vertical: 8),
+                          margin: const EdgeInsets.symmetric(vertical: 8),
                           height: 1,
                           color: ColorName.homeGrayHold,
                         ),
                         _buildMenuItem(
                           context: context,
                           icon: Icons.logout,
-                          title: 'Logout',
+                          title: localizations.menuLogout,
                           isDestructive: true,
                           onTap: () {
-                            Navigator.pop(context);
-                            _handleLogout(context);
+                            _handleLogout(context, localizations);
                           },
                         ),
                       ],
                     ),
                   ),
 
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                 ],
               ),
             ),
@@ -255,8 +277,8 @@ class WidgetManagementHeader extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-        margin: EdgeInsets.symmetric(vertical: 1),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        margin: const EdgeInsets.symmetric(vertical: 1),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
         ),
@@ -275,7 +297,7 @@ class WidgetManagementHeader extends StatelessWidget {
                 color: isDestructive ? ColorName.homeRedText : ColorName.homeBlackText,
               ),
             ),
-            SizedBox(width: 14),
+            const SizedBox(width: 14),
             Expanded(
               child: Text(
                 title,
@@ -286,7 +308,7 @@ class WidgetManagementHeader extends StatelessWidget {
                 ),
               ),
             ),
-            Icon(
+            const Icon(
               Icons.chevron_right,
               size: 18,
               color: ColorName.homeGrayBalance,
@@ -297,140 +319,87 @@ class WidgetManagementHeader extends StatelessWidget {
     );
   }
 
-  Future<void> _handleLogout(BuildContext context) async {
-    try {
-      final shouldLogout = await _showLogoutConfirmation(context);
-      if (!shouldLogout) return;
+  Future<void> _handleLogout(BuildContext context, AppLocalizations localizations) async {
+    final shouldLogout = await _showLogoutConfirmation(context, localizations);
+    if (!shouldLogout) return;
 
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext dialogContext) {
-          return WillPopScope(
-            onWillPop: () async => false,
-            child: Dialog(
-              backgroundColor: Colors.transparent,
-              child: Container(
-                padding: EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: ColorName.white,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: ColorName.homeGrayBalance.withOpacity(0.3),
-                      blurRadius: 10,
-                      offset: Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(ColorName.homeBlackText),
-                    ),
-                    SizedBox(height: 16),
-                    Text(
-                      'Logging out...',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: ColorName.homeBlackText,
-                      ),
-                    ),
-                  ],
+    // ✅ Logout in the background (fire and forget)
+    UserService.signOut().then((_) {
+      print('✅ Logout successful');
+      // ✅ Navigate first, logout second
+      context.goNamed(LoginScreen.routeName);
+    }).catchError((e) {
+      print('❌ Logout error: $e');
+      // ✅ Navigate first, logout second
+      context.goNamed(LoginScreen.routeName);
+    });
+  }
+
+  Future<bool> _showLogoutConfirmation(BuildContext context, AppLocalizations localizations) async {
+    return await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: ColorName.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Text(
+            localizations.logout,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: ColorName.homeBlackText,
+            ),
+          ),
+          content: Text(
+            localizations.logoutConfirmation,
+            style: const TextStyle(
+              fontSize: 16,
+              color: ColorName.loginTextColorGray,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              style: TextButton.styleFrom(
+                foregroundColor: ColorName.homeGrayBalance,
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              ),
+              child: Text(
+                localizations.cancel,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ),
-          );
-        },
-      );
-
-      await UserService.signOut();
-      await Future.delayed(Duration(milliseconds: 300));
-
-      if (context.mounted) {
-        context.goNamed('login');
-      }
-    } catch (e) {
-      if (context.mounted) {
-        Navigator.of(context).popUntil((route) => route.isFirst);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error during logout: $e'),
-            backgroundColor: ColorName.homeRedText,
-            behavior: SnackBarBehavior.floating,
-          ),
+            Container(
+              margin: const EdgeInsets.only(left: 8),
+              child: ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: ColorName.homeRedText,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  elevation: 0,
+                ),
+                child: Text(
+                  localizations.logout,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          ],
         );
-      }
-    }
-  }
-
-  Future<bool> _showLogoutConfirmation(BuildContext context) async {
-    return await showDialog<bool>(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              backgroundColor: ColorName.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              title: Text(
-                'Logout',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: ColorName.homeBlackText,
-                ),
-              ),
-              content: Text(
-                'Are you sure you want to logout?',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: ColorName.loginTextColorGray,
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(false),
-                  style: TextButton.styleFrom(
-                    foregroundColor: ColorName.homeGrayBalance,
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                  ),
-                  child: Text(
-                    'Cancel',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: 8),
-                  child: ElevatedButton(
-                    onPressed: () => Navigator.of(context).pop(true),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: ColorName.homeRedText,
-                      foregroundColor: Colors.white,
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      elevation: 0,
-                    ),
-                    child: Text(
-                      'Logout',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
-        ) ??
+      },
+    ) ??
         false;
   }
 }

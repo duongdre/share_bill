@@ -25,12 +25,12 @@ class AvatarPerson extends ConsumerWidget {
     Widget avatarWidget;
 
     if (person == null) {
-      if (homeScreenNotifier.currentPersonDetail != null && homeScreenNotifier.currentPersonDetail!.avtUrl.isNotEmpty) {
+      if (homeScreenNotifier.currentPersonDetail.avtUrl.isNotEmpty) {
         // Use CachedNetworkImage to load and cache the avatar
         avatarWidget = ClipRRect(
           borderRadius: BorderRadius.circular(size / 2),
           child: CachedNetworkImage(
-            imageUrl: homeScreenNotifier.currentPersonDetail!.avtUrl,
+            imageUrl: homeScreenNotifier.currentPersonDetail.avtUrl,
             width: size,
             height: size,
             fit: BoxFit.cover,
@@ -58,7 +58,7 @@ class AvatarPerson extends ConsumerWidget {
               color: ColorName.white,
             ),
           ),
-          Container(
+          SizedBox(
             width: size-2,
             height: size-2,
             child: ClipRRect(
@@ -86,10 +86,10 @@ class AvatarPerson extends ConsumerWidget {
             right: 0,
             child: GestureDetector(
               onTap: () {
-                homeScreenNotifier.uploadAvatarForUser_NewOrExisted();
+                homeScreenNotifier.uploadAvatarForUserForNewOrExisted();
               },
               child: Container(
-                padding: EdgeInsets.all(4),
+                padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
                   color: Theme.of(context).primaryColor,
                   shape: BoxShape.circle,

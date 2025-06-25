@@ -1,17 +1,11 @@
-import 'dart:io';
-
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:share_bill/models/data_models/bill.dart';
-import 'package:uuid/uuid.dart';
-
 import '../../../models/data_models/group.dart';
 import '../../../models/data_models/person.dart';
+import '../../../services/app_services/ad_service.dart';
 import '../../../services/firebase_services/user_service.dart';
 import '../../person/controller/person_provider.dart';
-
 part 'bill_provider.g.dart';
 
 @riverpod
@@ -96,7 +90,7 @@ class BillNotifier extends _$BillNotifier {
     if (allMembersName.length > 2) {
       return allMembersName.substring(0, allMembersName.length - 2);
     } else {
-      return "NaN";
+      return "";
     }
   }
 
@@ -112,7 +106,7 @@ class BillNotifier extends _$BillNotifier {
     if (allMembersName.length > 2) {
       return allMembersName.substring(0, allMembersName.length - 2);
     } else {
-      return "NaN";
+      return "";
     }
   }
 
@@ -184,6 +178,9 @@ class BillNotifier extends _$BillNotifier {
       // Refresh the list
       await fetchAllBill();
       state = state + 1;
+
+      // Show ad after successful bill addition
+      AdService().onBillAdded();
     } catch (e) {
       print("Error adding new bill: $e");
     }
@@ -229,7 +226,6 @@ class BillNotifier extends _$BillNotifier {
 
       List<Bill> billsToDelete = allBill.where((bill) => bill.personId == personId).toList();
 
-      // Step 3: Delete from Firebase
       final DatabaseReference database = UserService.getUserCollectionRef('bills');
 
       for (Bill bill in billsToDelete) {
@@ -237,8 +233,8 @@ class BillNotifier extends _$BillNotifier {
         database.child(bill.uid).remove().then((_) {
           print('Bill ${bill.uid} deleted successfully');
         }).catchError((error) {
-          print('Failed to delete bill: $error');
           // Handle error (possibly re-add to local list)
+          print('Failed to delete bill: $error');
         });
       }
 
@@ -258,7 +254,6 @@ class BillNotifier extends _$BillNotifier {
 
       List<Bill> billsToDelete = allBill.where((bill) => bill.groupId == groupId).toList();
 
-      // Step 3: Delete from Firebase
       final DatabaseReference database = UserService.getUserCollectionRef('bills');
 
       for (Bill bill in billsToDelete) {
@@ -266,8 +261,8 @@ class BillNotifier extends _$BillNotifier {
         database.child(bill.uid).remove().then((_) {
           print('Bill ${bill.uid} deleted successfully');
         }).catchError((error) {
-          print('Failed to delete bill: $error');
           // Handle error (possibly re-add to local list)
+          print('Failed to delete bill: $error');
         });
       }
 

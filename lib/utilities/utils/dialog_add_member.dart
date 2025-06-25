@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_bill/gen/colors.gen.dart';
-import 'package:share_bill/utilities/utils/enum.dart';
 import 'package:share_bill/utilities/utils/avatar_person.dart';
 import 'package:toastification/toastification.dart';
-
 import '../../models/data_models/person.dart';
 import '../../screens/group/controller/group_provider.dart';
 import '../../screens/person/controller/person_provider.dart';
+import 'package:share_bill/gen/l10n/app_localizations.dart';
 
 class DialogAddMember extends ConsumerStatefulWidget {
   const DialogAddMember({super.key});
@@ -26,7 +25,7 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
   void initState() {
     super.initState();
     currentGroupMember = {...ref.read(groupNotifierProvider.notifier).currentGroupDetail.members};
-    controller = AnimationController(vsync: this, duration: Duration(milliseconds: 450));
+    controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 450));
     scaleAnimation = CurvedAnimation(parent: controller, curve: Curves.elasticInOut);
     controller.addListener(() {
       setState(() {});
@@ -42,7 +41,9 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
     final persons = ref.read(personNotifierProvider.notifier).allPerson;
+
     return Center(
       child: Material(
         color: Colors.transparent,
@@ -50,7 +51,7 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
           scale: scaleAnimation,
           child: Container(
             alignment: Alignment.center,
-            margin: EdgeInsets.all(20.0),
+            margin: const EdgeInsets.all(20.0),
             constraints: BoxConstraints(
               maxHeight: MediaQuery.of(context).size.height * 0.8,
               maxWidth: MediaQuery.of(context).size.width * 0.9,
@@ -62,7 +63,7 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
                 BoxShadow(
                   color: ColorName.homeGrayBalance.withOpacity(0.3),
                   blurRadius: 10,
-                  offset: Offset(0, 4),
+                  offset: const Offset(0, 4),
                 ),
               ],
             ),
@@ -78,8 +79,8 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
                       children: [
                         Expanded(
                           child: Text(
-                            "Add People to Group",
-                            style: TextStyle(
+                            localizations.addMemberToGroup,
+                            style: const TextStyle(
                               color: ColorName.textBlack,
                               fontSize: 20,
                               fontWeight: FontWeight.w600,
@@ -89,12 +90,12 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
                         InkWell(
                           onTap: () => context.pop(),
                           child: Container(
-                            padding: EdgeInsets.all(8),
+                            padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
                               color: ColorName.homeGrayHold,
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: Icon(
+                            child: const Icon(
                               Icons.close,
                               size: 20,
                               color: ColorName.iconGray,
@@ -107,8 +108,8 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
 
                     // Members Selection
                     Text(
-                      "Select Members",
-                      style: TextStyle(
+                      localizations.selectMembers,
+                      style: const TextStyle(
                         color: ColorName.iconGray,
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
@@ -118,7 +119,7 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
 
                     if (persons.isEmpty)
                       Container(
-                        padding: EdgeInsets.all(20),
+                        padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
                           color: ColorName.homeGrayHold,
                           borderRadius: BorderRadius.circular(8),
@@ -126,22 +127,22 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
                         ),
                         child: Column(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.person_add,
                               size: 32,
                               color: ColorName.loginTextColorGray,
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              "No persons available",
-                              style: TextStyle(
+                              localizations.noPersonsAvailable,
+                              style: const TextStyle(
                                 color: ColorName.loginTextColorGray,
                                 fontSize: 14,
                               ),
                             ),
                             Text(
-                              "Add some people first to add to group",
-                              style: TextStyle(
+                              localizations.addSomePeopleFirstToCreateAGroup,
+                              style: const TextStyle(
                                 color: ColorName.loginTextColorGray,
                                 fontSize: 12,
                               ),
@@ -152,7 +153,7 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
                       )
                     else
                       Container(
-                        constraints: BoxConstraints(
+                        constraints: const BoxConstraints(
                           maxHeight: 300,
                         ),
                         decoration: BoxDecoration(
@@ -161,28 +162,28 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
                         ),
                         child: persons.length <= 3
                             ? Container(
-                          padding: EdgeInsets.all(16),
-                          child: Wrap(
-                            spacing: 16,
-                            runSpacing: 16,
-                            children: persons.map((person) => _buildPersonItem(person)).toList(),
-                          ),
-                        )
+                                padding: const EdgeInsets.all(16),
+                                child: Wrap(
+                                  spacing: 16,
+                                  runSpacing: 16,
+                                  children: persons.map((person) => _buildPersonItem(person)).toList(),
+                                ),
+                              )
                             : ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: persons.length,
-                          itemBuilder: (context, index) {
-                            final person = persons[index];
-                            return _buildPersonListItem(person);
-                          },
-                        ),
+                                shrinkWrap: true,
+                                itemCount: persons.length,
+                                itemBuilder: (context, index) {
+                                  final person = persons[index];
+                                  return _buildPersonListItem(person);
+                                },
+                              ),
                       ),
 
                     if (persons.isNotEmpty) ...[
                       const SizedBox(height: 16),
                       Text(
-                        "${_getSelectedCount()} member(s) selected",
-                        style: TextStyle(
+                        "${_getSelectedCount()} ${localizations.memberSelected}",
+                        style: const TextStyle(
                           color: ColorName.loginTextColorGray,
                           fontSize: 12,
                         ),
@@ -206,8 +207,8 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
                                 border: Border.all(color: ColorName.homeGrayBalance),
                               ),
                               child: Text(
-                                "Cancel",
-                                style: TextStyle(
+                                localizations.cancel,
+                                style: const TextStyle(
                                   color: ColorName.textGray,
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
@@ -226,7 +227,7 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
                               decoration: BoxDecoration(
                                 color: ColorName.groupManagementBackGroundButton,
                                 borderRadius: BorderRadius.circular(8),
-                                boxShadow: [
+                                boxShadow: const [
                                   BoxShadow(
                                     color: ColorName.homeGrayBalance,
                                     blurRadius: 4,
@@ -235,8 +236,8 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
                                 ],
                               ),
                               child: Text(
-                                "Update Members",
-                                style: TextStyle(
+                                localizations.update,
+                                style: const TextStyle(
                                   color: ColorName.homeWhiteButtonBg,
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -268,7 +269,7 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
       },
       child: Container(
         width: 80,
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
           color: isSelected ? ColorName.greenColor.withOpacity(0.1) : Colors.transparent,
@@ -294,11 +295,11 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
                     child: Container(
                       width: 20,
                       height: 20,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: ColorName.greenColor,
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(
+                      child: const Icon(
                         Icons.check,
                         size: 12,
                         color: Colors.white,
@@ -310,7 +311,7 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
             const SizedBox(height: 4),
             Text(
               person.name,
-              style: TextStyle(
+              style: const TextStyle(
                 color: ColorName.textBlack,
                 fontSize: 10,
                 fontWeight: FontWeight.w400,
@@ -335,7 +336,7 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
         });
       },
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           color: isSelected ? ColorName.greenColor.withOpacity(0.1) : Colors.transparent,
         ),
@@ -355,11 +356,11 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
                     child: Container(
                       width: 16,
                       height: 16,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: ColorName.greenColor,
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(
+                      child: const Icon(
                         Icons.check,
                         size: 10,
                         color: Colors.white,
@@ -375,7 +376,7 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
                 children: [
                   Text(
                     person.name,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: ColorName.textBlack,
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -384,7 +385,7 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
                   if (person.getPersonDescribe().isNotEmpty)
                     Text(
                       person.getPersonDescribe(),
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: ColorName.textGray,
                         fontSize: 12,
                       ),
@@ -406,11 +407,11 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
                 color: isSelected ? ColorName.greenColor : Colors.transparent,
               ),
               child: isSelected
-                  ? Icon(
-                Icons.check,
-                size: 12,
-                color: Colors.white,
-              )
+                  ? const Icon(
+                      Icons.check,
+                      size: 12,
+                      color: Colors.white,
+                    )
                   : null,
             ),
           ],
@@ -424,31 +425,32 @@ class _DialogAddMember extends ConsumerState<DialogAddMember> with SingleTickerP
   }
 
   Future<void> _handleUpdateMembers() async {
+    final localizations = AppLocalizations.of(context);
     try {
       if (ref.read(groupNotifierProvider.notifier).currentGroupDetail.uid.isEmpty) {
         ref.read(groupNotifierProvider.notifier).updateGroupMemberOffline(currentGroupMember);
         context.pop();
         toastification.show(
-          title: Text('Successfully updated group members'),
+          title: Text(localizations.successfullyUpdatedGroupMembers),
           style: ToastificationStyle.fillColored,
           autoCloseDuration: const Duration(seconds: 3),
         );
       } else {
         await ref.read(groupNotifierProvider.notifier).updateGroupMember(
-          ref.read(groupNotifierProvider.notifier).currentGroupDetail.uid,
-          currentGroupMember,
-        );
+              ref.read(groupNotifierProvider.notifier).currentGroupDetail.uid,
+              currentGroupMember,
+            );
         ref.read(groupNotifierProvider.notifier).currentGroupDetail.members = currentGroupMember;
         context.pop();
         toastification.show(
-          title: Text('Successfully updated group members'),
+          title: Text(localizations.successfullyUpdatedGroupMembers),
           style: ToastificationStyle.fillColored,
           autoCloseDuration: const Duration(seconds: 3),
         );
       }
     } catch (e) {
       toastification.show(
-        title: Text('Error updating members: ${e.toString()}'),
+        title: Text('${localizations.errorUpdatingMembers}: ${e.toString()}'),
         style: ToastificationStyle.fillColored,
         type: ToastificationType.error,
         autoCloseDuration: const Duration(seconds: 3),

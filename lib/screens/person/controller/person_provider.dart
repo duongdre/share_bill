@@ -1,14 +1,10 @@
 import 'dart:io';
-
-import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:share_bill/models/data_models/person.dart';
 import 'package:uuid/uuid.dart';
-
 import '../../../services/firebase_services/user_service.dart';
-
 part 'person_provider.g.dart';
 
 @riverpod
@@ -69,7 +65,7 @@ class PersonNotifier extends _$PersonNotifier {
     state = state + 1;
   }
 
-  Future<void> uploadAvatarForUser_NewOrExisted() async {
+  Future<void> uploadAvatarForUserForNewOrExisted() async {
     try {
       if (!UserService.isUserLoggedIn()) {
         throw Exception('User not logged in');

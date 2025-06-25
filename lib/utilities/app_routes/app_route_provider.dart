@@ -13,6 +13,8 @@ import '../../screens/bill/UI/bill_management_screen.dart';
 import '../../screens/home/UI/app_scaffold.dart';
 import '../../screens/home/UI/home_screen.dart';
 import '../../screens/person/UI/person_detail_screen.dart';
+import '../../screens/setting/UI/language_setting_screen.dart';
+import '../../screens/splash/UI/onboarding_screen.dart';
 import '../../screens/splash/UI/splash_screen.dart';
 import '../../services/firebase_services/user_service.dart';
 import '../utils/auth_guard.dart';
@@ -42,7 +44,8 @@ final routerProvider = Provider<GoRouter>(
       final isLoggedIn = UserService.isUserLoggedIn();
       final isOnAuthPages = state.uri.toString() == LoginScreen.routePath ||
           state.uri.toString() == '/create_account' ||
-          state.uri.toString() == SplashScreen.routePath;
+          state.uri.toString() == SplashScreen.routePath ||
+          state.uri.toString() == OnboardingScreen.routePath;
 
       print('🔍 Navigation redirect check:');
       print('  - Current location: ${state.uri.toString()}');
@@ -61,6 +64,13 @@ final routerProvider = Provider<GoRouter>(
         return HomeScreen.routePath;
       }
 
+      if (isLoggedIn && (state.uri.toString() == LoginScreen.routePath ||
+          state.uri.toString() == '/create_account' ||
+          state.uri.toString() == OnboardingScreen.routePath)) {
+        print('  - Redirecting to home (already logged in)');
+        return HomeScreen.routePath;
+      }
+
       print('  - No redirect needed');
       return null; // No redirect needed
     },
@@ -72,6 +82,16 @@ final routerProvider = Provider<GoRouter>(
         builder: (context, state) {
           print('📱 Building SplashScreen');
           return const SplashScreen();
+        },
+      ),
+
+      // Onboarding Screen
+      GoRoute(
+        path: OnboardingScreen.routePath,
+        name: OnboardingScreen.routeName,
+        builder: (context, state) {
+          print('📖 Building OnboardingScreen');
+          return const OnboardingScreen();
         },
       ),
 
@@ -92,6 +112,15 @@ final routerProvider = Provider<GoRouter>(
         builder: (context, state) {
           print('📝 Building CreateAccountScreen');
           return const CreateAccountScreen();
+        },
+      ),
+
+      GoRoute(
+        path: LanguageSettingsScreen.routePath,
+        name: LanguageSettingsScreen.routeName,
+        builder: (context, state) {
+          print('🌐 Building LanguageSettingsScreen');
+          return const LanguageSettingsScreen();
         },
       ),
 

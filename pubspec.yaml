@@ -55,10 +55,15 @@ dependencies:
   toastification: 2.3.0
   firebase_auth: ^5.5.1
   dropdown_button2: ^2.3.9
+  shared_preferences: ^2.2.2
+  google_mobile_ads: ^5.1.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  integration_test:
+    sdk: flutter
+  mockito: ^5.4.2
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -70,6 +75,7 @@ dev_dependencies:
   build_runner: ^2.4.13
   #  flutter_gen: ^5.8.0
   flutter_gen_runner: 5.8.0
+  json_annotation: ^4.8.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -5,11 +5,11 @@ import 'package:share_bill/gen/colors.gen.dart';
 import 'package:share_bill/utilities/utils/avatar_person.dart';
 import 'package:toastification/toastification.dart';
 import 'package:uuid/uuid.dart';
-
 import '../../../models/data_models/group.dart';
 import '../../../models/data_models/person.dart';
 import '../../person/controller/person_provider.dart';
 import '../controller/group_provider.dart';
+import 'package:share_bill/gen/l10n/app_localizations.dart';
 
 class DialogAddGroup extends ConsumerStatefulWidget {
   const DialogAddGroup({super.key});
@@ -30,7 +30,7 @@ class _DialogAddGroupState extends ConsumerState<DialogAddGroup> with SingleTick
   @override
   void initState() {
     super.initState();
-    controller = AnimationController(vsync: this, duration: Duration(milliseconds: 450));
+    controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 450));
     scaleAnimation = CurvedAnimation(parent: controller, curve: Curves.elasticInOut);
     controller.addListener(() {
       setState(() {});
@@ -53,6 +53,7 @@ class _DialogAddGroupState extends ConsumerState<DialogAddGroup> with SingleTick
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
     ref.watch(personNotifierProvider);
     final persons = ref.read(personNotifierProvider.notifier).allPerson;
 
@@ -69,7 +70,7 @@ class _DialogAddGroupState extends ConsumerState<DialogAddGroup> with SingleTick
             scale: scaleAnimation,
             child: Container(
               alignment: Alignment.center,
-              margin: EdgeInsets.all(20.0),
+              margin: const EdgeInsets.all(20.0),
               constraints: BoxConstraints(
                 maxHeight: MediaQuery.of(context).size.height * 0.8,
                 maxWidth: MediaQuery.of(context).size.width * 0.9,
@@ -81,7 +82,7 @@ class _DialogAddGroupState extends ConsumerState<DialogAddGroup> with SingleTick
                   BoxShadow(
                     color: ColorName.homeGrayBalance.withOpacity(0.3),
                     blurRadius: 10,
-                    offset: Offset(0, 4),
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
@@ -99,8 +100,8 @@ class _DialogAddGroupState extends ConsumerState<DialogAddGroup> with SingleTick
                           children: [
                             Expanded(
                               child: Text(
-                                "Create New Group",
-                                style: TextStyle(
+                                localizations.createNewGroup,
+                                style: const TextStyle(
                                   color: ColorName.textBlack,
                                   fontSize: 20,
                                   fontWeight: FontWeight.w600,
@@ -110,12 +111,12 @@ class _DialogAddGroupState extends ConsumerState<DialogAddGroup> with SingleTick
                             InkWell(
                               onTap: () => context.pop(),
                               child: Container(
-                                padding: EdgeInsets.all(8),
+                                padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
                                   color: ColorName.homeGrayHold,
                                   borderRadius: BorderRadius.circular(8),
                                 ),
-                                child: Icon(
+                                child: const Icon(
                                   Icons.close,
                                   size: 20,
                                   color: ColorName.iconGray,
@@ -128,8 +129,8 @@ class _DialogAddGroupState extends ConsumerState<DialogAddGroup> with SingleTick
 
                         // Group Name Field
                         Text(
-                          "Group Name *",
-                          style: TextStyle(
+                          localizations.groupName,
+                          style: const TextStyle(
                             color: ColorName.iconGray,
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
@@ -140,37 +141,37 @@ class _DialogAddGroupState extends ConsumerState<DialogAddGroup> with SingleTick
                           controller: nameController,
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
-                              return 'Please enter a group name';
+                              return localizations.pleaseEnterAGroupName;
                             }
                             if (value.trim().length < 2) {
-                              return 'Group name must be at least 2 characters';
+                              return localizations.groupNameMustBeAtLeast2Characters;
                             }
                             return null;
                           },
                           decoration: InputDecoration(
-                            hintText: 'Enter group name',
-                            hintStyle: TextStyle(
+                            hintText: localizations.enterGroupName,
+                            hintStyle: const TextStyle(
                               color: ColorName.loginTextColorGray,
                               fontSize: 14,
                             ),
                             filled: true,
                             fillColor: Colors.white,
-                            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(color: ColorName.borderBlack),
+                              borderSide: const BorderSide(color: ColorName.borderBlack),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(color: ColorName.borderBlack),
+                              borderSide: const BorderSide(color: ColorName.borderBlack),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(color: ColorName.borderBlack, width: 2),
+                              borderSide: const BorderSide(color: ColorName.borderBlack, width: 2),
                             ),
                             errorBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide(color: Colors.red),
+                              borderSide: const BorderSide(color: Colors.red),
                             ),
                           ),
                         ),
@@ -178,8 +179,8 @@ class _DialogAddGroupState extends ConsumerState<DialogAddGroup> with SingleTick
 
                         // Members Selection
                         Text(
-                          "Select Members",
-                          style: TextStyle(
+                          localizations.selectMembers,
+                          style: const TextStyle(
                             color: ColorName.iconGray,
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
@@ -189,7 +190,7 @@ class _DialogAddGroupState extends ConsumerState<DialogAddGroup> with SingleTick
 
                         if (persons.isEmpty)
                           Container(
-                            padding: EdgeInsets.all(20),
+                            padding: const EdgeInsets.all(20),
                             decoration: BoxDecoration(
                               color: ColorName.homeGrayHold,
                               borderRadius: BorderRadius.circular(8),
@@ -197,22 +198,22 @@ class _DialogAddGroupState extends ConsumerState<DialogAddGroup> with SingleTick
                             ),
                             child: Column(
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.person_add,
                                   size: 32,
                                   color: ColorName.loginTextColorGray,
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
-                                  "No persons available",
-                                  style: TextStyle(
+                                  localizations.noPersonsAvailable,
+                                  style: const TextStyle(
                                     color: ColorName.loginTextColorGray,
                                     fontSize: 14,
                                   ),
                                 ),
                                 Text(
-                                  "Add some people first to create a group",
-                                  style: TextStyle(
+                                  localizations.addSomePeopleFirstToCreateAGroup,
+                                  style: const TextStyle(
                                     color: ColorName.loginTextColorGray,
                                     fontSize: 12,
                                   ),
@@ -223,7 +224,7 @@ class _DialogAddGroupState extends ConsumerState<DialogAddGroup> with SingleTick
                           )
                         else
                           Container(
-                            constraints: BoxConstraints(
+                            constraints: const BoxConstraints(
                               maxHeight: 200,
                             ),
                             decoration: BoxDecoration(
@@ -231,29 +232,26 @@ class _DialogAddGroupState extends ConsumerState<DialogAddGroup> with SingleTick
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: persons.length <= 3
-                                ? Container(
-                              padding: EdgeInsets.all(16),
-                              child: Wrap(
-                                spacing: 16,
-                                runSpacing: 16,
-                                children: persons.map((person) => _buildPersonItem(person)).toList(),
-                              ),
-                            )
+                                ? Wrap(
+                                  spacing: 16,
+                                  runSpacing: 16,
+                                  children: persons.map((person) => _buildPersonItem(person)).toList(),
+                                )
                                 : ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: persons.length,
-                              itemBuilder: (context, index) {
-                                final person = persons[index];
-                                return _buildPersonListItem(person);
-                              },
-                            ),
+                                    shrinkWrap: true,
+                                    itemCount: persons.length,
+                                    itemBuilder: (context, index) {
+                                      final person = persons[index];
+                                      return _buildPersonListItem(person);
+                                    },
+                                  ),
                           ),
 
                         if (persons.isNotEmpty) ...[
                           const SizedBox(height: 16),
                           Text(
-                            "${_getSelectedCount()} member(s) selected",
-                            style: TextStyle(
+                            "${_getSelectedCount()} ${localizations.memberSelected}",
+                            style: const TextStyle(
                               color: ColorName.loginTextColorGray,
                               fontSize: 12,
                             ),
@@ -277,8 +275,8 @@ class _DialogAddGroupState extends ConsumerState<DialogAddGroup> with SingleTick
                                     border: Border.all(color: ColorName.homeGrayBalance),
                                   ),
                                   child: Text(
-                                    "Cancel",
-                                    style: TextStyle(
+                                    localizations.cancel,
+                                    style: const TextStyle(
                                       color: ColorName.textGray,
                                       fontSize: 16,
                                       fontWeight: FontWeight.w500,
@@ -295,11 +293,9 @@ class _DialogAddGroupState extends ConsumerState<DialogAddGroup> with SingleTick
                                   height: 50,
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
-                                    color: _isLoading
-                                        ? ColorName.homeGrayBalance
-                                        : ColorName.groupManagementBackGroundButton,
+                                    color: _isLoading ? ColorName.homeGrayBalance : ColorName.groupManagementBackGroundButton,
                                     borderRadius: BorderRadius.circular(8),
-                                    boxShadow: [
+                                    boxShadow: const [
                                       BoxShadow(
                                         color: ColorName.homeGrayBalance,
                                         blurRadius: 4,
@@ -308,22 +304,22 @@ class _DialogAddGroupState extends ConsumerState<DialogAddGroup> with SingleTick
                                     ],
                                   ),
                                   child: _isLoading
-                                      ? SizedBox(
-                                    width: 20,
-                                    height: 20,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                    ),
-                                  )
+                                      ? const SizedBox(
+                                          width: 20,
+                                          height: 20,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                          ),
+                                        )
                                       : Text(
-                                    "Create Group",
-                                    style: TextStyle(
-                                      color: ColorName.homeWhiteButtonBg,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
+                                          localizations.createGroup,
+                                          style: const TextStyle(
+                                            color: ColorName.homeWhiteButtonBg,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
                                 ),
                               ),
                             ),
@@ -352,7 +348,7 @@ class _DialogAddGroupState extends ConsumerState<DialogAddGroup> with SingleTick
       },
       child: Container(
         width: 80,
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
           color: isSelected ? ColorName.greenColor.withOpacity(0.1) : Colors.transparent,
@@ -378,11 +374,11 @@ class _DialogAddGroupState extends ConsumerState<DialogAddGroup> with SingleTick
                     child: Container(
                       width: 20,
                       height: 20,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: ColorName.greenColor,
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(
+                      child: const Icon(
                         Icons.check,
                         size: 12,
                         color: Colors.white,
@@ -394,7 +390,7 @@ class _DialogAddGroupState extends ConsumerState<DialogAddGroup> with SingleTick
             const SizedBox(height: 4),
             Text(
               person.name,
-              style: TextStyle(
+              style: const TextStyle(
                 color: ColorName.textBlack,
                 fontSize: 10,
                 fontWeight: FontWeight.w400,
@@ -419,7 +415,7 @@ class _DialogAddGroupState extends ConsumerState<DialogAddGroup> with SingleTick
         });
       },
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           color: isSelected ? ColorName.greenColor.withOpacity(0.1) : Colors.transparent,
         ),
@@ -439,11 +435,11 @@ class _DialogAddGroupState extends ConsumerState<DialogAddGroup> with SingleTick
                     child: Container(
                       width: 16,
                       height: 16,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: ColorName.greenColor,
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(
+                      child: const Icon(
                         Icons.check,
                         size: 10,
                         color: Colors.white,
@@ -459,7 +455,7 @@ class _DialogAddGroupState extends ConsumerState<DialogAddGroup> with SingleTick
                 children: [
                   Text(
                     person.name,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: ColorName.textBlack,
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -468,7 +464,7 @@ class _DialogAddGroupState extends ConsumerState<DialogAddGroup> with SingleTick
                   if (person.getPersonDescribe().isNotEmpty)
                     Text(
                       person.getPersonDescribe(),
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: ColorName.textGray,
                         fontSize: 12,
                       ),
@@ -490,11 +486,11 @@ class _DialogAddGroupState extends ConsumerState<DialogAddGroup> with SingleTick
                 color: isSelected ? ColorName.greenColor : Colors.transparent,
               ),
               child: isSelected
-                  ? Icon(
-                Icons.check,
-                size: 12,
-                color: Colors.white,
-              )
+                  ? const Icon(
+                      Icons.check,
+                      size: 12,
+                      color: Colors.white,
+                    )
                   : null,
             ),
           ],
@@ -508,12 +504,14 @@ class _DialogAddGroupState extends ConsumerState<DialogAddGroup> with SingleTick
   }
 
   Future<void> _handleCreateGroup() async {
+    final localizations = AppLocalizations.of(context);
+
     if (!_formKey.currentState!.validate()) return;
 
     // Check if at least one member is selected
     if (_getSelectedCount() == 0) {
       toastification.show(
-        title: Text('Please select at least one member'),
+        title: Text(localizations.pleaseSelectAtLeastOneMember),
         style: ToastificationStyle.fillColored,
         type: ToastificationType.warning,
         autoCloseDuration: const Duration(seconds: 3),
@@ -526,7 +524,7 @@ class _DialogAddGroupState extends ConsumerState<DialogAddGroup> with SingleTick
     try {
       // Create new group
       final newGroup = Group(
-        uid: Uuid().v4(),
+        uid: const Uuid().v4(),
         name: nameController.text.trim(),
         members: Map.from(selectedMembers)..removeWhere((key, value) => !value),
       );
@@ -538,7 +536,7 @@ class _DialogAddGroupState extends ConsumerState<DialogAddGroup> with SingleTick
       if (mounted) {
         context.pop();
         toastification.show(
-          title: Text('Group created successfully'),
+          title: Text(localizations.groupCreatedSuccessfully),
           style: ToastificationStyle.fillColored,
           autoCloseDuration: const Duration(seconds: 3),
         );
@@ -546,7 +544,7 @@ class _DialogAddGroupState extends ConsumerState<DialogAddGroup> with SingleTick
     } catch (e) {
       if (mounted) {
         toastification.show(
-          title: Text('Error creating group: ${e.toString()}'),
+          title: Text('${localizations.errorCreatingGroup} ${e.toString()}'),
           style: ToastificationStyle.fillColored,
           type: ToastificationType.error,
           autoCloseDuration: const Duration(seconds: 3),

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:share_bill/gen/l10n/app_localizations.dart';
 import 'package:share_bill/screens/home/UI/home_screen.dart';
 import 'package:share_bill/screens/login/UI/create_account_screen.dart';
-
 import '../../../services/firebase_services/auth_service.dart';
+import '../../../utilities/utils/string_utils.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -38,6 +39,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _handleLogin() async {
+    final localizations = AppLocalizations.of(context);
+
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isLoading = true);
@@ -49,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
       if (mounted) {
-        if (message!.contains('Success')) {
+        if (message!.contains(StringUtils.success)) {
           context.goNamed(HomeScreen.routeName);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -65,7 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Login failed: ${e.toString()}'),
+            content: Text('${localizations.loginFailed} ${e.toString()}'),
             backgroundColor: Colors.red.shade600,
             behavior: SnackBarBehavior.floating,
           ),
@@ -78,6 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -130,18 +134,18 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            'Share Bill',
+                            localizations.shareBill,
                             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey.shade800,
-                            ),
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey.shade800,
+                                ),
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'Split expenses with friends',
+                            localizations.splitExpensesWithFriends,
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Colors.grey.shade600,
-                            ),
+                                  color: Colors.grey.shade600,
+                                ),
                           ),
                         ],
                       ),
@@ -162,19 +166,19 @@ class _LoginScreenState extends State<LoginScreen> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               Text(
-                                'Welcome to Share Bill',
+                                localizations.welcomeToShareBill,
                                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.grey.shade800,
-                                ),
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.grey.shade800,
+                                    ),
                                 textAlign: TextAlign.center,
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                'Sign in to continue',
+                                localizations.signInToContinue,
                                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: Colors.grey.shade600,
-                                ),
+                                      color: Colors.grey.shade600,
+                                    ),
                                 textAlign: TextAlign.center,
                               ),
                               const SizedBox(height: 32),
@@ -186,16 +190,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                 textInputAction: TextInputAction.next,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return 'Please enter your email';
+                                    return localizations.pleaseEnterYourEmail;
                                   }
                                   if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                                    return 'Please enter a valid email';
+                                    return localizations.pleaseEnterAValidEmail;
                                   }
                                   return null;
                                 },
                                 decoration: InputDecoration(
-                                  labelText: 'Email Address',
-                                  hintText: 'Enter your email',
+                                  labelText: localizations.emailAddress,
+                                  hintText: localizations.enterYourEmail,
                                   prefixIcon: Icon(Icons.email_outlined, color: Colors.grey.shade600),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
@@ -227,16 +231,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                 onFieldSubmitted: (_) => _handleLogin(),
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return 'Please enter your password';
+                                    return localizations.pleaseEnterYourPassword;
                                   }
-                                  if (value.length < 6) {
-                                    return 'Password must be at least 6 characters';
+                                  if (value.length < 8) {
+                                    return localizations.passwordMustBeAtLeast8Characters;
                                   }
                                   return null;
                                 },
                                 decoration: InputDecoration(
-                                  labelText: 'Password',
-                                  hintText: 'Enter your password',
+                                  labelText: localizations.password,
+                                  hintText: localizations.pleaseEnterYourPassword,
                                   prefixIcon: Icon(Icons.lock_outline, color: Colors.grey.shade600),
                                   suffixIcon: IconButton(
                                     icon: Icon(
@@ -285,20 +289,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                   child: _isLoading
                                       ? const SizedBox(
-                                    width: 24,
-                                    height: 24,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                    ),
-                                  )
-                                      : const Text(
-                                    'Sign In',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
+                                          width: 24,
+                                          height: 24,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                          ),
+                                        )
+                                      : Text(
+                                          localizations.signIn,
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
                                 ),
                               ),
                               const SizedBox(height: 24),
@@ -310,7 +314,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 16),
                                     child: Text(
-                                      'or',
+                                      localizations.or,
                                       style: TextStyle(color: Colors.grey.shade600),
                                     ),
                                   ),
@@ -333,9 +337,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                   ),
-                                  child: const Text(
-                                    'Create New Account',
-                                    style: TextStyle(
+                                  child: Text(
+                                    localizations.createNewAccount,
+                                    style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600,
                                     ),
@@ -352,10 +356,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     // Footer
                     Text(
-                      'By signing in, you agree to our Terms of Service',
+                      localizations.youAgreeToOurTermsOfService,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.grey.shade600,
-                      ),
+                            color: Colors.grey.shade600,
+                          ),
                       textAlign: TextAlign.center,
                     ),
                   ],

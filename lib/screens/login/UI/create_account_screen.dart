@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_bill/screens/home/UI/home_screen.dart';
-
 import '../../../services/firebase_services/auth_service.dart';
+import 'package:share_bill/gen/l10n/app_localizations.dart';
+import '../../../utilities/utils/string_utils.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({super.key});
@@ -35,12 +36,14 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   }
 
   Future<void> _handleCreateAccount() async {
+    final localizations = AppLocalizations.of(context);
+
     if (!_formKey.currentState!.validate()) return;
 
     if (!_agreedToTerms) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Please agree to the Terms of Service'),
+          content: Text(localizations.pleaseAgreeToTheTermsOfService),
           backgroundColor: Colors.red.shade600,
           behavior: SnackBarBehavior.floating,
         ),
@@ -57,7 +60,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       );
 
       if (mounted) {
-        if (message!.contains('Success')) {
+        if (message!.contains(StringUtils.success)) {
           context.goNamed(HomeScreen.routeName);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -73,7 +76,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Registration failed: ${e.toString()}'),
+            content: Text('${localizations.registrationFailed}: ${e.toString()}'),
             backgroundColor: Colors.red.shade600,
             behavior: SnackBarBehavior.floating,
           ),
@@ -86,6 +89,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -151,7 +155,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               Text(
-                                'Create Account',
+                                localizations.createAccount,
                                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                   fontWeight: FontWeight.w600,
                                   color: Colors.grey.shade800,
@@ -160,7 +164,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                'Start splitting bills with friends',
+                                localizations.startSplittingBillsWithFriends,
                                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                   color: Colors.grey.shade600,
                                 ),
@@ -175,16 +179,16 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                 textInputAction: TextInputAction.next,
                                 validator: (value) {
                                   if (value == null || value.trim().isEmpty) {
-                                    return 'Please enter your full name';
+                                    return localizations.pleaseEnterYourFullName;
                                   }
                                   if (value.trim().length < 2) {
-                                    return 'Name must be at least 2 characters';
+                                    return localizations.nameMustBeAtLeast2Char;
                                   }
                                   return null;
                                 },
                                 decoration: InputDecoration(
-                                  labelText: 'Full Name',
-                                  hintText: 'Enter your full name',
+                                  labelText: localizations.fullName,
+                                  hintText: localizations.enterYourFullName,
                                   prefixIcon: Icon(Icons.person_outline, color: Colors.grey.shade600),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
@@ -215,16 +219,16 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                 textInputAction: TextInputAction.next,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return 'Please enter your email';
+                                    return localizations.pleaseEnterYourEmail;
                                   }
                                   if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                                    return 'Please enter a valid email';
+                                    return localizations.pleaseEnterAValidEmail;
                                   }
                                   return null;
                                 },
                                 decoration: InputDecoration(
-                                  labelText: 'Email Address',
-                                  hintText: 'Enter your email',
+                                  labelText: localizations.emailAddress,
+                                  hintText: localizations.enterYourEmail,
                                   prefixIcon: Icon(Icons.email_outlined, color: Colors.grey.shade600),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
@@ -255,19 +259,19 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                 textInputAction: TextInputAction.next,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return 'Please enter a password';
+                                    return localizations.pleaseEnterAPassword;
                                   }
                                   if (value.length < 8) {
-                                    return 'Password must be at least 8 characters';
+                                    return localizations.passwordMustBeAtLeast8Characters;
                                   }
                                   if (!RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)').hasMatch(value)) {
-                                    return 'Password must contain uppercase, lowercase and number';
+                                    return localizations.passwordMustContainUppercase;
                                   }
                                   return null;
                                 },
                                 decoration: InputDecoration(
-                                  labelText: 'Password',
-                                  hintText: 'Create a strong password',
+                                  labelText: localizations.password,
+                                  hintText: localizations.createAStrongPassword,
                                   prefixIcon: Icon(Icons.lock_outline, color: Colors.grey.shade600),
                                   suffixIcon: IconButton(
                                     icon: Icon(
@@ -308,16 +312,16 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                 onFieldSubmitted: (_) => _handleCreateAccount(),
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return 'Please confirm your password';
+                                    return localizations.pleaseConfirmYourPassword;
                                   }
                                   if (value != _passwordController.text) {
-                                    return 'Passwords do not match';
+                                    return localizations.passwordsDoNotMatch;
                                   }
                                   return null;
                                 },
                                 decoration: InputDecoration(
-                                  labelText: 'Confirm Password',
-                                  hintText: 'Re-enter your password',
+                                  labelText: localizations.confirmPassword,
+                                  hintText: localizations.reEnterYourPassword,
                                   prefixIcon: Icon(Icons.lock_outline, color: Colors.grey.shade600),
                                   suffixIcon: IconButton(
                                     icon: Icon(
@@ -378,14 +382,14 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                         TextSpan(
                                           children: [
                                             TextSpan(
-                                              text: 'I agree to the ',
+                                              text: localizations.iAgreeToThe,
                                               style: TextStyle(
                                                 color: Colors.grey.shade600,
                                                 fontSize: 14,
                                               ),
                                             ),
                                             TextSpan(
-                                              text: 'Terms of Service',
+                                              text: localizations.termsOfService,
                                               style: TextStyle(
                                                 color: Colors.blue.shade600,
                                                 fontSize: 14,
@@ -394,14 +398,14 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                               ),
                                             ),
                                             TextSpan(
-                                              text: ' and ',
+                                              text: localizations.and,
                                               style: TextStyle(
                                                 color: Colors.grey.shade600,
                                                 fontSize: 14,
                                               ),
                                             ),
                                             TextSpan(
-                                              text: 'Privacy Policy',
+                                              text: localizations.privacyPolicy,
                                               style: TextStyle(
                                                 color: Colors.blue.shade600,
                                                 fontSize: 14,
@@ -441,9 +445,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                       valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                                     ),
                                   )
-                                      : const Text(
-                                    'Create Account',
-                                    style: TextStyle(
+                                      : Text(
+                                    localizations.createAccount,
+                                    style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600,
                                     ),
@@ -463,13 +467,13 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Already have an account? ',
+                          localizations.alreadyHaveAnAccount,
                           style: TextStyle(color: Colors.grey.shade600),
                         ),
                         GestureDetector(
                           onTap: () => context.pop(),
                           child: Text(
-                            'Sign In',
+                            localizations.signIn,
                             style: TextStyle(
                               color: Colors.blue.shade600,
                               fontWeight: FontWeight.w600,

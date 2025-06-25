@@ -1,21 +1,15 @@
-import 'dart:ffi';
-
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:share_bill/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_bill/models/data_models/group.dart';
 import 'package:share_bill/screens/group/controller/group_provider.dart';
 import 'package:share_bill/screens/home/UI/home_screen.dart';
 import 'package:share_bill/screens/person/controller/person_provider.dart';
-import 'package:share_bill/utilities/utils/enum.dart';
 import 'package:share_bill/utilities/utils/avatar_group.dart';
 import 'package:toastification/toastification.dart';
 import 'package:uuid/uuid.dart';
-
 import '../../../gen/colors.gen.dart';
 import '../../../models/data_models/bill.dart';
 import '../../../utilities/utils/avatar_person.dart';
@@ -23,6 +17,7 @@ import '../../../utilities/utils/utils.dart';
 import '../../../utilities/utils/widget_date_time_input_field.dart';
 import '../../bill/UI/bill_management_screen.dart';
 import '../../bill/controller/bill_provider.dart';
+import 'package:share_bill/gen/l10n/app_localizations.dart';
 
 class SpentScreen extends ConsumerStatefulWidget {
   const SpentScreen({super.key});
@@ -40,7 +35,7 @@ class SpentScreen extends ConsumerStatefulWidget {
 class _SpentScreenState extends ConsumerState<SpentScreen> {
   late TextEditingController amountController;
   int currentAmount = 0;
-  final currencyFormatter = NumberFormat.currency(locale: 'vi_VN', symbol: 'Đ', decimalDigits: 0);
+  final currencyFormatter = NumberFormat.currency(locale: 'vi_VN', symbol: '₫', decimalDigits: 0);
 
   late TextEditingController descriptionController;
   late TextEditingController dateController;
@@ -53,9 +48,7 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
     amountController = TextEditingController(text: "");
     descriptionController = TextEditingController(text: "");
     dateController = TextEditingController(text: "");
-
     amountController.addListener(_updateText);
-
     super.initState();
   }
 
@@ -94,8 +87,8 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
     ref.watch(billNotifierProvider);
-    final group = ref.read(billNotifierProvider.notifier).currentSpentGroup;
 
     // Listen for keyboard visibility changes
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
@@ -118,17 +111,16 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    header(),
-                    // Wrap scrollable content in Expanded + SingleChildScrollView
+                    header(localizations),
                     Expanded(
                       child: SingleChildScrollView(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                              margin: EdgeInsets.only(left: 16, top: 24, bottom: 16),
+                              margin: const EdgeInsets.only(left: 16, top: 24, bottom: 16),
                               child: Text(
-                                "Select Group",
+                                localizations.selectGroup,
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                   color: ColorName.iconGray,
@@ -137,12 +129,12 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
                                 ),
                               ),
                             ),
-                            selectGroup(ref.read(groupNotifierProvider.notifier).allGroup),
+                            selectGroup(ref.read(groupNotifierProvider.notifier).allGroup, localizations),
                             (ref.read(billNotifierProvider.notifier).currentSpentGroup.uid != "")
                                 ? Container(
-                                    margin: EdgeInsets.only(left: 16, top: 16, bottom: 16),
+                                    margin: const EdgeInsets.only(left: 16, top: 16, bottom: 16),
                                     child: Text(
-                                      "Who paid?",
+                                      localizations.whoPaid,
                                       overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
                                         color: ColorName.iconGray,
@@ -156,9 +148,9 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
                                 ? selectPerson(ref.read(billNotifierProvider.notifier).currentSpentGroup)
                                 : Container(),
                             Container(
-                              margin: EdgeInsets.only(left: 16, top: 16, bottom: 16),
+                              margin: const EdgeInsets.only(left: 16, top: 16, bottom: 16),
                               child: Text(
-                                "Amount",
+                                localizations.amount,
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                   color: ColorName.iconGray,
@@ -169,9 +161,9 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
                             ),
                             amount(),
                             Container(
-                              margin: EdgeInsets.only(left: 16, top: 16, bottom: 16),
+                              margin: const EdgeInsets.only(left: 16, top: 16, bottom: 16),
                               child: Text(
-                                "Description",
+                                localizations.description,
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                   color: ColorName.iconGray,
@@ -180,11 +172,11 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
                                 ),
                               ),
                             ),
-                            description(),
+                            description(localizations),
                             Container(
-                              margin: EdgeInsets.only(left: 16, top: 16, bottom: 16),
+                              margin: const EdgeInsets.only(left: 16, top: 16, bottom: 16),
                               child: Text(
-                                "Date",
+                                localizations.date,
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                   color: ColorName.iconGray,
@@ -209,7 +201,7 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    child: spentButton(),
+                    child: spentButton(localizations),
                   ),
               ],
             ),
@@ -219,11 +211,11 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
     );
   }
 
-  Widget header() {
+  Widget header(AppLocalizations localizations) {
     return Container(
       height: 56,
-      padding: EdgeInsets.all(12.0),
-      decoration: BoxDecoration(
+      padding: const EdgeInsets.all(12.0),
+      decoration: const BoxDecoration(
         color: ColorName.white,
         boxShadow: [
           BoxShadow(color: ColorName.groupManagementBackground, blurRadius: 2, offset: Offset(2, 2)),
@@ -235,7 +227,7 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
             onTap: () {
               context.pop();
             },
-            child: Icon(
+            child: const Icon(
               Icons.arrow_back,
               size: 25,
               color: ColorName.iconGray,
@@ -248,17 +240,17 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
               ],
             ),
           ),
-          Spacer(),
+          const Spacer(),
           Text(
-            "New payment",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            localizations.newExpense,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
-          Spacer(),
+          const Spacer(),
           InkWell(
             onTap: () {
               context.pop();
             },
-            child: Icon(
+            child: const Icon(
               Icons.close,
               size: 25,
               color: ColorName.iconGray,
@@ -276,9 +268,9 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
     );
   }
 
-  Widget selectGroup(List<Group> allGroup) {
+  Widget selectGroup(List<Group> allGroup, AppLocalizations localizations) {
     return Container(
-      margin: EdgeInsets.only(left: 16, right: 16),
+      margin: const EdgeInsets.only(left: 16, right: 16),
       child: DropdownButtonHideUnderline(
         child: DropdownButton2<String>(
           isExpanded: true,
@@ -287,8 +279,8 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
               Expanded(
                 child: (ref.read(billNotifierProvider.notifier).currentSpentGroup.uid == "")
                     ? Text(
-                        'Select a group',
-                        style: TextStyle(
+                        localizations.selectGroup,
+                        style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
                           color: ColorName.textGray,
@@ -393,7 +385,7 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
   Widget selectPerson(Group currentSpentGroup) {
     return Container(
       height: 88,
-      padding: EdgeInsets.only(left: 16, right: 16),
+      padding: const EdgeInsets.only(left: 16, right: 16),
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
           shrinkWrap: true,
@@ -412,7 +404,7 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
                         Container(
                           width: 106,
                           alignment: Alignment.topCenter,
-                          padding: EdgeInsets.only(left: 10, right: 10),
+                          padding: const EdgeInsets.only(left: 10, right: 10),
                           child: Container(
                             width: 64,
                             height: 64,
@@ -434,7 +426,7 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
                         ),
                         Container(
                           width: 86,
-                          margin: EdgeInsets.only(top: 72),
+                          margin: const EdgeInsets.only(top: 72),
                           alignment: Alignment.topCenter,
                           child: Text(
                             memberInGroup.getPersonName(),
@@ -465,7 +457,7 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
       child: TextField(
         controller: amountController,
         keyboardType: const TextInputType.numberWithOptions(decimal: false),
-        inputFormatters: [
+        inputFormatters: const [
           // FilteringTextInputFormatter.digitsOnly,
         ],
         decoration: InputDecoration(
@@ -505,7 +497,7 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
     );
   }
 
-  Widget description() {
+  Widget description(AppLocalizations localizations) {
     return Container(
       margin: const EdgeInsets.only(left: 16, right: 16),
       child: TextField(
@@ -531,7 +523,7 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
             ),
             borderRadius: BorderRadius.circular(8),
           ),
-          hintText: 'What was this payment for',
+          hintText: localizations.description,
           hintStyle: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.bold,
@@ -549,7 +541,7 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
 
   Widget dateTime() {
     return Container(
-      margin: EdgeInsets.only(left: 16, right: 16),
+      margin: const EdgeInsets.only(left: 16, right: 16),
       child: DateTimeInputField(
         controller: dateController,
         onDateTimeSelected: (date) {
@@ -560,9 +552,9 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
   }
 
   // spent button
-  Widget spentButton() {
+  Widget spentButton(AppLocalizations localizations) {
     return Container(
-      padding: EdgeInsets.only(left: 16, right: 16, bottom: 16),
+      padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
       decoration: BoxDecoration(
         color: ColorName.spentBackGround,
         // Add a subtle shadow at top to separate it from content
@@ -570,7 +562,7 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
           BoxShadow(
             color: Colors.black.withOpacity(0.1),
             blurRadius: 4,
-            offset: Offset(0, -2),
+            offset: const Offset(0, -2),
           ),
         ],
       ),
@@ -583,14 +575,14 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
           final billAmount = ref.read(billNotifierProvider.notifier).currentAmount;
           if (billGroup.isEmpty || billPerson.isEmpty || billAmount == 0) {
             toastification.show(
-              title: Text('Please fill in all fields'),
+              title: Text(localizations.pleaseFillInAllFields),
               style: ToastificationStyle.fillColored,
               autoCloseDuration: const Duration(seconds: 3),
             );
           } else {
             await ref.read(billNotifierProvider.notifier).addNewBill(
                   Bill(
-                      uid: Uuid().v4(),
+                      uid: const Uuid().v4(),
                       groupId: billGroup,
                       personId: billPerson,
                       amount: billAmount,
@@ -598,7 +590,7 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
                       createdAt: formatDateStringMillisecondsSinceEpoch(dateController.text)),
                 );
             toastification.show(
-              title: Text('Successfully added expense'),
+              title: Text(localizations.successfullyAddedExpense),
               style: ToastificationStyle.fillColored,
               autoCloseDuration: const Duration(seconds: 3),
             );
@@ -608,16 +600,16 @@ class _SpentScreenState extends ConsumerState<SpentScreen> {
         child: Container(
           height: 60,
           alignment: Alignment.center,
-          margin: EdgeInsets.only(top: 16),
-          decoration: BoxDecoration(
+          margin: const EdgeInsets.only(top: 16),
+          decoration: const BoxDecoration(
             color: ColorName.groupManagementBackGroundButton,
-            borderRadius: const BorderRadius.all(Radius.circular(100)),
+            borderRadius: BorderRadius.all(Radius.circular(100)),
             boxShadow: [
               BoxShadow(color: ColorName.homeGrayBalance, blurRadius: 4, offset: Offset(4, 4)),
             ],
           ),
           child: Text(
-            "Spent money",
+            localizations.spentMoney,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               color: ColorName.homeWhiteButtonBg,

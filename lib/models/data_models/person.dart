@@ -2,14 +2,14 @@ class Person {
   Person({
     required this.uid,
     required this.name,
-    this.describe,
+    String? describe,
     required this.avtUrl,
     required this.groups,
-  });
+  }) : describe = describe ?? '';
 
   String uid;
   String name;
-  String? describe;
+  String describe;
   String avtUrl;
   Map<String, bool> groups;
 
@@ -18,7 +18,7 @@ class Person {
   }
 
   String getPersonName() {
-    return name ?? "";
+    return name;
   }
 
   factory Person.fromJson(Map<String, dynamic> json) {
@@ -27,7 +27,10 @@ class Person {
       name: json['name'],
       describe: json['describe'],
       avtUrl: json['avtUrl'],
-      groups: json['groups'],
+      groups: (json['groups'] as Map<String, dynamic>?)?.map(
+            (key, value) => MapEntry(key, value as bool),
+      ) ??
+          {},
     );
   }
 
@@ -37,14 +40,14 @@ class Person {
       name: map['name'] ?? '',
       describe: map['describe'] ?? '',
       avtUrl: map['avtUrl'] ?? '',
-      groups: (map['groups'] as Map<String, dynamic>?)?.map(
-            (key, value) => MapEntry(key, value as bool),
-          ) ??
+      groups: (map['groups'] as Map<dynamic, dynamic>?)?.map(
+            (key, value) => MapEntry(key.toString(), value as bool),
+      ) ??
           {},
     );
   }
 
-  // Convert Transaction to a map for Firebase
+  // Convert Person to a map for Firebase
   Map<String, dynamic> toMap() {
     return {
       'uid': uid,
@@ -55,7 +58,6 @@ class Person {
     };
   }
 
-  // Create a copy of this Person with modified fields
   Person copyWith({
     String? uid,
     String? name,

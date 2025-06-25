@@ -1,34 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:share_bill/screens/bill/UI/bill_management_screen.dart';
-import 'package:share_bill/screens/group/UI/group_management_screen.dart';
-import 'package:share_bill/screens/home/UI/home_screen.dart';
 import 'package:share_bill/screens/home/controller/home_provider.dart';
-import 'package:share_bill/screens/person/UI/person_management_screen.dart';
 import 'package:share_bill/screens/spent/UI/spent_screen.dart';
-
 import '../../../gen/colors.gen.dart';
+import 'package:share_bill/gen/l10n/app_localizations.dart';
 
-class AppScaffold extends ConsumerWidget {
+import '../../../services/app_services/ad_service.dart';
+
+class AppScaffold extends ConsumerStatefulWidget {
   final StatefulNavigationShell navigationShell;
 
   const AppScaffold({
-    Key? key,
+    super.key,
     required this.navigationShell,
-  }) : super(key: key);
+  });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AppScaffold> createState() => _AppScaffoldState();
+}
+
+class _AppScaffoldState extends ConsumerState<AppScaffold> {
+  int _previousIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _previousIndex = widget.navigationShell.currentIndex;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: navigationShell, // This displays the current tab's content
+      body: widget.navigationShell, // This displays the current tab's content
       resizeToAvoidBottomInset: false, // This prevents the scaffold from resizing when keyboard appears
       floatingActionButton: Container(
         height: 56,
         width: 56,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           shape: BoxShape.circle,
           color: Colors.blue,
         ),
@@ -39,7 +51,7 @@ class AppScaffold extends ConsumerWidget {
           },
           backgroundColor: Colors.blue,
           elevation: 2,
-          shape: CircleBorder(),
+          shape: const CircleBorder(),
           child: const Icon(Icons.add, color: Colors.white, size: 28),
         ),
       ),
@@ -48,7 +60,7 @@ class AppScaffold extends ConsumerWidget {
       bottomNavigationBar: MediaQuery.of(context).viewInsets.bottom > 0
           ? null  // Hide bottom navigation when keyboard is visible
           : Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           boxShadow: <BoxShadow>[
             BoxShadow(
               color: ColorName.whiteLightShadow,
@@ -72,51 +84,39 @@ class AppScaffold extends ConsumerWidget {
                 _buildNavItem(
                   context: context,
                   index: 0,
-                  currentIndex: navigationShell.currentIndex,
+                  currentIndex: widget.navigationShell.currentIndex,
                   icon: Icons.home,
-                  label: "Home",
-                  onTap: () {
-                    navigationShell.goBranch(0);
-                    ref.read(homeNotifierProvider.notifier).setValue(0);
-                  },
+                  label: localizations.home,
+                  onTap: () => _handleNavigation(0),
                 ),
                 // Groups tab
                 _buildNavItem(
                   context: context,
                   index: 1,
-                  currentIndex: navigationShell.currentIndex,
+                  currentIndex: widget.navigationShell.currentIndex,
                   icon: Icons.payment,
-                  label: "Payments",
-                  onTap: () {
-                    navigationShell.goBranch(1);
-                    ref.read(homeNotifierProvider.notifier).setValue(1);
-                  },
+                  label: localizations.expenses,
+                  onTap: () => _handleNavigation(1),
                 ),
                 // Empty space for the FAB
                 const SizedBox(width: 60),
-                // Payments tab
+                // Expenses tab
                 _buildNavItem(
                   context: context,
                   index: 2,
-                  currentIndex: navigationShell.currentIndex,
+                  currentIndex: widget.navigationShell.currentIndex,
                   icon: Icons.group,
-                  label: "Groups",
-                  onTap: () {
-                    navigationShell.goBranch(2);
-                    ref.read(homeNotifierProvider.notifier).setValue(2);
-                  },
+                  label: localizations.groups,
+                  onTap: () => _handleNavigation(2),
                 ),
                 // Profile tab
                 _buildNavItem(
                   context: context,
                   index: 3,
-                  currentIndex: navigationShell.currentIndex,
+                  currentIndex: widget.navigationShell.currentIndex,
                   icon: Icons.person,
-                  label: "Persons",
-                  onTap: () {
-                    navigationShell.goBranch(3);
-                    ref.read(homeNotifierProvider.notifier).setValue(3);
-                  },
+                  label: localizations.persons,
+                  onTap: () => _handleNavigation(3),
                 ),
               ],
             ),
@@ -124,6 +124,24 @@ class AppScaffold extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  /// Handle navigation with ad tracking
+  void _handleNavigation(int index) {
+    // Only trigger ad logic if actually changing tabs
+    if (_previousIndex != index) {
+      print('🔄 Navigation: Tab $_previousIndex → Tab $index');
+
+      // Track screen navigation for ads
+      AdService().onScreenNavigation();
+
+      // Update previous index
+      _previousIndex = index;
+    }
+
+    // Perform the actual navigation
+    widget.navigationShell.goBranch(index);
+    ref.read(homeNotifierProvider.notifier).setValue(index);
   }
 
   Widget _buildNavItem({

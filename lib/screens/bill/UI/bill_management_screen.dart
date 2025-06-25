@@ -38,7 +38,7 @@ class _BillManagementScreenState extends ConsumerState<BillManagementScreen> {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
     ref.watch(billNotifierProvider);
-    final bills = ref.read(billNotifierProvider.notifier).allBill;
+    final bills = ref.read(billNotifierProvider.notifier).displayBills;
     return GestureDetector(
       behavior: HitTestBehavior.translucent, // Ensures taps are detected even on empty areas
       onTap: () {
@@ -86,10 +86,11 @@ class _BillManagementScreenState extends ConsumerState<BillManagementScreen> {
     return AnimatedSearchBar(
       focusNode: _searchFocusNode, // Pass our focus node to the search bar
       onSearch: (value) {
-        // ref.read(personNotifierProvider.notifier).searchPersons(value);
+        print(value);
+        ref.read(billNotifierProvider.notifier).searchBills(value);
       },
       onClear: () {
-        // ref.read(personNotifierProvider.notifier).resetSearchFilter();
+        ref.read(billNotifierProvider.notifier).resetSearchFilter();
       },
     );
   }

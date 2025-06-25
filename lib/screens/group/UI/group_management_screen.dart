@@ -42,7 +42,7 @@ class _GroupManagementScreenState extends ConsumerState<GroupManagementScreen> {
     final localizations = AppLocalizations.of(context);
     ref.watch(billNotifierProvider);
     ref.watch(groupNotifierProvider);
-    final groups = ref.read(groupNotifierProvider.notifier).allGroup;
+    final groups = ref.read(groupNotifierProvider.notifier).displayGroups;
     return GestureDetector(
       behavior: HitTestBehavior.translucent, // Ensures taps are detected even on empty areas
       onTap: () {
@@ -89,10 +89,11 @@ class _GroupManagementScreenState extends ConsumerState<GroupManagementScreen> {
     return AnimatedSearchBar(
       focusNode: _searchFocusNode, // Pass our focus node to the search bar
       onSearch: (value) {
-        // ref.read(personNotifierProvider.notifier).searchPersons(value);
+        print(value);
+        ref.read(groupNotifierProvider.notifier).searchGroups(value);
       },
       onClear: () {
-        // ref.read(personNotifierProvider.notifier).resetSearchFilter();
+        ref.read(groupNotifierProvider.notifier).resetSearchFilter();
       },
     );
   }

@@ -7,9 +7,11 @@ part 'group_provider.g.dart';
 @riverpod
 class GroupNotifier extends _$GroupNotifier {
   List<Group> allGroup = [];
+  List<Group> filteredGroups = [];
   Map<dynamic, dynamic> allGroupMapping = {};
   Map<dynamic, dynamic> allGroupMappingByName = {};
   final FirebaseStorage _storage = FirebaseStorage.instance;
+  String searchQuery = '';
 
   Group currentGroupDetail = Group(uid: "", name: "", members: {});
 
@@ -18,6 +20,29 @@ class GroupNotifier extends _$GroupNotifier {
     state = 0;
     return state;
   }
+
+  void searchGroups(String query) {
+    searchQuery = query.toLowerCase().trim();
+    if (searchQuery.isEmpty) {
+      filteredGroups = List.from(allGroup);
+    } else {
+      filteredGroups = allGroup.where((group) {
+        // Search by group name
+        final groupName = group.name.toLowerCase();
+
+        return groupName.contains(searchQuery);
+      }).toList();
+    }
+    state = state + 1;
+  }
+
+  void resetSearchFilter() {
+    searchQuery = '';
+    filteredGroups = List.from(allGroup);
+    state = state + 1;
+  }
+
+  List<Group> get displayGroups => searchQuery.isEmpty ? allGroup : filteredGroups;
 
   List<Group> getAllGroupOfAPerson(String personId) {
     List<Group> allBillOfGroup = allGroup.where((group) => (group.members.keys.contains(personId)) && (group.members[personId] == true)).toList();
@@ -61,6 +86,9 @@ class GroupNotifier extends _$GroupNotifier {
       } else {
         print('📭 No groups data available.');
       }
+
+      // Reset filtered groups after fetching
+      filteredGroups = List.from(allGroup);
     } catch (error) {
       print('📭 Error fetching data: $error');
     }
@@ -115,7 +143,7 @@ class GroupNotifier extends _$GroupNotifier {
       print("Error updating group member: $e");
     }
   }
-  
+
   Future<void> addNewGroup(Group newGroup) async {
     try {
       if (!UserService.isUserLoggedIn()) {

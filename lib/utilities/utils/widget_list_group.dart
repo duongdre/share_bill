@@ -5,6 +5,7 @@ import '../../gen/colors.gen.dart';
 import '../../models/data_models/group.dart';
 import '../../screens/bill/controller/bill_provider.dart';
 import 'avatar_group.dart';
+import 'empty_state.dart';
 
 class ListGroup extends ConsumerWidget {
   final List<Group> groups;
@@ -24,6 +25,10 @@ class ListGroup extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (groups.isEmpty) {
+      return const EmptyGroupsState();
+    }
+
     final double calculatedHeight = height ?? (6 + 6 + 76) * groups.length * 1.0;
 
     return SizedBox(

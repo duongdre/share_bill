@@ -380,4 +380,31 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get getStarted => 'Bắt Đầu';
+
+  @override
+  String get noPersonsYet => 'Chưa có người nào';
+
+  @override
+  String get startByAddingPeopleToTrackExpenses => 'Bắt đầu bằng cách thêm người để theo dõi chi tiêu cùng';
+
+  @override
+  String get noGroupsYet => 'Chưa có nhóm nào';
+
+  @override
+  String get createGroupsToOrganizeExpenses => 'Tạo nhóm để tổ chức các khoản chi tiêu chung';
+
+  @override
+  String get noBillsYet => 'Chưa có hóa đơn nào';
+
+  @override
+  String get startTrackingExpensesByAddingBills => 'Bắt đầu theo dõi chi tiêu bằng cách thêm hóa đơn';
+
+  @override
+  String get addBill => 'Thêm hóa đơn';
+
+  @override
+  String get noResultsFound => 'Không tìm thấy kết quả';
+
+  @override
+  String get noDataFound => 'Không tìm thấy dữ liệu cho';
 }

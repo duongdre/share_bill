@@ -380,4 +380,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get getStarted => 'Get Started';
+
+  @override
+  String get noPersonsYet => 'No Persons Yet';
+
+  @override
+  String get startByAddingPeopleToTrackExpenses => 'Start by adding people to track expenses with';
+
+  @override
+  String get noGroupsYet => 'No Groups Yet';
+
+  @override
+  String get createGroupsToOrganizeExpenses => 'Create groups to organize your shared expenses';
+
+  @override
+  String get noBillsYet => 'No Bills Yet';
+
+  @override
+  String get startTrackingExpensesByAddingBills => 'Start tracking your expenses by adding bills';
+
+  @override
+  String get addBill => 'Add Bill';
+
+  @override
+  String get noResultsFound => 'No Results Found';
+
+  @override
+  String get noDataFound => 'No data found for';
 }

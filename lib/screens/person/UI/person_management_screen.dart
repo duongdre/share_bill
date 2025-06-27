@@ -6,6 +6,7 @@ import 'package:share_bill/screens/group/controller/group_provider.dart';
 import 'package:share_bill/screens/person/UI/person_detail_screen.dart';
 import 'package:share_bill/utilities/utils/widget_list_person.dart';
 import '../../../gen/colors.gen.dart';
+import '../../../utilities/utils/empty_state.dart';
 import '../../../utilities/utils/widget_animated_search_bar.dart';
 import '../../../utilities/utils/widget_manegement_header.dart';
 import '../../bill/controller/bill_provider.dart';
@@ -44,7 +45,9 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
     ref.watch(personNotifierProvider);
     ref.watch(groupNotifierProvider);
     ref.watch(billNotifierProvider);
-    final persons = ref.read(personNotifierProvider.notifier).displayPersons;
+    final personNotifier = ref.read(personNotifierProvider.notifier);
+    final persons = personNotifier.displayPersons;
+    final hasSearchQuery = personNotifier.searchQuery.isNotEmpty;
 
     return GestureDetector(
       behavior: HitTestBehavior.translucent, // Ensures taps are detected even on empty areas
@@ -60,25 +63,29 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
           child: SafeArea(
             child: Column(
               children: [
-                WidgetManagementHeader(title: localizations.personManager,),
+                WidgetManagementHeader(
+                  title: localizations.personManager,
+                ),
                 searchBar(),
                 Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ListPerson(
-                          persons: persons,
-                          scrollable: true,
-                          onPersonTap: (person) {
-                            ref.read(personNotifierProvider.notifier).currentPersonDetail = person.copyWith();
-                            context.goNamed(PersonDetailScreen.routeName);
-                          },
+                  child: persons.isEmpty
+                      ? _buildEmptyState(hasSearchQuery, personNotifier.searchQuery)
+                      : SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ListPerson(
+                                persons: persons,
+                                scrollable: true,
+                                onPersonTap: (person) {
+                                  ref.read(personNotifierProvider.notifier).currentPersonDetail = person.copyWith();
+                                  context.goNamed(PersonDetailScreen.routeName);
+                                },
+                              ),
+                              const SizedBox(height: 32),
+                            ],
+                          ),
                         ),
-                        const SizedBox(height: 32),
-                      ],
-                    ),
-                  ),
                 )
               ],
             ),
@@ -86,6 +93,17 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
         ),
       ),
     );
+  }
+
+  Widget _buildEmptyState(bool hasSearchQuery, String searchQuery) {
+    if (hasSearchQuery) {
+      return EmptySearchState(
+        searchQuery: searchQuery,
+        type: "persons",
+      );
+    } else {
+      return const EmptyPersonsState();
+    }
   }
 
   // This is for change gridview items size

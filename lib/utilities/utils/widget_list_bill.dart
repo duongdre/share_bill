@@ -6,6 +6,7 @@ import '../../models/data_models/bill.dart';
 import '../../screens/group/controller/group_provider.dart';
 import '../../screens/person/controller/person_provider.dart';
 import 'avatar_person.dart';
+import 'empty_state.dart';
 
 class ListBill extends ConsumerWidget {
   final List<Bill> bills;
@@ -25,6 +26,10 @@ class ListBill extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (bills.isEmpty) {
+      return const EmptyBillsState();
+    }
+
     final double calculatedHeight = height ?? (6 + 6 + 76) * bills.length * 1.0;
 
     return SizedBox(

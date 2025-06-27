@@ -844,6 +844,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Get Started'**
   String get getStarted;
+
+  /// No description provided for @noPersonsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No Persons Yet'**
+  String get noPersonsYet;
+
+  /// No description provided for @startByAddingPeopleToTrackExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Start by adding people to track expenses with'**
+  String get startByAddingPeopleToTrackExpenses;
+
+  /// No description provided for @noGroupsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No Groups Yet'**
+  String get noGroupsYet;
+
+  /// No description provided for @createGroupsToOrganizeExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Create groups to organize your shared expenses'**
+  String get createGroupsToOrganizeExpenses;
+
+  /// No description provided for @noBillsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No Bills Yet'**
+  String get noBillsYet;
+
+  /// No description provided for @startTrackingExpensesByAddingBills.
+  ///
+  /// In en, this message translates to:
+  /// **'Start tracking your expenses by adding bills'**
+  String get startTrackingExpensesByAddingBills;
+
+  /// No description provided for @addBill.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Bill'**
+  String get addBill;
+
+  /// No description provided for @noResultsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No Results Found'**
+  String get noResultsFound;
+
+  /// No description provided for @noDataFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No data found for'**
+  String get noDataFound;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

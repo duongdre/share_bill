@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../gen/colors.gen.dart';
 import '../../models/data_models/person.dart';
 import 'avatar_person.dart';
+import 'empty_state.dart';
 
 class ListPerson extends ConsumerWidget {
   final List<Person> persons;
@@ -22,7 +23,10 @@ class ListPerson extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Calculate height for list view
+    if (persons.isEmpty) {
+      return const EmptyPersonsState();
+    }
+
     final double calculatedHeight = height ?? (6 + 6 + 76) * persons.length * 1.0;
 
     return SizedBox(

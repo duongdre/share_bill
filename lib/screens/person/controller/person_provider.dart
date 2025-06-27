@@ -10,8 +10,10 @@ part 'person_provider.g.dart';
 @riverpod
 class PersonNotifier extends _$PersonNotifier {
   List<Person> allPerson = [];
+  List<Person> filteredPersons = [];
   Map<dynamic, dynamic> allPersonMapping = {};
   final FirebaseStorage _storage = FirebaseStorage.instance;
+  String searchQuery = '';
 
   // Person detail
   Person currentPersonDetail = Person(uid: "", name: "", avtUrl: "", groups: {});
@@ -22,6 +24,33 @@ class PersonNotifier extends _$PersonNotifier {
     state = 0;
     return state;
   }
+
+  void searchPersons(String query) {
+    searchQuery = query.toLowerCase().trim();
+    if (searchQuery.isEmpty) {
+      filteredPersons = List.from(allPerson);
+    } else {
+      filteredPersons = allPerson.where((person) {
+        // Search by person name
+        final personName = person.name.toLowerCase();
+
+        // Search by description if available
+        final description = person.describe.toLowerCase() ?? '';
+
+        return personName.contains(searchQuery) ||
+            description.contains(searchQuery);
+      }).toList();
+    }
+    state = state + 1;
+  }
+
+  void resetSearchFilter() {
+    searchQuery = '';
+    filteredPersons = List.from(allPerson);
+    state = state + 1;
+  }
+
+  List<Person> get displayPersons => searchQuery.isEmpty ? allPerson : filteredPersons;
 
   Future<void> fetchAllPerson() async {
     try {
@@ -45,6 +74,9 @@ class PersonNotifier extends _$PersonNotifier {
       } else {
         print('📭 No persons data available.');
       }
+
+      // Reset filtered persons after fetching
+      filteredPersons = List.from(allPerson);
     } catch (error) {
       print('📭 Error fetching data: $error');
     }

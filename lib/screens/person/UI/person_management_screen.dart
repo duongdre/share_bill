@@ -44,7 +44,7 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
     ref.watch(personNotifierProvider);
     ref.watch(groupNotifierProvider);
     ref.watch(billNotifierProvider);
-    final persons = ref.read(personNotifierProvider.notifier).allPerson;
+    final persons = ref.read(personNotifierProvider.notifier).displayPersons;
 
     return GestureDetector(
       behavior: HitTestBehavior.translucent, // Ensures taps are detected even on empty areas
@@ -105,10 +105,11 @@ class _PersonManagementScreenState extends ConsumerState<PersonManagementScreen>
     return AnimatedSearchBar(
       focusNode: _searchFocusNode, // Pass our focus node to the search bar
       onSearch: (value) {
-        // ref.read(personNotifierProvider.notifier).searchPersons(value);
+        print(value);
+        ref.read(personNotifierProvider.notifier).searchPersons(value);
       },
       onClear: () {
-        // ref.read(personNotifierProvider.notifier).resetSearchFilter();
+        ref.read(personNotifierProvider.notifier).resetSearchFilter();
       },
     );
   }

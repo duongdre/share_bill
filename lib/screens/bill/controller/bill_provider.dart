@@ -11,7 +11,9 @@ part 'bill_provider.g.dart';
 @riverpod
 class BillNotifier extends _$BillNotifier {
   List<Bill> allBill = [];
+  List<Bill> filteredBills = [];
   Map<dynamic, dynamic> allBillMapping = {};
+  String searchQuery = '';
 
   Group currentSpentGroup = Group(uid: "", name: "", members: {});
   Person currentSpentPerson = Person(uid: "", name: "", avtUrl: "", groups: {});
@@ -24,6 +26,34 @@ class BillNotifier extends _$BillNotifier {
     state = 0;
     return state;
   }
+
+  void searchBills(String query) {
+    searchQuery = query.toLowerCase().trim();
+    if (searchQuery.isEmpty) {
+      filteredBills = List.from(allBill);
+    } else {
+      filteredBills = allBill.where((bill) {
+        // Search by person name
+        final person = ref.read(personNotifierProvider.notifier).findPersonWithUid(bill.personId);
+        final personName = person?.name.toLowerCase() ?? '';
+
+        // Search by amount (convert to string)
+        final amount = bill.amount.toString();
+
+        return personName.contains(searchQuery) ||
+            amount.contains(searchQuery);
+      }).toList();
+    }
+    state = state + 1;
+  }
+
+  void resetSearchFilter() {
+    searchQuery = '';
+    filteredBills = List.from(allBill);
+    state = state + 1;
+  }
+
+  List<Bill> get displayBills => searchQuery.isEmpty ? allBill : filteredBills;
 
   double getTotalPaidOfAGroup(Group group) {
     List<Bill> listBillOfGroup = allBill.where((bill) => bill.groupId == group.uid).toList();
@@ -152,6 +182,9 @@ class BillNotifier extends _$BillNotifier {
       } else {
         print('📭 No bills data available.');
       }
+
+      // Reset filtered bills after fetching
+      filteredBills = List.from(allBill);
     } catch (error) {
       print('📭 Error fetching data: $error');
     }

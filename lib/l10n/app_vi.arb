@@ -142,5 +142,15 @@
   "onB15": "Xem ai nợ gì, theo dõi mô hình chi tiêu và xem lịch sử chi phí chi tiết. Không bao giờ mất dấu các khoản chi phí chung nữa!",
   "skip": "Bỏ qua",
   "next": "Tiếp theo",
-  "getStarted": "Bắt Đầu"
+  "getStarted": "Bắt Đầu",
+
+  "noPersonsYet": "Chưa có người nào",
+  "startByAddingPeopleToTrackExpenses": "Bắt đầu bằng cách thêm người để theo dõi chi tiêu cùng",
+  "noGroupsYet": "Chưa có nhóm nào",
+  "createGroupsToOrganizeExpenses": "Tạo nhóm để tổ chức các khoản chi tiêu chung",
+  "noBillsYet": "Chưa có hóa đơn nào",
+  "startTrackingExpensesByAddingBills": "Bắt đầu theo dõi chi tiêu bằng cách thêm hóa đơn",
+  "addBill": "Thêm hóa đơn",
+  "noResultsFound": "Không tìm thấy kết quả",
+  "noDataFound": "Không tìm thấy dữ liệu cho"
 }

@@ -142,5 +142,15 @@
   "onB15": "See who owes what, track spending patterns, and view detailed expense history. Never lose track of shared expenses again!",
   "skip": "Skip",
   "next": "Next",
-  "getStarted": "Get Started"
+  "getStarted": "Get Started",
+
+  "noPersonsYet": "No Persons Yet",
+  "startByAddingPeopleToTrackExpenses": "Start by adding people to track expenses with",
+  "noGroupsYet": "No Groups Yet",
+  "createGroupsToOrganizeExpenses": "Create groups to organize your shared expenses",
+  "noBillsYet": "No Bills Yet",
+  "startTrackingExpensesByAddingBills": "Start tracking your expenses by adding bills",
+  "addBill": "Add Bill",
+  "noResultsFound": "No Results Found",
+  "noDataFound": "No data found for"
 }

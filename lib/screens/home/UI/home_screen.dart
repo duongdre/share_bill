@@ -9,8 +9,8 @@ import 'package:share_bill/screens/group/controller/group_provider.dart';
 import 'package:share_bill/screens/spent/UI/spent_screen.dart';
 import '../../../gen/colors.gen.dart';
 import '../../../services/firebase_services/user_service.dart';
-import '../../../utilities/utils/ad_status_widget.dart';
 import '../../../utilities/utils/avatar_person.dart';
+import '../../../utilities/utils/empty_state.dart';
 import '../../../utilities/utils/widget_list_bill.dart';
 import '../../../utilities/utils/widget_list_group.dart';
 import '../../../utilities/utils/widget_manegement_header.dart';
@@ -263,7 +263,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget favoritePersons(List<Person> persons) {
-    return Container(
+    if (persons.isEmpty) {
+      return const EmptyPersonsState();
+    }
+
+    return SizedBox(
       height: 84,
       child: ListView.builder(
           scrollDirection: Axis.horizontal,

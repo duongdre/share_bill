@@ -152,5 +152,22 @@
   "startTrackingExpensesByAddingBills": "Start tracking your expenses by adding bills",
   "addBill": "Add Bill",
   "noResultsFound": "No Results Found",
-  "noDataFound": "No data found for"
+  "noDataFound": "No data found for",
+
+  "myTransactions": "My Transactions",
+  "transactions": "Transactions",
+  "addNewTransaction": "Add New Transaction",
+  "transactionPurpose": "Transaction Purpose",
+  "transactionDate": "Transaction Date",
+  "addTransaction": "Add Transaction",
+  "pleaseEnterTransactionPurpose": "Please enter transaction purpose",
+  "purposeMustBeAtLeast2Characters": "Purpose must be at least 2 characters",
+  "enterTransactionPurpose": "Enter transaction purpose",
+  "pleaseEnterValidAmount": "Please enter a valid amount",
+  "pleaseSelectDate": "Please select a date",
+  "selectDate": "Select date",
+  "transactionAddedSuccessfully": "Transaction added successfully",
+  "errorAddingTransaction": "Error adding transaction",
+  "noTransactionsForThisDay": "No transactions for this day",
+  "tapPlusToAddOne": "Tap + to add one"
 }

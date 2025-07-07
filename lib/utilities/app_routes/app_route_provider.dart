@@ -16,6 +16,7 @@ import '../../screens/person/UI/person_detail_screen.dart';
 import '../../screens/setting/UI/language_setting_screen.dart';
 import '../../screens/splash/UI/onboarding_screen.dart';
 import '../../screens/splash/UI/splash_screen.dart';
+import '../../screens/transaction/UI/transaction_screen.dart';
 import '../../services/firebase_services/user_service.dart';
 import '../utils/auth_guard.dart';
 import 'app_route_observer.dart';
@@ -161,8 +162,17 @@ final routerProvider = Provider<GoRouter>(
                     name: SpentScreen.routeNameFromHome,
                     parentNavigatorKey: _rootNavigatorKey,
                     builder: (context, state) {
-                      print('💰 Building SpentScreen (from bill management)');
+                      print('💰 Building SpentScreen (from home management)');
                       return const SpentScreen();
+                    },
+                  ),
+                  GoRoute(
+                    path: TransactionScreen.routePath,
+                    name: TransactionScreen.routeName,
+                    parentNavigatorKey: _rootNavigatorKey,
+                    builder: (context, state) {
+                      print('💰 Building TransactionScreen (from home management)');
+                      return const TransactionScreen();
                     },
                   ),
                 ]

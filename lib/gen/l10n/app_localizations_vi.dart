@@ -407,4 +407,52 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get noDataFound => 'Không tìm thấy dữ liệu cho';
+
+  @override
+  String get myTransactions => 'Giao Dịch Của Tôi';
+
+  @override
+  String get transactions => 'Giao Dịch';
+
+  @override
+  String get addNewTransaction => 'Thêm Giao Dịch Mới';
+
+  @override
+  String get transactionPurpose => 'Mục Đích Giao Dịch';
+
+  @override
+  String get transactionDate => 'Ngày Giao Dịch';
+
+  @override
+  String get addTransaction => 'Thêm Giao Dịch';
+
+  @override
+  String get pleaseEnterTransactionPurpose => 'Vui lòng nhập mục đích giao dịch';
+
+  @override
+  String get purposeMustBeAtLeast2Characters => 'Mục đích phải có ít nhất 2 ký tự';
+
+  @override
+  String get enterTransactionPurpose => 'Nhập mục đích giao dịch';
+
+  @override
+  String get pleaseEnterValidAmount => 'Vui lòng nhập số tiền hợp lệ';
+
+  @override
+  String get pleaseSelectDate => 'Vui lòng chọn ngày';
+
+  @override
+  String get selectDate => 'Chọn ngày';
+
+  @override
+  String get transactionAddedSuccessfully => 'Thêm giao dịch thành công';
+
+  @override
+  String get errorAddingTransaction => 'Lỗi khi thêm giao dịch';
+
+  @override
+  String get noTransactionsForThisDay => 'Không có giao dịch nào trong ngày này';
+
+  @override
+  String get tapPlusToAddOne => 'Nhấn + để thêm';
 }

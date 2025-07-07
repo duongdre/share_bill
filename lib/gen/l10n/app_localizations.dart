@@ -898,6 +898,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No data found for'**
   String get noDataFound;
+
+  /// No description provided for @myTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'My Transactions'**
+  String get myTransactions;
+
+  /// No description provided for @transactions.
+  ///
+  /// In en, this message translates to:
+  /// **'Transactions'**
+  String get transactions;
+
+  /// No description provided for @addNewTransaction.
+  ///
+  /// In en, this message translates to:
+  /// **'Add New Transaction'**
+  String get addNewTransaction;
+
+  /// No description provided for @transactionPurpose.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Purpose'**
+  String get transactionPurpose;
+
+  /// No description provided for @transactionDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Date'**
+  String get transactionDate;
+
+  /// No description provided for @addTransaction.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Transaction'**
+  String get addTransaction;
+
+  /// No description provided for @pleaseEnterTransactionPurpose.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter transaction purpose'**
+  String get pleaseEnterTransactionPurpose;
+
+  /// No description provided for @purposeMustBeAtLeast2Characters.
+  ///
+  /// In en, this message translates to:
+  /// **'Purpose must be at least 2 characters'**
+  String get purposeMustBeAtLeast2Characters;
+
+  /// No description provided for @enterTransactionPurpose.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter transaction purpose'**
+  String get enterTransactionPurpose;
+
+  /// No description provided for @pleaseEnterValidAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid amount'**
+  String get pleaseEnterValidAmount;
+
+  /// No description provided for @pleaseSelectDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a date'**
+  String get pleaseSelectDate;
+
+  /// No description provided for @selectDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Select date'**
+  String get selectDate;
+
+  /// No description provided for @transactionAddedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction added successfully'**
+  String get transactionAddedSuccessfully;
+
+  /// No description provided for @errorAddingTransaction.
+  ///
+  /// In en, this message translates to:
+  /// **'Error adding transaction'**
+  String get errorAddingTransaction;
+
+  /// No description provided for @noTransactionsForThisDay.
+  ///
+  /// In en, this message translates to:
+  /// **'No transactions for this day'**
+  String get noTransactionsForThisDay;
+
+  /// No description provided for @tapPlusToAddOne.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap + to add one'**
+  String get tapPlusToAddOne;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

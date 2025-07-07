@@ -191,74 +191,137 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget homeAddSection(AppLocalizations localizations) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Row(
-        children: [
-          Expanded(
-            child: InkWell(
-              onTap: () => _showAddPersonDialog(),
-              child: Container(
-                height: 68,
-                decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(12)),
-                    color: ColorName.blueBackground
+    return Column(
+      children: [
+        // First row - existing buttons
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: InkWell(
+                  onTap: () => _showAddPersonDialog(),
+                  child: Container(
+                    height: 68,
+                    decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        color: ColorName.blueBackground
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.person_add, color: Colors.white),
+                        const SizedBox(height: 4),
+                        Text(localizations.addPerson, style: const TextStyle(color: Colors.white, fontSize: 12)),
+                      ],
+                    ),
+                  ),
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.person_add, color: Colors.white),
-                    const SizedBox(height: 4),
-                    Text(localizations.addPerson, style: const TextStyle(color: Colors.white, fontSize: 12)),
-                  ],
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: InkWell(
+                  onTap: () => _showAddGroupDialog(),
+                  child: Container(
+                    height: 68,
+                    decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        color: ColorName.purpleBackground
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.group_add, color: Colors.white),
+                        const SizedBox(height: 4),
+                        Text(localizations.addGroup, style: const TextStyle(color: Colors.white, fontSize: 12)),
+                      ],
+                    ),
+                  ),
                 ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: InkWell(
+                  onTap: () => context.goNamed(SpentScreen.routeNameFromHome),
+                  child: Container(
+                    height: 68,
+                    decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        color: ColorName.greenBackground
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.payment, color: Colors.white),
+                        const SizedBox(height: 4),
+                        Text(localizations.addExpense, style: const TextStyle(color: Colors.white, fontSize: 12)),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        // Second row - New Transaction button (highlighted)
+        Padding(
+          padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+          child: InkWell(
+            onTap: () => context.goNamed('transactions'),
+            child: Container(
+              height: 68,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(12)),
+                gradient: LinearGradient(
+                  colors: [Colors.orange.shade400, Colors.red.shade500],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.orange.withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.receipt_long, color: Colors.white, size: 24),
+                  const SizedBox(width: 12),
+                  Text(
+                    localizations.myTransactions ?? 'My Transactions',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Text(
+                      'NEW',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: InkWell(
-              onTap: () => _showAddGroupDialog(),
-              child: Container(
-                height: 68,
-                decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(12)),
-                    color: ColorName.purpleBackground
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.group_add, color: Colors.white),
-                    const SizedBox(height: 4),
-                    Text(localizations.addGroup, style: const TextStyle(color: Colors.white, fontSize: 12)),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: InkWell(
-              onTap: () => context.goNamed(SpentScreen.routeNameFromHome),
-              child: Container(
-                height: 68,
-                decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(12)),
-                    color: ColorName.greenBackground
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.payment, color: Colors.white),
-                    const SizedBox(height: 4),
-                    Text(localizations.addExpense, style: const TextStyle(color: Colors.white, fontSize: 12)),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

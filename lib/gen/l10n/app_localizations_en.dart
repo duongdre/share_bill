@@ -407,4 +407,52 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noDataFound => 'No data found for';
+
+  @override
+  String get myTransactions => 'My Transactions';
+
+  @override
+  String get transactions => 'Transactions';
+
+  @override
+  String get addNewTransaction => 'Add New Transaction';
+
+  @override
+  String get transactionPurpose => 'Transaction Purpose';
+
+  @override
+  String get transactionDate => 'Transaction Date';
+
+  @override
+  String get addTransaction => 'Add Transaction';
+
+  @override
+  String get pleaseEnterTransactionPurpose => 'Please enter transaction purpose';
+
+  @override
+  String get purposeMustBeAtLeast2Characters => 'Purpose must be at least 2 characters';
+
+  @override
+  String get enterTransactionPurpose => 'Enter transaction purpose';
+
+  @override
+  String get pleaseEnterValidAmount => 'Please enter a valid amount';
+
+  @override
+  String get pleaseSelectDate => 'Please select a date';
+
+  @override
+  String get selectDate => 'Select date';
+
+  @override
+  String get transactionAddedSuccessfully => 'Transaction added successfully';
+
+  @override
+  String get errorAddingTransaction => 'Error adding transaction';
+
+  @override
+  String get noTransactionsForThisDay => 'No transactions for this day';
+
+  @override
+  String get tapPlusToAddOne => 'Tap + to add one';
 }

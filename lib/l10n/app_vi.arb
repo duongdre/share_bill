@@ -152,5 +152,22 @@
   "startTrackingExpensesByAddingBills": "Bắt đầu theo dõi chi tiêu bằng cách thêm hóa đơn",
   "addBill": "Thêm hóa đơn",
   "noResultsFound": "Không tìm thấy kết quả",
-  "noDataFound": "Không tìm thấy dữ liệu cho"
+  "noDataFound": "Không tìm thấy dữ liệu cho",
+
+  "myTransactions": "Giao Dịch Của Tôi",
+  "transactions": "Giao Dịch",
+  "addNewTransaction": "Thêm Giao Dịch Mới",
+  "transactionPurpose": "Mục Đích Giao Dịch",
+  "transactionDate": "Ngày Giao Dịch",
+  "addTransaction": "Thêm Giao Dịch",
+  "pleaseEnterTransactionPurpose": "Vui lòng nhập mục đích giao dịch",
+  "purposeMustBeAtLeast2Characters": "Mục đích phải có ít nhất 2 ký tự",
+  "enterTransactionPurpose": "Nhập mục đích giao dịch",
+  "pleaseEnterValidAmount": "Vui lòng nhập số tiền hợp lệ",
+  "pleaseSelectDate": "Vui lòng chọn ngày",
+  "selectDate": "Chọn ngày",
+  "transactionAddedSuccessfully": "Thêm giao dịch thành công",
+  "errorAddingTransaction": "Lỗi khi thêm giao dịch",
+  "noTransactionsForThisDay": "Không có giao dịch nào trong ngày này",
+  "tapPlusToAddOne": "Nhấn + để thêm"
 }

@@ -31,6 +31,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
   late TextEditingController nameController;
   late List<Bill> allBillOfGroup;
   late Map<String, double> groupWithTotalPaidByPerson;
+  Map<String, double> groupWithNeedToBePaidByPerson = {};
   final FocusNode nameFocus = FocusNode();
 
   bool isUpdateInfo = false;
@@ -60,6 +61,12 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
           groupWithTotalPaidByPerson[person] = 0;
         }
       }
+    }
+
+    final totalPay = ref.read(billNotifierProvider.notifier).getTotalPaidOfAGroup(group).toInt();
+    for (final data in groupWithTotalPaidByPerson.keys) {
+      final personPaid = groupWithTotalPaidByPerson[data] ?? 0;
+      groupWithNeedToBePaidByPerson[data] = (personPaid - (totalPay / group.memberCount));
     }
   }
 
@@ -266,7 +273,6 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
   }
 
   Widget groupWidget(Group group) {
-    final localizations = AppLocalizations.of(context);
     return Column(
       children: [
         const SizedBox(height: 18),
@@ -313,10 +319,10 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen> {
                               margin: const EdgeInsets.only(top: 100),
                               alignment: Alignment.topCenter,
                               child: Text(
-                                NumberFormat.currency(locale: "vi_VN", symbol: "₫").format(groupWithTotalPaidByPerson[eachPerson[index]] ?? 0),
+                                NumberFormat.currency(locale: "vi_VN", symbol: "₫").format(groupWithNeedToBePaidByPerson[eachPerson[index]] ?? 0),
                                 overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  color: ColorName.blackColor,
+                                style: TextStyle(
+                                  color: ((groupWithNeedToBePaidByPerson[eachPerson[index]] ?? 0) >= 0) ? ColorName.greenColor : ColorName.homeRedText,
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
                                 ),
